@@ -53,9 +53,12 @@ def data_cleanup_flightlog(df):
         'Flugzeug': 'Aircraft'
     }
     df.rename(columns=column_mapping, inplace=True)
-
     # Pilot Full Name as Column
     df['Pilot'] = df['First Name'] + ' ' + df['Last Name']
+
+    df['YYYY'] = df['Date'].dt.strftime('%Y')
+    df['YY-MM'] = df['Date'].dt.strftime('%y-%m')
+    df['YY-MM-DD'] = df['Date'].dt.strftime('%y-%m-%d')
 
     # Set Time as Timedelta
     df['Flight Time'] = pd.to_timedelta(df['Flight Time'].astype(str))
@@ -82,12 +85,19 @@ def data_cleanup_instructorlog(df):
     df['Pilot'] = df['Pilot First Name'] + ' ' + df['Pilot Last Name']
     df['Instructor'] = df['Instructor First Name'] + ' ' + df['Instructor Last Name']
 
+    df['YYYY'] = df['Date'].dt.strftime('%Y')
+    df['YY-MM'] = df['Date'].dt.strftime('%y-%m')
+    df['YY-MM-DD'] = df['Date'].dt.strftime('%y-%m-%d')
+
     # Set Time as Timedelta
     df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
     return df
 
-def pilot_aggregation(df, start_date, end_date, sort_column='Total_Flight_Time'):
+def date_select_df(df, start_date, end_date):
     df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+    return df
+
+def pilot_aggregation(df, sort_column='Total_Flight_Time'):
     agg_df = df.groupby('Pilot').agg(
         Total_Flight_Time=pd.NamedAgg(column='Flight Time', aggfunc='sum'),
         Total_Block_Time=pd.NamedAgg(column='Block Time', aggfunc='sum'),
@@ -102,20 +112,18 @@ def pilot_aggregation(df, start_date, end_date, sort_column='Total_Flight_Time')
     agg_df.reset_index(inplace=True)
     return agg_df
 
-def instructor_aggregation(df, start_date, end_date):
-    df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+def instructor_aggregation(df, sort_column='Total_Duration'):
     agg_df = df.groupby('Instructor').agg(
-        Total_Instructor_Time=pd.NamedAgg(column='Duration', aggfunc='sum'),
+        Total_Duration=pd.NamedAgg(column='Duration', aggfunc='sum'),
         Number_of_Different_Pilots=pd.NamedAgg(column='Pilot', aggfunc=lambda x: x.nunique()),
         Number_of_Instructions=pd.NamedAgg(column='Duration', aggfunc='count'),
     )
-    agg_df['Total_Instructor_Time'] = agg_df['Total_Instructor_Time'].dt.total_seconds() / 3600
-    agg_df.sort_values('Total_Instructor_Time', ascending=False, inplace=True)
+    agg_df['Total_Duration'] = agg_df['Total_Duration'].dt.total_seconds() / 3600
+    agg_df.sort_values(sort_column, ascending=False, inplace=True)
     agg_df.reset_index(inplace=True)
     return agg_df
 
-def aircraft_aggregation(df, start_date, end_date):
-    df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+def aircraft_aggregation(df):
     agg_df = df.groupby('Aircraft').agg(
         Total_Flight_Time=pd.NamedAgg(column='Flight Time', aggfunc='sum'),
         Number_of_Landings=pd.NamedAgg(column='Landings', aggfunc='sum'),
@@ -128,31 +136,33 @@ def aircraft_aggregation(df, start_date, end_date):
     agg_df.reset_index(inplace=True)
     return agg_df
 
+def date_aggregation(df, date_format):
+    agg_df = df[['Date', 'YYYY', 'YY-MM', 'YY-MM-DD', 'Flight Time']]
+    agg_df['Flight Time'] = agg_df.groupby(date_format)['Flight Time'].sum()
+    print(agg_df)
+    agg_df['Flight Time'] = agg_df['Flight Time'].dt.total_seconds() / 3600
+    return agg_df
 
 if __name__ == '__main__':
     flight_df, instructor_df = load_data()
 
-    #print(list(flight_df))
-    #print(list(instructor_df))
-
     flight_df = data_cleanup(flight_df, 'flightlog')
     instructor_df = data_cleanup(instructor_df, 'instructorlog')
 
-    print(list(flight_df))
-    print(list(instructor_df))
+
     start_date = flight_df['Date'].min()
     end_date = flight_df['Date'].max()
-    print(start_date)
-    print(end_date)
+
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
-    print(start_date)
-    print(end_date)
-    agg_flight_df = pilot_aggregation(flight_df, start_date, end_date)
-    agg_instructor_df = instructor_aggregation(instructor_df, start_date, end_date)
 
-    print(agg_flight_df)
-    print(agg_instructor_df)
+    agg_flight_df = pilot_aggregation(flight_df)
+    agg_instructor_df = instructor_aggregation(instructor_df)
+
+
+
+    date_flight_df = date_aggregation(flight_df, 'YYYY')
+
 
 
 

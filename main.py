@@ -24,10 +24,15 @@ instructor_df = dp.data_cleanup(instructor_df, 'instructorlog')
 start_date=flight_df['Date'].min()
 end_date=flight_df['Date'].max()
 
-agg_pilot_df = dp.pilot_aggregation(flight_df, start_date, end_date)
-agg_instructor_df = dp.instructor_aggregation(instructor_df, start_date, end_date)
-agg_aircraft_df = dp.aircraft_aggregation(flight_df, start_date, end_date)
+filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
+agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
+agg_instructor_df = dp.instructor_aggregation(filtered_instructor_df)
+col_flight_df = list(flight_df)[-3:]
 col_agg_pilot_df = list(agg_pilot_df)
+col_agg_instructor_df = list(agg_instructor_df)
+
 
 # Build App
 app = Dash(external_stylesheets=[dbc.themes.SLATE])
@@ -40,7 +45,7 @@ app.layout = html.Div([
                     id='date-picker-range',
                     start_date=flight_df['Date'].min(),
                     end_date=flight_df['Date'].max(),
-                    display_format='YYYY-MM-DD'
+                    display_format='DD.MM.YYYY'
                 ),
             ], align='center'),
             html.Br(),
@@ -55,12 +60,35 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    dcc.Dropdown(col_agg_pilot_df, 'Pilot', id='pilot_dropdown_x'),
-                    dcc.Dropdown(col_agg_pilot_df, 'Total_Flight_Time', id='pilot_dropdown_y'),
+                    dcc.RadioItems(col_flight_df, 'YY-MM-DD', inline=True, id='dateformat_dropdown_x')
+                ], width=12)
+            ], align='center'),
+            dbc.Row([
+                dbc.Col([
                     dcc.Graph(id='main_flightlog_plot')
                 ], width=8),
                 dbc.Col([
                     dcc.Graph(id='main_instructorlog_plot')
+                ], width=4)
+            ], align='center'),
+            html.Br(),
+            dbc.Row([
+                dbc.Col([
+                    html_func.drawcenterText('Pilots')
+                ], width=8),
+                dbc.Col([
+                    html_func.drawcenterText('Instructors')
+                ], width=4)
+            ], align='center'),
+            html.Br(),
+            dbc.Row([
+                dbc.Col([
+                    dcc.RadioItems(col_agg_pilot_df, 'Total_Flight_Time', inline=True, id='pilot_dropdown_y'),
+                    dcc.Graph(id='main_pilot_plot')
+                ], width=8),
+                dbc.Col([
+                    dcc.RadioItems(col_agg_instructor_df, 'Total_Duration', inline=True, id='instructor_dropdown_y'),
+                    dcc.Graph(id='main_instructor_plot')
                 ], width=4)
             ], align='center'),
             html.Br(),
@@ -81,27 +109,36 @@ app.layout = html.Div([
 @app.callback(
     [Output('main_flightlog_plot', 'figure'),
      Output('main_instructorlog_plot', 'figure'),
+     Output('main_pilot_plot', 'figure'),
+     Output('main_instructor_plot', 'figure'),
      Output('aircraft_plot', 'figure')],
     [Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
-     Input('pilot_dropdown_x', 'value'),
-     Input('pilot_dropdown_y', 'value')]
+     Input('dateformat_dropdown_x', 'value'),
+     Input('pilot_dropdown_y', 'value'),
+     Input('instructor_dropdown_y', 'value')]
 )
-def update_graphs(start_date, end_date, pilot_dropdown_x_value, pilot_dropdown_y_value):
-    print('X-Selection: ', pilot_dropdown_x_value)
+def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropdown_y_value, instructor_dropdown_y):
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     # Filter data based on the selected date range
-    agg_pilot_df = dp.pilot_aggregation(flight_df, start_date, end_date, pilot_dropdown_y_value)
-    agg_instructor_df = dp.instructor_aggregation(instructor_df, start_date, end_date)
-    agg_aircraft_df = dp.aircraft_aggregation(flight_df, start_date, end_date)
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    grouped_flight_df = filtered_flight_df.groupby(dateformat_dropdown_x_value)['Flight Time'].sum().reset_index()
+    grouped_flight_df['Flight Time'] = grouped_flight_df['Flight Time'].dt.total_seconds() / 3600
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df, pilot_dropdown_y_value)
+    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+    filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
+    grouped_instructor_df = filtered_instructor_df.groupby(dateformat_dropdown_x_value)['Duration'].sum().reset_index()
+    grouped_instructor_df['Duration'] = grouped_instructor_df['Duration'].dt.total_seconds() / 3600
+    agg_instructor_df = dp.instructor_aggregation(filtered_instructor_df, instructor_dropdown_y)
     # Create plots
-    fig1 = px.bar(agg_pilot_df, pilot_dropdown_x_value, pilot_dropdown_y_value)
-    fig2 = px.bar(agg_instructor_df, "Instructor", "Total_Instructor_Time")
-    fig3 = px.bar(agg_aircraft_df, "Aircraft", "Total_Flight_Time")
+    fig0 = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Flight Time', color='Flight Time', template='plotly_dark')
+    fig1 = px.bar(grouped_instructor_df, dateformat_dropdown_x_value, 'Duration', color='Duration', template='plotly_dark')
+    fig2 = px.bar(agg_pilot_df, 'Pilot', pilot_dropdown_y_value, color=pilot_dropdown_y_value, template='plotly_dark')
+    fig3 = px.bar(agg_instructor_df, 'Instructor', instructor_dropdown_y, color='Total_Duration', template='plotly_dark')
+    fig4 = px.bar(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
 
-    return fig1, fig2, fig3
-
+    return fig0, fig1, fig2, fig3, fig4
 
 # Run app and display result inline in the notebook
 app.run_server()
