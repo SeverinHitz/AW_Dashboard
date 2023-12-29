@@ -128,7 +128,7 @@ def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropd
     # Aggregate on Date
     grouped_flight_df = dp.date_aggregation(filtered_flight_df, dateformat_dropdown_x_value, 'Flight Time')
     # Create Main Flightlog Plot
-    main_flightlog_plot = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Total_Time', color='Total_Time',
+    main_flightlog_plot = px.line(grouped_flight_df, dateformat_dropdown_x_value, 'Total_Time',
                   template='plotly_dark')
 
     # Filter Instructorlog data based on the selected date range
