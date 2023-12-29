@@ -126,16 +126,18 @@ def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropd
     # Filter Flightlog data based on the selected date range
     filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
     # Aggregate on Date
-    grouped_flight_df = dp.date_aggregation(filtered_flight_df, dateformat_dropdown_x_value)
+    grouped_flight_df = dp.date_aggregation(filtered_flight_df, dateformat_dropdown_x_value, 'Flight Time')
     # Create Main Flightlog Plot
-    main_flightlog_plot = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Flight Time', color='Flight Time',
+    main_flightlog_plot = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Total_Time', color='Total_Time',
                   template='plotly_dark')
 
     # Filter Instructorlog data based on the selected date range
     filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
-    grouped_instructor_df = dp.date_aggregation(filtered_instructor_df, dateformat_dropdown_x_value)
+    grouped_instructor_df = dp.date_aggregation(filtered_instructor_df,
+                                                dateformat_dropdown_x_value,
+                                                'Duration')
     # Create Main Instructorlog Plot
-    main_instructorlog_plot = px.bar(grouped_instructor_df, dateformat_dropdown_x_value, 'Duration', color='Duration',
+    main_instructorlog_plot = px.bar(grouped_instructor_df, dateformat_dropdown_x_value, 'Total_Time', color='Total_Time',
                   template='plotly_dark')
 
     # Aggregate Pilots Data
@@ -151,9 +153,9 @@ def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropd
     # Aggregate Aircraft Data
     agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
     # Create AIrcraft Plot
-    aircraft_plot = px.line(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
+    aircraft_plot = px.bar(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
 
     return main_flightlog_plot, main_instructorlog_plot, main_pilot_plot, main_instructor_plot, aircraft_plot
 
-# Run app and display result inline in the notebook
+# Run app and display result inline
 app.run_server()

@@ -136,12 +136,13 @@ def aircraft_aggregation(df):
     agg_df.reset_index(inplace=True)
     return agg_df
 
-def date_aggregation(df, date_format):
-    agg_df = df[['Date', 'YYYY', 'YY-MM', 'YY-MM-DD', 'Flight Time']]
+def date_aggregation(df, date_format, agg_column):
+    agg_df = df[['Date', 'YYYY', 'YY-MM', 'YY-MM-DD', agg_column]]
     agg_df = agg_df.groupby(date_format).agg(
-        Total_Flight_Time=pd.NamedAgg(column='Flight Time', aggfunc='sum')
+        Total_Time=pd.NamedAgg(column=agg_column, aggfunc='sum')
     )
-    agg_df['Total_Flight_Time'] = agg_df['Total_Flight_Time'].dt.total_seconds() / 3600
+    agg_df['Total_Time'] = agg_df['Total_Time'].dt.total_seconds() / 3600
+    agg_df.reset_index(inplace=True)
     return agg_df
 
 if __name__ == '__main__':
