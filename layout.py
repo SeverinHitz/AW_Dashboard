@@ -2,7 +2,6 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc
 import plotly.express as px
 
-
 def drawbarFigure(df, x, y):
     return  html.Div([
         dbc.Card(

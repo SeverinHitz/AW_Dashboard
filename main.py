@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
 
 # Import other Files
 import data_preparation as dp
-import html_functions as html_func
+import layout as lo
 
 
 # Import Dataframes
@@ -51,10 +51,10 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    html_func.drawcenterText('Flightlog')
+                    lo.drawcenterText('Flightlog')
                 ], width=8),
                 dbc.Col([
-                    html_func.drawcenterText('Instructorlog')
+                    lo.drawcenterText('Instructorlog')
                 ], width=4)
             ], align='center'),
             html.Br(),
@@ -74,10 +74,10 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    html_func.drawcenterText('Pilots')
+                    lo.drawcenterText('Pilots')
                 ], width=8),
                 dbc.Col([
-                    html_func.drawcenterText('Instructors')
+                    lo.drawcenterText('Instructors')
                 ], width=4)
             ], align='center'),
             html.Br(),
@@ -97,7 +97,7 @@ app.layout = html.Div([
                     dcc.Graph(id='aircraft_plot')
                 ], width=4),
                 dbc.Col([
-                    html_func.drawcenterText('Flightlog')
+                    lo.drawcenterText('Flightlog')
                 ], width=4),
             ], align='center'),
         ]), color = 'dark'
@@ -119,26 +119,41 @@ app.layout = html.Div([
      Input('instructor_dropdown_y', 'value')]
 )
 def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropdown_y_value, instructor_dropdown_y):
+    # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
-    # Filter data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
-    grouped_flight_df = filtered_flight_df.groupby(dateformat_dropdown_x_value)['Flight Time'].sum().reset_index()
-    grouped_flight_df['Flight Time'] = grouped_flight_df['Flight Time'].dt.total_seconds() / 3600
-    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df, pilot_dropdown_y_value)
-    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
-    filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
-    grouped_instructor_df = filtered_instructor_df.groupby(dateformat_dropdown_x_value)['Duration'].sum().reset_index()
-    grouped_instructor_df['Duration'] = grouped_instructor_df['Duration'].dt.total_seconds() / 3600
-    agg_instructor_df = dp.instructor_aggregation(filtered_instructor_df, instructor_dropdown_y)
-    # Create plots
-    fig0 = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Flight Time', color='Flight Time', template='plotly_dark')
-    fig1 = px.bar(grouped_instructor_df, dateformat_dropdown_x_value, 'Duration', color='Duration', template='plotly_dark')
-    fig2 = px.bar(agg_pilot_df, 'Pilot', pilot_dropdown_y_value, color=pilot_dropdown_y_value, template='plotly_dark')
-    fig3 = px.bar(agg_instructor_df, 'Instructor', instructor_dropdown_y, color='Total_Duration', template='plotly_dark')
-    fig4 = px.bar(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
 
-    return fig0, fig1, fig2, fig3, fig4
+    # Filter Flightlog data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    # Aggregate on Date
+    grouped_flight_df = dp.date_aggregation(filtered_flight_df, dateformat_dropdown_x_value)
+    # Create Main Flightlog Plot
+    main_flightlog_plot = px.bar(grouped_flight_df, dateformat_dropdown_x_value, 'Flight Time', color='Flight Time',
+                  template='plotly_dark')
+
+    # Filter Instructorlog data based on the selected date range
+    filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
+    grouped_instructor_df = dp.date_aggregation(filtered_instructor_df, dateformat_dropdown_x_value)
+    # Create Main Instructorlog Plot
+    main_instructorlog_plot = px.bar(grouped_instructor_df, dateformat_dropdown_x_value, 'Duration', color='Duration',
+                  template='plotly_dark')
+
+    # Aggregate Pilots Data
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df, pilot_dropdown_y_value)
+    # Create Pilot Plot
+    main_pilot_plot = px.bar(agg_pilot_df, 'Pilot', pilot_dropdown_y_value, color=pilot_dropdown_y_value, template='plotly_dark')
+
+    # Aggregate Insturctor Data
+    agg_instructor_df = dp.instructor_aggregation(filtered_instructor_df, instructor_dropdown_y)
+    # Create Instructor Plot
+    main_instructor_plot = px.bar(agg_instructor_df, 'Instructor', instructor_dropdown_y, color=instructor_dropdown_y, template='plotly_dark')
+
+    # Aggregate Aircraft Data
+    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+    # Create AIrcraft Plot
+    aircraft_plot = px.line(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
+
+    return main_flightlog_plot, main_instructorlog_plot, main_pilot_plot, main_instructor_plot, aircraft_plot
 
 # Run app and display result inline in the notebook
 app.run_server()
