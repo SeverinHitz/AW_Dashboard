@@ -7,6 +7,7 @@ from dash import Dash, dcc, html, dcc, callback, Input, Output
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 import logging
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s - %(message)s')
@@ -14,6 +15,7 @@ logging.basicConfig(level=logging.INFO,
 # Import other Files
 import data_preparation as dp
 import layout as lo
+import plot as plots
 
 
 # Import Dataframes
@@ -96,10 +98,10 @@ app.layout = html.Div([
                     dcc.Graph(id='aircraft_plot')
                 ], width=4),
                 dbc.Col([
-                    lo.drawcenterText('Flightlog')
+                    dcc.Graph(id='sankey_diagram')
                 ], width=4),
             ], align='center'),
-        ]), color = 'dark'
+        ]), color='dark'
     )
 ])
 
@@ -110,7 +112,8 @@ app.layout = html.Div([
      Output('main_instructorlog_plot', 'figure'),
      Output('main_pilot_plot', 'figure'),
      Output('main_instructor_plot', 'figure'),
-     Output('aircraft_plot', 'figure')],
+     Output('aircraft_plot', 'figure'),
+     Output('sankey_diagram', 'figure')],
     [Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('dateformat_dropdown_x', 'value'),
@@ -154,7 +157,11 @@ def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropd
     # Create AIrcraft Plot
     aircraft_plot = px.bar(agg_aircraft_df, "Aircraft", "Total_Flight_Time", color="Total_Flight_Time", template='plotly_dark')
 
-    return main_flightlog_plot, main_instructorlog_plot, main_pilot_plot, main_instructor_plot, aircraft_plot
+    # Sankey Diagram
+    sankey_diagram = plots.sankey_diagram(filtered_flight_df)
+    sankey_diagram.show()
+
+    return main_flightlog_plot, main_instructorlog_plot, main_pilot_plot, main_instructor_plot, aircraft_plot, sankey_diagram
 
 # Run app and display result inline
 app.run_server()
