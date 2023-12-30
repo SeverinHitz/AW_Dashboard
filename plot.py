@@ -39,9 +39,9 @@ def sankey_diagram(df):
 
 
     # Apply the function to create the new 'Color' column
-    agg_df['Color'] = df.apply(assign_color, axis=1)
+    agg_df['Color'] = agg_df.apply(assign_color, axis=1)
 
-
+    print(agg_df[agg_df['Departure Location'] == 'LSZN'])
     fig = go.Figure(data=[go.Sankey(
         node=dict(
             pad=15,

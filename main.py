@@ -163,5 +163,6 @@ def update_graphs(start_date, end_date, dateformat_dropdown_x_value, pilot_dropd
 
     return main_flightlog_plot, main_instructorlog_plot, main_pilot_plot, main_instructor_plot, aircraft_plot, sankey_diagram
 
-# Run app and display result inline
-app.run_server()
+if __name__ == '__main__':
+    # Run app
+    app.run_server()
