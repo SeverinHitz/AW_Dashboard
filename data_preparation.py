@@ -197,6 +197,9 @@ def member_aggregation(df):
     # Drop rows where age or joining year is NaN
     df = df.dropna(subset=['Age', 'Joining Year'])
 
+    # Calculate age at joining
+    df['Age at Joining'] = df['Age'] - (current_year - df['Joining Year'])
+
     return df
 
 if __name__ == '__main__':

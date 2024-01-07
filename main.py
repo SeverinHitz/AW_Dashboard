@@ -18,10 +18,18 @@ import data_preparation as dp
 import layout as lo
 import plot as plots
 
+# Layout
+stylesheet = dbc.themes.SOLAR #
+layout_color = 'dark'
+plot_template = 'plotly_dark'
+color_scale = 'teal'
+plot_margin = dict(l=5, r=5, t=15, b=5)
+plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
+
 # Import Airmanager Data
 # Path
-flightlog_file = '231228_flightlog.xlsx'
-instructorlog_file = '231228_instructorlog.xlsx'
+flightlog_file = '231230_flightlog.xlsx'
+instructorlog_file = '231230_instructorlog.xlsx'
 member_path = '231230_members.xlsx'
 
 # Import Dataframes
@@ -64,7 +72,7 @@ col_agg_aircraft_df = list(agg_aircraft_df)
 
 
 # Build App
-app = Dash(external_stylesheets=[dbc.themes.SOLAR])
+app = Dash(external_stylesheets=[stylesheet])
 
 app.layout = html.Div([
     dbc.Card(
@@ -94,7 +102,8 @@ app.layout = html.Div([
             ], align='center'),
             dbc.Row([
                 dbc.Col([
-                    dcc.Graph(id='main_flightlog_plot')
+                    dcc.Graph(id='main_flightlog_plot',
+                              style=plot_window_style)
                 ], width=8),
                 dbc.Col([
                     dcc.Graph(id='main_instructorlog_plot')
@@ -161,7 +170,7 @@ app.layout = html.Div([
                     dcc.Graph(id='member_location_plot')
                 ], width=4)
             ], align='center'),
-        ]), color='dark'
+        ]), color=layout_color
     )
 ])
 
@@ -189,8 +198,11 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
         dateformat_dropdown_x_value,
         'Total_Time',
         color='Total_Time',
-        template='plotly_dark',
-        color_continuous_scale='teal')
+        template=plot_template,
+        color_continuous_scale=color_scale
+    )
+    main_flightlog_plot.update_layout(margin=plot_margin,
+                                      paper_bgcolor='rgba(0,0,0,0)')
 
     # Filter Instructorlog data based on the selected date range
     filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
@@ -203,8 +215,12 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
         dateformat_dropdown_x_value,
         'Total_Time',
         color='Total_Time',
-        template='plotly_dark',
-        color_continuous_scale='teal')
+        template=plot_template,
+        color_continuous_scale=color_scale
+    )
+
+    main_instructorlog_plot.update_layout(margin=plot_margin,
+                                          paper_bgcolor='rgba(0,0,0,0)')
 
     return main_flightlog_plot, main_instructorlog_plot
 
@@ -229,9 +245,11 @@ def update_pilot_graphs(start_date, end_date, pilot_dropdown_y_value):
         'Pilot',
         pilot_dropdown_y_value,
         color=pilot_dropdown_y_value,
-        template='plotly_dark',
-        color_continuous_scale='teal'
+        template=plot_template,
+        color_continuous_scale=color_scale
     )
+    main_pilot_plot.update_layout(margin=plot_margin,
+                                  paper_bgcolor='rgba(0,0,0,0)')
 
     return [main_pilot_plot]
 
@@ -255,9 +273,11 @@ def update_instructor_graph(start_date, end_date, instructor_dropdown_y):
         'Instructor',
         instructor_dropdown_y,
         color=instructor_dropdown_y,
-        template='plotly_dark',
-        color_continuous_scale='teal'
+        template=plot_template,
+        color_continuous_scale=color_scale
     )
+    main_instructor_plot.update_layout(margin=plot_margin,
+                                       paper_bgcolor='rgba(0,0,0,0)')
 
     return [main_instructor_plot]
 
@@ -282,9 +302,11 @@ def update_aircraft_graph(start_date, end_date, aircraft_dropdown_y):
         "Aircraft",
         aircraft_dropdown_y,
         color="Total_Flight_Time",
-        template='plotly_dark',
-        color_continuous_scale='teal'
+        template=plot_template,
+        color_continuous_scale=color_scale
     )
+    aircraft_plot.update_layout(margin=plot_margin,
+                                paper_bgcolor='rgba(0,0,0,0)')
 
     # Create Aircraft Table
     aircraft_table = agg_aircraft_df.to_dict('records')  # Convert DataFrame to list of dictionaries
