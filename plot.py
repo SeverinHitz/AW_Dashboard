@@ -62,6 +62,7 @@ def sankey_diagram(df):
         ))])
 
     fig.update_layout(title_text="Flight Route Sankey Diagram", font_size=10, template='plotly_dark')
+    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5))
 
     return fig
 
@@ -72,13 +73,16 @@ def member_histogram(df):
         df,
         x='Age',
         template='plotly_dark',
+        color_discrete_sequence=['teal']
     )
+    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
+                      paper_bgcolor='rgba(0,0,0,0)')
 
     return fig
 
 def memeber_join_linegraph(df):
     # Calculate the mean age and number of new members for each year from 2015 to 2023
-    plot_df = df.groupby('Joining Year').agg({'Age': 'mean', 'AirManager ID': 'count'}).loc[
+    plot_df = df.groupby('Joining Year').agg({'Age at Joining': 'mean', 'AirManager ID': 'count'}).loc[
                           2015:]
 
     # Rename the columns for clarity
@@ -104,6 +108,8 @@ def memeber_join_linegraph(df):
 
     # Set the template to 'plotly_dark'
     fig.update_layout(template='plotly_dark')
+    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
+                      paper_bgcolor='rgba(0,0,0,0)')
 
     return fig
 
@@ -123,11 +129,12 @@ def member_location_graph(df, gdf):
                                color_continuous_scale='teal',
                                opacity=0.8,
                                center={"lat": 47.23848, "lon": 8.51514},
-                               mapbox_style="carto-darkmatter",
+                               mapbox_style='open-street-map',
                                zoom=8.5)
 
     fig.update_geos(fitbounds="locations", visible=False)
-    fig.update_layout(paper_bgcolor='#000000', plot_bgcolor='#000000')
+    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
+                      paper_bgcolor='rgba(0,0,0,0)')
 
     return fig
 
