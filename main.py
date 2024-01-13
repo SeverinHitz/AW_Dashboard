@@ -9,6 +9,7 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
+from icecream import ic
 import logging
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s - %(message)s')
@@ -24,23 +25,28 @@ layout_color = 'dark'
 plot_template = 'plotly_dark'
 color_scale = 'teal'
 plot_margin = dict(l=5, r=5, t=15, b=5)
+paper_bgcolor = 'rgba(0,0,0,0)'
 plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
+discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
 
 # Import Airmanager Data
 # Path
-flightlog_file = '231230_flightlog.xlsx'
-instructorlog_file = '231230_instructorlog.xlsx'
+flightlog_file = '240113_flightlog.xlsx'
+instructorlog_file = '240113_instructorlog.xlsx'
 member_path = '231230_members.xlsx'
+reservationlog_file = '240113_reservationlog.xlsx'
 
 # Import Dataframes
 flight_df = dp.load_data(flightlog_file)
 instructor_df = dp.load_data(instructorlog_file)
 member_df = dp.load_data(member_path)
+reservation_df = dp.load_data(reservationlog_file)
 
 # clean up
 flight_df = dp.data_cleanup_flightlog(flight_df)
 instructor_df = dp.data_cleanup_instructorlog(instructor_df)
 member_df = dp.data_cleanup_member(member_df)
+reservation_df = dp.data_cleanup_reservation(reservation_df)
 
 # Geographical data
 # Path
@@ -53,15 +59,20 @@ gem_gdf = dp.data_cleanup_gem_df(gem_gdf)
 
 # Data Preparation
 # Time select
-start_date=flight_df['Date'].min()
-end_date=flight_df['Date'].max()
+start_date=reservation_df['From'].min()
+end_date=reservation_df['To'].max()
+ic(start_date)
+ic(end_date)
 filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
 filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
+filtered_reservation_df = dp.date_select_df(reservation_df, start_date, end_date, date_column='From')
 
 # Aggregate data
 agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
 agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
 agg_instructor_df = dp.instructor_aggregation(filtered_instructor_df)
+agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
+agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df)
 member_df = dp.member_aggregation(member_df)
 
 # Extract Columns for Selection
@@ -69,6 +80,7 @@ col_flight_df = list(flight_df)[-3:]
 col_agg_pilot_df = list(agg_pilot_df)
 col_agg_instructor_df = list(agg_instructor_df)
 col_agg_aircraft_df = list(agg_aircraft_df)
+col_agg_flight_res_df = list(agg_flight_res_df)
 
 
 # Build App
@@ -80,8 +92,8 @@ app.layout = html.Div([
             dbc.Row([
                 dcc.DatePickerRange(
                     id='date-picker-range',
-                    start_date=flight_df['Date'].min(),
-                    end_date=flight_df['Date'].max(),
+                    start_date=reservation_df['From'].min(),
+                    end_date=reservation_df['To'].max(),
                     display_format='DD.MM.YYYY'
                 ),
             ], align='center'),
@@ -97,7 +109,8 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    dcc.RadioItems(col_flight_df, 'YY-MM-DD', inline=True, id='dateformat_dropdown_x')
+                    dcc.RadioItems(col_flight_df, 'YY-MM-DD', inline=True, id='dateformat_dropdown_x',
+                                   labelStyle = {'cursor': 'pointer', 'margin-left':'20px'})
                 ], width=12)
             ], align='center'),
             dbc.Row([
@@ -121,11 +134,13 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    dcc.RadioItems(col_agg_pilot_df, 'Total_Flight_Time', inline=True, id='pilot_dropdown_y'),
+                    dcc.RadioItems(col_agg_pilot_df, 'Total_Flight_Time', inline=True, id='pilot_dropdown_y',
+                                   labelStyle = {'cursor': 'pointer', 'margin-left':'20px'}),
                     dcc.Graph(id='main_pilot_plot')
                 ], width=8),
                 dbc.Col([
-                    dcc.RadioItems(col_agg_instructor_df, 'Total_Duration', inline=True, id='instructor_dropdown_y'),
+                    dcc.RadioItems(col_agg_instructor_df, 'Total_Duration', inline=True, id='instructor_dropdown_y',
+                                   labelStyle = {'cursor': 'pointer', 'margin-left':'20px'}),
                     dcc.Graph(id='main_instructor_plot')
                 ], width=4)
             ], align='center'),
@@ -138,7 +153,8 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    dcc.RadioItems(col_agg_aircraft_df, 'Total_Flight_Time', inline=True, id='aircraft_dropdown_y')
+                    dcc.RadioItems(col_agg_aircraft_df, 'Total_Flight_Time', inline=True, id='aircraft_dropdown_y',
+                                   labelStyle = {'cursor': 'pointer', 'margin-left':'20px'})
                 ], width=12)
             ], align='center'),
             dbc.Row([
@@ -169,6 +185,27 @@ app.layout = html.Div([
                 dbc.Col([
                     dcc.Graph(id='member_location_plot')
                 ], width=4)
+            ], align='center'),
+            html.Br(),
+            dbc.Row([
+                dbc.Col([
+                    lo.drawcenterText('Reservation')
+                ], width=12),
+            ], align='center'),
+            html.Br(),
+                dbc.Row([
+                dbc.Col([
+                    dcc.RadioItems(col_agg_flight_res_df, 'Accepted_Reservation_Duration', inline=True, id='flight_res_radioitem',
+                                   labelStyle = {'cursor': 'pointer', 'margin-left':'20px'})
+                ], width=12)
+            ], align='center'),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Graph(id='main_reservation_plot')
+                ], width=4),
+                dbc.Col([
+                    dcc.Graph(id='res_per_pilot_plot')
+                ], width=8)
             ], align='center'),
         ]), color=layout_color
     )
@@ -202,7 +239,7 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
         color_continuous_scale=color_scale
     )
     main_flightlog_plot.update_layout(margin=plot_margin,
-                                      paper_bgcolor='rgba(0,0,0,0)')
+                                      paper_bgcolor=paper_bgcolor)
 
     # Filter Instructorlog data based on the selected date range
     filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
@@ -220,7 +257,7 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
     )
 
     main_instructorlog_plot.update_layout(margin=plot_margin,
-                                          paper_bgcolor='rgba(0,0,0,0)')
+                                          paper_bgcolor=paper_bgcolor)
 
     return main_flightlog_plot, main_instructorlog_plot
 
@@ -249,7 +286,7 @@ def update_pilot_graphs(start_date, end_date, pilot_dropdown_y_value):
         color_continuous_scale=color_scale
     )
     main_pilot_plot.update_layout(margin=plot_margin,
-                                  paper_bgcolor='rgba(0,0,0,0)')
+                                  paper_bgcolor=paper_bgcolor)
 
     return [main_pilot_plot]
 
@@ -277,7 +314,7 @@ def update_instructor_graph(start_date, end_date, instructor_dropdown_y):
         color_continuous_scale=color_scale
     )
     main_instructor_plot.update_layout(margin=plot_margin,
-                                       paper_bgcolor='rgba(0,0,0,0)')
+                                       paper_bgcolor=paper_bgcolor)
 
     return [main_instructor_plot]
 
@@ -306,7 +343,7 @@ def update_aircraft_graph(start_date, end_date, aircraft_dropdown_y):
         color_continuous_scale=color_scale
     )
     aircraft_plot.update_layout(margin=plot_margin,
-                                paper_bgcolor='rgba(0,0,0,0)')
+                                paper_bgcolor=paper_bgcolor)
 
     # Create Aircraft Table
     aircraft_table = agg_aircraft_df.to_dict('records')  # Convert DataFrame to list of dictionaries
@@ -325,13 +362,73 @@ def update_member_graph(start_date, end_date):
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-    main_member_plot = plots.member_histogram(member_df)
+    main_member_plot = plots.member_histogram(member_df,
+                                              template=plot_template,
+                                              color_discrete_sequence=discrete_teal,
+                                              margin=plot_margin,
+                                              paper_bgcolor=paper_bgcolor)
 
-    member_join_plot = plots.memeber_join_linegraph(member_df)
+    member_join_plot = plots.memeber_join_linegraph(member_df,
+                                              template=plot_template,
+                                              color_discrete_sequence=discrete_teal,
+                                              margin=plot_margin,
+                                              paper_bgcolor=paper_bgcolor)
 
-    member_location_plot = plots.member_location_graph(member_df, gem_gdf)
+    member_location_plot = plots.member_location_graph(member_df, gem_gdf,
+                                              template=plot_template,
+                                              color_continuous_scale=discrete_teal,
+                                              margin=plot_margin,
+                                              paper_bgcolor=paper_bgcolor)
 
     return main_member_plot, member_join_plot, member_location_plot
+
+@app.callback(
+    [Output('main_reservation_plot', 'figure'),
+     Output('res_per_pilot_plot', 'figure')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('flight_res_radioitem', 'value')]
+)
+def update_reservation_graph(start_date, end_date, flight_res_radioitem):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    # Filter Reservation data based on the selected date range
+    filtered_reservation_df = dp.date_select_df(reservation_df, start_date, end_date, date_column='From')
+    reservation_sum = filtered_reservation_df[filtered_reservation_df['Deleted']]['Deletion Reason'].value_counts()
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
+    # Filter Flightlog data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
+
+
+    # Create Reservation Plot
+    main_reservation_plot = px.pie(
+        reservation_sum,
+        names=reservation_sum.index,
+        values='count',
+        template=plot_template,
+        color_discrete_sequence=discrete_teal
+    )
+    main_reservation_plot.update_layout(margin=plot_margin,
+                                paper_bgcolor=paper_bgcolor)
+
+    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df, sort_column=flight_res_radioitem)
+
+    res_per_pilot_plot = px.bar(
+        agg_flight_res_df,
+        'Pilot',
+        flight_res_radioitem,
+        color=flight_res_radioitem,
+        template=plot_template,
+        color_continuous_scale=color_scale
+    )
+    res_per_pilot_plot.update_layout(margin=plot_margin,
+                                  paper_bgcolor=paper_bgcolor)
+
+
+    return main_reservation_plot, res_per_pilot_plot
 
 if __name__ == '__main__':
     # Run app

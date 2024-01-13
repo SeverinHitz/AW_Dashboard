@@ -7,7 +7,7 @@ import pandas as pd
 
 import data_preparation as dp
 
-def sankey_diagram(df):
+def sankey_diagram(df, template):
     # Select Columns
     df = df[['Departure Location', 'Arrival Location']]
     df['Departure Location'] = 'From ' + df['Departure Location']
@@ -61,26 +61,26 @@ def sankey_diagram(df):
             color=agg_df['Color']
         ))])
 
-    fig.update_layout(title_text="Flight Route Sankey Diagram", font_size=10, template='plotly_dark')
+    fig.update_layout(title_text="Flight Route Sankey Diagram", font_size=10, template=template)
     fig.update_layout(margin=dict(l=5, r=5, t=5, b=5))
 
     return fig
 
-def member_histogram(df):
+def member_histogram(df, template, color_discrete_sequence, margin, paper_bgcolor):
 
     # Create the bar chart with a color scale
     fig = px.histogram(
         df,
         x='Age',
-        template='plotly_dark',
-        color_discrete_sequence=['teal']
+        template=template,
+        color_discrete_sequence=color_discrete_sequence
     )
-    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
-                      paper_bgcolor='rgba(0,0,0,0)')
+    fig.update_layout(margin=margin,
+                      paper_bgcolor=paper_bgcolor)
 
     return fig
 
-def memeber_join_linegraph(df):
+def memeber_join_linegraph(df, template, color_discrete_sequence, margin, paper_bgcolor):
     # Calculate the mean age and number of new members for each year from 2015 to 2023
     plot_df = df.groupby('Joining Year').agg({'Age at Joining': 'mean', 'AirManager ID': 'count'}).loc[
                           2015:]
@@ -93,12 +93,20 @@ def memeber_join_linegraph(df):
 
     # Add traces
     fig.add_trace(
-        go.Line(x=plot_df.index, y=plot_df['Mean Age'], name="Mean Age"),
+        go.Scatter(x=plot_df.index,
+                   y=plot_df['Mean Age'],
+                   mode="lines",
+                   name="Mean Age",
+                   line=dict(color=color_discrete_sequence[0])),
         secondary_y=False,
     )
 
     fig.add_trace(
-        go.Line(x=plot_df.index, y=plot_df['Number of New Members'], name="Number of New Members"),
+        go.Scatter(x=plot_df.index,
+                   y=plot_df['Number of New Members'],
+                   mode="lines",
+                   name="# New Members",
+                   line=dict(color=color_discrete_sequence[5])),
         secondary_y=True,
     )
 
@@ -107,13 +115,13 @@ def memeber_join_linegraph(df):
     fig.update_yaxes(title_text="Number of New Members", secondary_y=True)
 
     # Set the template to 'plotly_dark'
-    fig.update_layout(template='plotly_dark')
-    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
-                      paper_bgcolor='rgba(0,0,0,0)')
+    fig.update_layout(template=template)
+    fig.update_layout(margin=margin,
+                      paper_bgcolor=paper_bgcolor)
 
     return fig
 
-def member_location_graph(df, gdf):
+def member_location_graph(df, gdf, template, color_continuous_scale, margin, paper_bgcolor):
     df = df.groupby('PLZ').size().reset_index(name='count')
     # Merge 'agg_mem_df' with 'gem_gdf' while preserving the 'count' column
     df = pd.merge(df, gdf, on='PLZ')
@@ -126,15 +134,15 @@ def member_location_graph(df, gdf):
                                geojson=gdf.geometry,
                                locations=gdf.index,
                                color='count',
-                               color_continuous_scale='teal',
+                               color_continuous_scale=color_continuous_scale,
                                opacity=0.8,
                                center={"lat": 47.23848, "lon": 8.51514},
                                mapbox_style='open-street-map',
                                zoom=8.5)
 
     fig.update_geos(fitbounds="locations", visible=False)
-    fig.update_layout(margin=dict(l=5, r=5, t=5, b=5),
-                      paper_bgcolor='rgba(0,0,0,0)')
+    fig.update_layout(margin=margin,
+                      paper_bgcolor=paper_bgcolor)
 
     return fig
 
