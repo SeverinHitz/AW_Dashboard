@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import geopandas as gpd
 from datetime import datetime
+from icecream import ic
 
 # Disable the SettingWithCopyWarning
 pd.options.mode.chained_assignment = None
@@ -66,6 +67,9 @@ def data_cleanup_flightlog(df):
     # Set Time as Timedelta
     df['Flight Time'] = pd.to_timedelta(df['Flight Time'].astype(str))
     df['Block Time'] = pd.to_timedelta(df['Block Time'].astype(str))
+
+    df.sort_values('Date', ascending=False, inplace=True)
+    df.reset_index(inplace=True, drop=True)
     return df
 
 def data_cleanup_instructorlog(df):
@@ -94,6 +98,9 @@ def data_cleanup_instructorlog(df):
 
     # Set Time as Timedelta
     df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
+
+    df.sort_values('Date', ascending=False, inplace=True)
+    df.reset_index(inplace=True, drop=True)
     return df
 
 def data_cleanup_member(df):
@@ -119,16 +126,101 @@ def data_cleanup_member(df):
 
     df = df[df['Membership'] == 'Aktiv']
 
+    df.sort_values('First Name', ascending=False, inplace=True)
+    df.reset_index(inplace=True, drop=True)
+
     return df
 
+def data_cleanup_reservation(df):
+    # Select Columns
+    df = df[['Von',
+           'Bis',
+           'Vorname',
+           'Name',
+           'Flugzeug',
+           'Typ',
+           'Gelöscht',
+           'Löschgrund',
+           'Geplante Flugzeit (hh:mm)']]
+
+    new_column = {
+        'Von': 'From',
+        'Bis': 'To',
+        'Vorname': 'First Name',
+        'Name': 'Last Name',
+        'Flugzeug': 'Airplane',
+        'Typ': 'Type',
+        'Gelöscht': 'Deleted',
+        'Löschgrund': 'Deletion Reason',
+        'Geplante Flugzeit (hh:mm)': 'Planned Flight Time'
+    }
+    df = df.rename(columns=new_column)
+    # Pilot Full Name as Column
+    df['Pilot'] = df['First Name'] + ' ' + df['Last Name']
+    # Change Ja Nein to True False
+    df['Deleted'] = df['Deleted'].map({'Ja': True, 'Nein': False})
+
+    # Set Time as Timedelta
+    df['Duration'] = df['To'] - df['From']
+    df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
+
+    # Simplify Deletion Reason
+    # Define your lists
+    weather = ['wetter', 'wx', 'wind', 'regen', 'böen', 'schnee', 'nebel', 'sturm', 'meteo', 'fog', 'bise',
+               'turbulenzen', 'unsuitable', 'forecast', 'prognostiziert', 'conditions', 'cloud', 'stormy', 'ifr', 'imc',
+               'snow', 'visibility']
+    pax = ['passagier', 'pax', 'passenger', 'kunden', 'client', 'gäste', 'guest', 'fahrgast', 'fahrgäste', 'kunde']
+    scheduling = ['termin', 'appointment', 'meeting', 'verpflichtung', 'commitment', 'geschäftstermin',
+                  'business appointment', 'plan', 'schedule', 'verabredung', 'rendezvous', 'umplanung', 'reschedule',
+                  'verschieben']
+    sickness = ['krank', 'ill', 'krankheit', 'sickness', 'unwell', 'gesundheitlich', 'health', 'erkrankt', 'illness',
+                'nicht fit', 'unfit', 'covid', 'erkältet']
+
+    # Create a dictionary for categorization
+    categories_dict = {
+        'weather': weather,
+        'pax': pax,
+        'scheduling': scheduling,
+        'sickness': sickness
+    }
+
+    # Create a function to categorize the reason (case-insensitive)
+    def categorize_reason(reason):
+        reason_lower = reason.lower()
+        for category, words in categories_dict.items():
+            if any(word in reason_lower for word in words):
+                return category
+        if reason_lower == 'nan':
+            return 'None'
+        if reason_lower:
+            return 'Other'
+        return None
+
+
+    # Convert the 'Deletion Reason' column to lowercase after converting to string
+    df['Deletion Reason'] = df['Deletion Reason'].astype(str).str.lower()
+
+    # Replace NaN values with 'NaN' string for categorization
+    df['Deletion Reason'] = df['Deletion Reason'].replace('nan', 'NaN')
+
+    # Apply the categorization function to the 'Deletion Reason' column
+    df['Deletion Reason'] = df['Deletion Reason'].apply(categorize_reason)
+
+    # Set Time as Timedelta
+    df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
+
+    df.sort_values('From', ascending=False, inplace=True)
+    df.reset_index(inplace=True, drop=True)
+
+    return df
 
 def data_cleanup_gem_df(gdf):
     gdf = gdf[['PLZ', 'geometry']]
 
     return gdf
 
-def date_select_df(df, start_date, end_date):
-    df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+def date_select_df(df, start_date, end_date, date_column='Date'):
+    df = df[(df[date_column] >= start_date) & (df[date_column] <= end_date)]
     return df
 
 def pilot_aggregation(df, sort_column='Total_Flight_Time'):
@@ -202,30 +294,54 @@ def member_aggregation(df):
 
     return df
 
+def reservation_aggregation(df):
+    # Create a new column 'Accepted' based on the condition
+    df['Accepted'] = df.apply(lambda row: row['Duration'] if not row['Deleted'] else pd.Timedelta(0), axis=1)
+
+    agg_df = df.groupby('Pilot').agg(
+        Total_Reservation_Duration=pd.NamedAgg(column='Duration', aggfunc='sum'),
+        Number_of_Reservations=pd.NamedAgg(column='Duration', aggfunc='count'),
+        Number_of_Deletions=pd.NamedAgg(column='Deleted', aggfunc='sum'),
+        Accepted_Reservation_Duration=pd.NamedAgg(column='Accepted', aggfunc='sum')
+    )
+    agg_df['Ratio_Del'] = agg_df['Number_of_Deletions'] / agg_df['Number_of_Reservations']
+    agg_df['Total_Reservation_Duration'] = agg_df['Total_Reservation_Duration'].dt.total_seconds() / 3600
+    agg_df['Accepted_Reservation_Duration'] = agg_df['Accepted_Reservation_Duration'].dt.total_seconds() / 3600
+
+    agg_df.sort_values('Total_Reservation_Duration', ascending=False, inplace=True)
+    agg_df.reset_index(inplace=True)
+    return agg_df
+
+def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Reservation_Duration'):
+
+
+    merged_df = agg_res_df.merge(agg_pilot_df, on='Pilot', how='inner')
+
+    merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
+
+    merged_df.sort_values(sort_column, ascending=False, inplace=True)
+    merged_df.reset_index(inplace=True, drop=True)
+    return merged_df
+
+
 if __name__ == '__main__':
-    flightlog_file = '231228_flightlog.xlsx'
-    instructorlog_file = '231228_instructorlog.xlsx'
+    flightlog_file = '240113_flightlog.xlsx'
+    instructorlog_file = '240113_instructorlog.xlsx'
     member_path = '231230_members.xlsx'
+    reservationlog_file = '240113_reservationlog.xlsx'
 
     # Import Dataframes
     flight_df = load_data(flightlog_file)
     instructor_df = load_data(instructorlog_file)
     member_df = load_data(member_path)
+    reservation_df = load_data(reservationlog_file)
 
     flight_df = data_cleanup_flightlog(flight_df)
     instructor_df = data_cleanup_instructorlog(instructor_df)
     member_df = data_cleanup_member(member_df)
-    member_df = member_aggregation(member_df)
-    print(list(member_df))
+    reservation_df = data_cleanup_reservation(reservation_df)
+    ic(reservation_df[reservation_df['Deleted']]['Deletion Reason'].value_counts())
 
-    # Geographical data
-    # Path
-    gemeinde_path = 'PLZO_PLZ.shp'
-    # Import
-    gem_gdf = load_geodata(gemeinde_path)
-    # Cleanup
-    gem_gdf = data_cleanup_gem_df(gem_gdf)
-    print(gem_gdf)
 
     start_date = flight_df['Date'].min()
     end_date = flight_df['Date'].max()
