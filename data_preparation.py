@@ -168,20 +168,22 @@ def data_cleanup_reservation(df):
     # Define your lists
     weather = ['wetter', 'wx', 'wind', 'regen', 'böen', 'schnee', 'nebel', 'sturm', 'meteo', 'fog', 'bise',
                'turbulenzen', 'unsuitable', 'forecast', 'prognostiziert', 'conditions', 'cloud', 'stormy', 'ifr', 'imc',
-               'snow', 'visibility']
+               'snow', 'visibility', 'näfu']
     pax = ['passagier', 'pax', 'passenger', 'kunden', 'client', 'gäste', 'guest', 'fahrgast', 'fahrgäste', 'kunde']
     scheduling = ['termin', 'appointment', 'meeting', 'verpflichtung', 'commitment', 'geschäftstermin',
                   'business appointment', 'plan', 'schedule', 'verabredung', 'rendezvous', 'umplanung', 'reschedule',
-                  'verschieben']
+                  'verschieben', 'terminkonflikt', 'planänderung']
     sickness = ['krank', 'ill', 'krankheit', 'sickness', 'unwell', 'gesundheitlich', 'health', 'erkrankt', 'illness',
-                'nicht fit', 'unfit', 'covid', 'erkältet']
+                'nicht fit', 'unfit', 'covid', 'erkältet', 'fit', 'medical', 'sick']
+    backup = ['backup', 'reserve', 'reserveflug']
 
     # Create a dictionary for categorization
     categories_dict = {
-        'weather': weather,
-        'pax': pax,
-        'scheduling': scheduling,
-        'sickness': sickness
+        'Weather': weather,
+        'Pax': pax,
+        'Scheduling': scheduling,
+        'Sickness': sickness,
+        'Backup': backup
     }
 
     # Create a function to categorize the reason (case-insensitive)
@@ -300,11 +302,11 @@ def reservation_aggregation(df):
 
     agg_df = df.groupby('Pilot').agg(
         Total_Reservation_Duration=pd.NamedAgg(column='Duration', aggfunc='sum'),
-        Number_of_Reservations=pd.NamedAgg(column='Duration', aggfunc='count'),
-        Number_of_Deletions=pd.NamedAgg(column='Deleted', aggfunc='sum'),
+        Reservations=pd.NamedAgg(column='Duration', aggfunc='count'),
+        Cancelled=pd.NamedAgg(column='Deleted', aggfunc='sum'),
         Accepted_Reservation_Duration=pd.NamedAgg(column='Accepted', aggfunc='sum')
     )
-    agg_df['Ratio_Del'] = agg_df['Number_of_Deletions'] / agg_df['Number_of_Reservations']
+    agg_df['Ratio_Cancelled'] = agg_df['Cancelled'] / agg_df['Reservations']
     agg_df['Total_Reservation_Duration'] = agg_df['Total_Reservation_Duration'].dt.total_seconds() / 3600
     agg_df['Accepted_Reservation_Duration'] = agg_df['Accepted_Reservation_Duration'].dt.total_seconds() / 3600
 
@@ -314,10 +316,13 @@ def reservation_aggregation(df):
 
 def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Reservation_Duration'):
 
+    agg_pilot_df = agg_pilot_df[['Pilot', 'Total_Flight_Time', 'Number_of_Flights']]
 
     merged_df = agg_res_df.merge(agg_pilot_df, on='Pilot', how='inner')
 
     merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
+    merged_df['Flight_per_Reservation'] = merged_df['Number_of_Flights'] / merged_df[
+        'Accepted_Reservation_Duration']
 
     merged_df.sort_values(sort_column, ascending=False, inplace=True)
     merged_df.reset_index(inplace=True, drop=True)
