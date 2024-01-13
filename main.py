@@ -376,7 +376,7 @@ def update_member_graph(start_date, end_date):
 
     member_location_plot = plots.member_location_graph(member_df, gem_gdf,
                                               template=plot_template,
-                                              color_continuous_scale=discrete_teal,
+                                              color_continuous_scale=color_scale,
                                               margin=plot_margin,
                                               paper_bgcolor=paper_bgcolor)
 
