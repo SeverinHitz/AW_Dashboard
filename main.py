@@ -20,9 +20,9 @@ import layout as lo
 import plot as plots
 
 # Layout
-stylesheet = dbc.themes.SOLAR #
-layout_color = 'dark'
-plot_template = 'plotly_dark'
+stylesheet = dbc.themes.SLATE #YETI
+layout_color = 'dark' #None
+plot_template = 'plotly_dark' #'plotly_white'
 color_scale = 'teal'
 plot_margin = dict(l=5, r=5, t=15, b=5)
 paper_bgcolor = 'rgba(0,0,0,0)'
@@ -90,26 +90,33 @@ app.layout = html.Div([
     dbc.Card(
         dbc.CardBody([
             dbc.Row([
+                dbc.Col([
+                    html.H4('Select Date')
+                ]),
+                dbc.Col([
                 dcc.DatePickerRange(
                     id='date-picker-range',
                     start_date=reservation_df['From'].min(),
                     end_date=reservation_df['To'].max(),
                     display_format='DD.MM.YYYY'
                 ),
-            ], align='center'),
+            ])
+            ]),
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    lo.drawcenterText('Flightlog')
+                    html.H2('Flightlog'),
+                    html.Hr()
                 ], width=8),
                 dbc.Col([
-                    lo.drawcenterText('Instructorlog')
+                    html.H2('Instructorlog'),
+                    html.Hr()
                 ], width=4)
             ], align='center'),
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    dcc.RadioItems(col_flight_df, 'YY-MM-DD', inline=True, id='dateformat_dropdown_x',
+                    dcc.RadioItems(col_flight_df, 'YY-MM', inline=True, id='dateformat_dropdown_x',
                                    labelStyle = {'cursor': 'pointer', 'margin-left':'20px'})
                 ], width=12)
             ], align='center'),
@@ -125,10 +132,12 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    lo.drawcenterText('Pilots')
+                    html.H2('Pilots'),
+                    html.Hr()
                 ], width=8),
                 dbc.Col([
-                    lo.drawcenterText('Instructors')
+                    html.H2('Instructors'),
+                    html.Hr()
                 ], width=4)
             ], align='center'),
             html.Br(),
@@ -147,7 +156,8 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    lo.drawcenterText('Aircrafts')
+                    html.H2('Aircrafts'),
+                    html.Hr()
                 ], width=12),
             ], align='center'),
             html.Br(),
@@ -171,7 +181,8 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    lo.drawcenterText('Members')
+                    html.H2('Members'),
+                    html.Hr()
                 ], width=12),
             ], align='center'),
             html.Br(),
@@ -189,7 +200,8 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    lo.drawcenterText('Reservation')
+                    html.H2('Reservation'),
+                    html.Hr()
                 ], width=12),
             ], align='center'),
             html.Br(),
@@ -238,8 +250,10 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
         template=plot_template,
         color_continuous_scale=color_scale
     )
+    main_flightlog_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     main_flightlog_plot.update_layout(margin=plot_margin,
-                                      paper_bgcolor=paper_bgcolor)
+                                      paper_bgcolor=paper_bgcolor,
+                                          plot_bgcolor=paper_bgcolor)
 
     # Filter Instructorlog data based on the selected date range
     filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
@@ -257,7 +271,8 @@ def update_timeline_graphs(start_date, end_date, dateformat_dropdown_x_value):
     )
 
     main_instructorlog_plot.update_layout(margin=plot_margin,
-                                          paper_bgcolor=paper_bgcolor)
+                                          paper_bgcolor=paper_bgcolor,
+                                          plot_bgcolor=paper_bgcolor)
 
     return main_flightlog_plot, main_instructorlog_plot
 
