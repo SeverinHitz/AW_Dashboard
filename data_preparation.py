@@ -298,14 +298,15 @@ def member_aggregation(df):
 
 def reservation_aggregation(df):
     # Create a new column 'Accepted' based on the condition
-    df['Accepted'] = df.apply(lambda row: row['Duration'] if not row['Deleted'] else pd.Timedelta(0), axis=1)
+    df['Accepted_Duration'] = df.apply(lambda row: row['Duration'] if not row['Deleted'] else pd.Timedelta(0), axis=1)
 
     agg_df = df.groupby('Pilot').agg(
         Total_Reservation_Duration=pd.NamedAgg(column='Duration', aggfunc='sum'),
         Reservations=pd.NamedAgg(column='Duration', aggfunc='count'),
         Cancelled=pd.NamedAgg(column='Deleted', aggfunc='sum'),
-        Accepted_Reservation_Duration=pd.NamedAgg(column='Accepted', aggfunc='sum')
+        Accepted_Reservation_Duration=pd.NamedAgg(column='Accepted_Duration', aggfunc='sum')
     )
+    agg_df['Accepted'] = agg_df['Reservations'] - agg_df['Cancelled']
     agg_df['Ratio_Cancelled'] = agg_df['Cancelled'] / agg_df['Reservations']
     agg_df['Total_Reservation_Duration'] = agg_df['Total_Reservation_Duration'].dt.total_seconds() / 3600
     agg_df['Accepted_Reservation_Duration'] = agg_df['Accepted_Reservation_Duration'].dt.total_seconds() / 3600
@@ -322,7 +323,7 @@ def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Res
 
     merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
     merged_df['Flight_per_Reservation'] = merged_df['Number_of_Flights'] / merged_df[
-        'Accepted_Reservation_Duration']
+        'Accepted']
 
     merged_df.sort_values(sort_column, ascending=False, inplace=True)
     merged_df.reset_index(inplace=True, drop=True)
