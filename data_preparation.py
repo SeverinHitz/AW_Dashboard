@@ -317,16 +317,60 @@ def reservation_aggregation(df):
 
 def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Reservation_Duration'):
 
-    agg_pilot_df = agg_pilot_df[['Pilot', 'Total_Flight_Time', 'Number_of_Flights']]
-
     merged_df = agg_res_df.merge(agg_pilot_df, on='Pilot', how='inner')
 
     merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
     merged_df['Flight_per_Reservation'] = merged_df['Number_of_Flights'] / merged_df[
         'Accepted']
+    merged_df['Flight_Block_Ratio'] = ic(merged_df['Total_Flight_Time'] / merged_df['Total_Block_Time'])
 
     merged_df.sort_values(sort_column, ascending=False, inplace=True)
     merged_df.reset_index(inplace=True, drop=True)
+    return merged_df
+
+################ Specific Functions ################################################################################
+
+##### Main Page
+
+def sum_time_per_Column(df, select_column, sum_column, acf=None):
+    if select_column:
+        sum_flight_time = df[df[select_column] == acf][sum_column].sum()
+    else:
+        sum_flight_time = df[sum_column].sum()
+    total_minutes = sum_flight_time.total_seconds() // 60
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    formatted_time = f'{int(hours):02d}:{int(minutes):02d}'
+    sum_flight_time_str = f'{formatted_time}h'
+    return sum_flight_time_str
+
+
+def agg_by_Day(df, date_column, group_column, agg_column, out_column):
+    # Aggregate flight time for each aircraft on each date
+    agg_df = df.groupby([group_column, date_column]).agg(
+        sum=pd.NamedAgg(column=agg_column, aggfunc='sum'))
+    agg_df = agg_df.rename(columns={'sum': out_column})
+    # Reset the index to have a flat DataFrame
+    agg_df.reset_index(inplace=True)
+
+    # Convert the date_column column to datetime
+    agg_df[date_column] = pd.to_datetime(agg_df[date_column])
+
+    # Define the date range you're interested in
+    date_range = pd.date_range(start=min(agg_df[date_column]), end=max(agg_df[date_column]))
+
+    # Create a MultiIndex DataFrame with every date and aircraft combination
+    multi_index = pd.MultiIndex.from_product([date_range, agg_df[group_column].unique()], names=[date_column, group_column])
+    complete_df = pd.DataFrame(index=multi_index)
+
+    # Merge the aggregated DataFrame with the complete DataFrame and fill NaN values with 0
+    merged_df = complete_df.merge(agg_df, left_index=True, right_on=[date_column, group_column], how='left').fillna(
+        {out_column: 0})
+
+    merged_df[out_column] = pd.to_timedelta(merged_df[out_column].astype(str))
+
+    merged_df[out_column] = merged_df[out_column].dt.total_seconds() / 3600
+
     return merged_df
 
 
