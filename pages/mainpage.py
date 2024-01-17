@@ -22,7 +22,7 @@ paper_bgcolor = 'rgba(0,0,0,0)'
 plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
 discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
 grid_color = 'lightgrey'
-legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01)
+legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.2)')
 
 # Path
 flightlog_file = '240113_flightlog.xlsx'
@@ -225,9 +225,9 @@ def update_flight_graphs(start_date, end_date):
     )
     main_flight_plot.update_yaxes(showgrid=False)
     main_flight_plot.update_layout(margin=plot_margin,
-                                      paper_bgcolor=paper_bgcolor,
-                                      plot_bgcolor=paper_bgcolor,
-                                       legend=legend)
+                                   paper_bgcolor=paper_bgcolor,
+                                   plot_bgcolor=paper_bgcolor,
+                                   legend=legend)
 
     return [main_flight_plot]
 
@@ -259,8 +259,8 @@ def update_flight_graphs(start_date, end_date):
     )
     main_instructor_plot.update_yaxes(showgrid=False)
     main_instructor_plot.update_layout(margin=plot_margin,
-                                      paper_bgcolor=paper_bgcolor,
-                                      plot_bgcolor=paper_bgcolor,
+                                       paper_bgcolor=paper_bgcolor,
+                                       plot_bgcolor=paper_bgcolor,
                                        legend=legend)
 
     return [main_instructor_plot]

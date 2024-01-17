@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Styling">
-      <change afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/analytics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/finance.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/mainpage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/pilots.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Multi Page, Basics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/mainpage.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/mainpage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/pilots.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilots.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,22 +54,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Run",
-    "Python.data_preparation.executor": "Run",
-    "Python.html_functions.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.mainpage.executor": "Run",
-    "Python.pilots.executor": "Run",
-    "Python.plot.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Multi-Page",
-    "ignore.virus.scanning.warn.message": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_preparation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.html_functions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mainpage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pilots.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plot.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Multi-Page&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard&quot;
   }
-}]]></component>
-  <component name="RunManager">
+}</component>
+  <component name="RunManager" selected="Python.app">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="AW_Dashboard" />
       <option name="ENV_FILES" value="" />
@@ -89,6 +86,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python">
+      <module name="AW_Dashboard" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="AW_Data_Analysis" />
+      <option name="WORKING_DIRECTORY" value="O:\OneDrive\Fliegen\Albis Wings VS\Analytics\Dashboard\AW_Dashboard" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -119,6 +139,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.app" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -256,7 +280,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705336714309</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Multi Page, Basics">
+      <option name="closed" value="true" />
+      <created>1705395635892</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1705395635892</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -293,6 +325,7 @@
     <MESSAGE value="Reservation Section added" />
     <MESSAGE value="Cleanup after adding Reservation" />
     <MESSAGE value="Styling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Styling" />
+    <MESSAGE value="Multi Page, Basics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Multi Page, Basics" />
   </component>
 </project>

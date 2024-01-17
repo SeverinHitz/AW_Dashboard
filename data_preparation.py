@@ -166,16 +166,20 @@ def data_cleanup_reservation(df):
 
     # Simplify Deletion Reason
     # Define your lists
-    weather = ['wetter', 'wx', 'wind', 'regen', 'böen', 'schnee', 'nebel', 'sturm', 'meteo', 'fog', 'bise',
+    weather = ['wetter', 'weather', 'wx', 'wind', 'regen', 'böen', 'schnee', 'nebel', 'sturm', 'meteo', 'fog', 'bise',
                'turbulenzen', 'unsuitable', 'forecast', 'prognostiziert', 'conditions', 'cloud', 'stormy', 'ifr', 'imc',
-               'snow', 'visibility', 'näfu']
+               'snow', 'visibility', 'näfu', 'gewitter', 'met', 'icy', 'icing']
     pax = ['passagier', 'pax', 'passenger', 'kunden', 'client', 'gäste', 'guest', 'fahrgast', 'fahrgäste', 'kunde']
     scheduling = ['termin', 'appointment', 'meeting', 'verpflichtung', 'commitment', 'geschäftstermin',
                   'business appointment', 'plan', 'schedule', 'verabredung', 'rendezvous', 'umplanung', 'reschedule',
-                  'verschieben', 'terminkonflikt', 'planänderung']
+                  'verschieben', 'terminkonflikt', 'planänderung', 'unfall']
     sickness = ['krank', 'ill', 'krankheit', 'sickness', 'unwell', 'gesundheitlich', 'health', 'erkrankt', 'illness',
-                'nicht fit', 'unfit', 'covid', 'erkältet', 'fit', 'medical', 'sick']
-    backup = ['backup', 'reserve', 'reserveflug']
+                'nicht fit', 'unfit', 'covid', 'erkältet', 'fit', 'medical', 'sick', 'gesundheit']
+    backup = ['backup', 'reserve', 'reserveflug', 'back up']
+    maintenance = ['maintenance', 'werkstatt', 'acft', 'flugzeugwechsel', 'reparatur', 'blockiert']
+    fi = ['fi', 'fluglehrer', 'instructor']
+    airport = ['airport', 'flugplatz', 'flugtag', 'modellflugtag', 'lszn', 'ad']
+    wrong = ['falsch', 'fehler', 'test', 'duplicate', 'doppelt', 'doppelbuchung', 'umgebucht']
 
     # Create a dictionary for categorization
     categories_dict = {
@@ -183,7 +187,11 @@ def data_cleanup_reservation(df):
         'Pax': pax,
         'Scheduling': scheduling,
         'Sickness': sickness,
-        'Backup': backup
+        'Backup': backup,
+        'Maintenance': maintenance,
+        'FI N/A': fi,
+        'Airport N/A': airport,
+        'Wrong/Test': wrong
     }
 
     # Create a function to categorize the reason (case-insensitive)
@@ -322,7 +330,7 @@ def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Res
     merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
     merged_df['Flight_per_Reservation'] = merged_df['Number_of_Flights'] / merged_df[
         'Accepted']
-    merged_df['Flight_Block_Ratio'] = ic(merged_df['Total_Flight_Time'] / merged_df['Total_Block_Time'])
+    merged_df['Flight_Block_Ratio'] = merged_df['Total_Flight_Time'] / merged_df['Total_Block_Time']
 
     merged_df.sort_values(sort_column, ascending=False, inplace=True)
     merged_df.reset_index(inplace=True, drop=True)
@@ -372,6 +380,9 @@ def agg_by_Day(df, date_column, group_column, agg_column, out_column):
     merged_df[out_column] = merged_df[out_column].dt.total_seconds() / 3600
 
     return merged_df
+
+############## Pilots Page
+
 
 
 if __name__ == '__main__':
