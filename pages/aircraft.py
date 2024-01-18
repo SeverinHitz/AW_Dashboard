@@ -10,29 +10,20 @@ import plotly.express as px
 import numpy as np
 # Import other Files
 import data_preparation as dp
-import layout as lo
-import plot as plots
+import globals
 
-# Layout
-stylesheet = dbc.themes.SLATE #YETI
-layout_color = 'dark' #None
-plot_template = 'plotly_dark' #'plotly_white'
-color_scale = 'teal'
-plot_margin = dict(l=5, r=5, t=15, b=5)
-paper_bgcolor = 'rgba(0,0,0,0)'
-plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
-discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
-grid_color = 'lightgrey'
-legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.2)')
+globals.init()
 
 # Path
 flightlog_file = '240113_flightlog.xlsx'
 instructorlog_file = '240113_instructorlog.xlsx'
 reservationlog_file = '240113_reservationlog.xlsx'
+eu_airports_file = 'eu-airports.csv'
 
 # Import Dataframes
 flight_df = dp.load_data(flightlog_file)
 reservation_df = dp.load_data(reservationlog_file)
+eu_airport_gdf = dp.load_eu_airports(eu_airports_file)
 
 # clean up
 flight_df = dp.data_cleanup_flightlog(flight_df)
@@ -42,7 +33,7 @@ pilots = flight_df['Aircraft'].sort_values().unique()
 # Append '⌀ All Pilots' to the array of unique pilot names
 pilots = np.append(pilots, '⌀ All Aircrafts')
 
-dash.register_page(__name__, path='/aircrafts', name='Aircrafts')
+dash.register_page(__name__, path='/aircraft', name='Aircraft')
 
 
 layout = html.Div([
@@ -51,7 +42,7 @@ layout = html.Div([
     ]),
     dbc.Row([
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Aircaft"),
+            dbc.Card([dbc.CardHeader("Aircraft"),
             dbc.CardBody(
             [
                 html.H4("Name", id='Aircraft-Registration'),
@@ -81,7 +72,7 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("⌀ Flt Time"),
                       dbc.CardBody(
                           [
-                              html.H4("XXX %", id='Aircraft-Mean-Flight-Time'),
+                              html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
                           ]
                       )
                       ])
@@ -117,7 +108,7 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Oil p. h."),
             dbc.CardBody(
             [
-                html.H4("XXX mL", id='Oil-per-Hour'),
+                html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
             ]
         )
         ])
@@ -135,7 +126,7 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("# Pilots"),
             dbc.CardBody(
             [
-                html.H4("XXX #", id='Oil-per-Hour'),
+                html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
             ]
         )
         ])
@@ -171,3 +162,177 @@ layout = html.Div([
         ], width=4)
     ], className="g-0")
 ])
+
+@callback(
+    [Output('Aircraft-Registration', 'children'),
+     Output('Aircraft-Flight-Hours', 'children'),
+     Output('Aircraft-Number-of-Flights', 'children'),
+     Output('Aircraft-Mean-Flight-Time', 'children'),
+     Output('Aircraft-Number-of-Landings', 'children'),
+     Output('Aircraft-Number-of-Airports', 'children'),
+     Output('Aircraft-Fuel-per-Hour', 'children'),
+     Output('Aircraft-Oil-per-Hour', 'children'),
+     Output('Aircraft-Instruction-Ratio', 'children'),
+     Output('Aircraft-Number-of-Pilots', 'children')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Aircraft-Dropdown', 'value')]
+)
+def update_pilots_header(start_date, end_date, aircraft_dropdown):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    # Filter Flightlog data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+
+    if aircraft_dropdown == '⌀ All Aircrafts':
+        agg_aircraft_df = agg_aircraft_df.iloc[:, 1:].mean().to_frame().T
+    else:
+        agg_aircraft_df = agg_aircraft_df[agg_aircraft_df['Aircraft']==aircraft_dropdown]
+
+    if len(agg_aircraft_df)==1:
+        # Aircraft-Flight-Hours
+        sum_flight_time = f'{agg_aircraft_df.iloc[0]["Total_Flight_Time"]:.1f} h'
+        # Aircraft-Number-of-Flights
+        sum_flights = f'{agg_aircraft_df.iloc[0]['Number_of_Flights']:.0f} #'
+        # Aircraft-Mean-Flight-Time
+        mean_flight_time = f'{agg_aircraft_df.iloc[0]['Mean_Flight_Time']*60:.0f} min'
+        # Aircraft-Number-of-Landings
+        sum_landings = f'{agg_aircraft_df.iloc[0]['Number_of_Landings']:.0f} #'
+        # Aircraft-Number-of-Airports
+        sum_airports = f'{agg_aircraft_df.iloc[0]['Number_of_Different_Airports']:.0f} #'
+        # Aircraft-Fuel-per-Hour
+        fuel_per_hour = f'{agg_aircraft_df.iloc[0]['Fuel_per_hour']:.1f} L'
+        # Aircraft-Oil-per-Hour
+        oil_per_hour = f'{agg_aircraft_df.iloc[0]['Oil_per_hour']*1000:.0f} mL'
+        # Aircraft-Instruction-Ratio
+        instruction_ratio = f'{agg_aircraft_df.iloc[0]['Instruction_Ratio']*100:.1f} %'
+        # Aircraft-Number-of-Pilots
+        sum_pilots = f'{agg_aircraft_df.iloc[0]['Number_of_Pilots']:.0f} #'
+    else:
+        aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
+            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 10
+
+    return aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
+            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots
+
+
+@callback(
+    [Output('Aircraft-Flight-Time-Plot', 'figure')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Aircraft-Dropdown', 'value')]
+)
+def update_aircraft_graphs(start_date, end_date, aircraft_dropdown):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    # Filter Flightlog data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+    # Create Pilot Plot
+    aircraft_flight_time_plot = px.bar(
+        agg_aircraft_df,
+        'Aircraft',
+        'Total_Flight_Time',
+        color='Total_Flight_Time',
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale
+    )
+    # Update the color of the selected pilot in the bar plot
+    if aircraft_dropdown != '⌀ All Aircrafts':
+        aircraft_flight_time_plot.update_traces(
+            marker=dict(color=[globals.discrete_teal[-1] if aircraft == aircraft_dropdown else globals.discrete_teal[0]\
+                               for aircraft in agg_aircraft_df['Aircraft']]),
+            hovertext=agg_aircraft_df['Total_Flight_Time'],
+            selector=dict(type='bar')
+        )
+    aircraft_flight_time_plot.update(layout_coloraxis_showscale=False)
+    aircraft_flight_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    aircraft_flight_time_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
+
+    return [aircraft_flight_time_plot]
+
+
+@callback(
+    [Output('Aircraft-Flight-Type-Plot', 'figure')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Aircraft-Dropdown', 'value')]
+)
+def update_reservation_graph(start_date, end_date, aircraft_dropdown):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    # Filter Reservation data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    if aircraft_dropdown != '⌀ All Aircrafts':
+        filtered_flight_df = filtered_flight_df[filtered_flight_df['Aircraft']==aircraft_dropdown]
+    flight_type_sum = filtered_flight_df['Flight Type'].value_counts()
+
+    # Create Reservation Plot
+    aircraft_flight_type_plot = px.pie(
+        flight_type_sum,
+        names=flight_type_sum.index,
+        values='count',
+        template=globals.plot_template,
+        color_discrete_sequence=globals.discrete_teal
+    )
+    aircraft_flight_type_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    aircraft_flight_type_plot.update_layout(margin=globals.plot_margin,
+                                       paper_bgcolor=globals.paper_bgcolor,
+                                       plot_bgcolor=globals.paper_bgcolor,
+                                       legend=globals.legend)
+
+    return [aircraft_flight_type_plot]
+
+@callback(
+    [Output('Aircraft-Heatmap', 'figure')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Aircraft-Dropdown', 'value')]
+)
+def update_reservation_graph(start_date, end_date, aircraft_dropdown):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    # Filter Reservation data based on the selected date range
+    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    if aircraft_dropdown != '⌀ All Aircrafts':
+        filtered_flight_df = filtered_flight_df[filtered_flight_df['Aircraft']==aircraft_dropdown]
+    arrival_count = dp.destination_aggregation(filtered_flight_df, eu_airport_gdf)
+
+    # Get Center of Most Flown Airport:
+    max_landing_row = arrival_count.loc[arrival_count['Total_Landings'].idxmax()]
+    # Extract the latitude and longitude values from the row
+    max_latitude = max_landing_row['latitude_deg']
+    max_longitude = max_landing_row['longitude_deg']
+
+
+    # Create Reservation Plot
+    aircraft_flight_type_plot = px.density_mapbox(
+        arrival_count,
+        lat='latitude_deg',
+        lon='longitude_deg',
+        z='log_Total_Landings',
+        hover_name='ident',
+        hover_data='Total_Landings',
+        center={"lat": max_latitude, "lon": max_longitude},
+        zoom=6,
+        radius=50,
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale,
+        mapbox_style="carto-darkmatter"
+    )
+    aircraft_flight_type_plot.update(layout_coloraxis_showscale=False)
+    aircraft_flight_type_plot.update_layout(margin=globals.plot_margin,
+                                            paper_bgcolor=globals.paper_bgcolor,
+                                            plot_bgcolor=globals.paper_bgcolor,
+                                            legend=globals.legend)
+
+    return [aircraft_flight_type_plot]

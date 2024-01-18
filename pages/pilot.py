@@ -10,20 +10,9 @@ import plotly.express as px
 import numpy as np
 # Import other Files
 import data_preparation as dp
-import layout as lo
-import plot as plots
+import globals
 
-# Layout
-stylesheet = dbc.themes.SLATE #YETI
-layout_color = 'dark' #None
-plot_template = 'plotly_dark' #'plotly_white'
-color_scale = 'teal'
-plot_margin = dict(l=5, r=5, t=15, b=5)
-paper_bgcolor = 'rgba(0,0,0,0)'
-plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
-discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
-grid_color = 'lightgrey'
-legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.2)')
+globals.init()
 
 # Path
 flightlog_file = '240113_flightlog.xlsx'
@@ -42,7 +31,7 @@ pilots = flight_df['Pilot'].sort_values().unique()
 # Append '⌀ All Pilots' to the array of unique pilot names
 pilots = np.append(pilots, '⌀ All Pilots')
 
-dash.register_page(__name__, path='/pilots', name='Pilots')
+dash.register_page(__name__, path='/pilot', name='Pilot')
 
 layout = html.Div([
     dbc.Row([
@@ -199,9 +188,9 @@ def update_pilots_header(start_date, end_date, pilot_dropdown):
 
     if len(agg_flight_res_df)==1:
         # Pilots Flight Time
-        sum_flight_time = f'{agg_flight_res_df.iloc[0]["Total_Flight_Time"]:.2f} h'
+        sum_flight_time = f'{agg_flight_res_df.iloc[0]["Total_Flight_Time"]:.1f} h'
         # Pilots Number of Flights
-        sum_block_time = f'{agg_flight_res_df.iloc[0]['Total_Block_Time']:.2f} h'
+        sum_block_time = f'{agg_flight_res_df.iloc[0]['Total_Block_Time']:.1f} h'
         # Pilots Flight to Block Time
         flight_block_ratio = f'{agg_flight_res_df.iloc[0]['Flight_Block_Ratio']*100:.2f} %'
         # Pilots Number of Flights
@@ -244,21 +233,21 @@ def update_pilot_graphs(start_date, end_date, pilot_dropdown):
         'Pilot',
         'Total_Flight_Time',
         color='Total_Flight_Time',
-        template=plot_template,
-        color_continuous_scale=color_scale
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale
     )
     # Update the color of the selected pilot in the bar plot
     if pilot_dropdown != '⌀ All Pilots':
         pilots_flight_time_plot.update_traces(
-            marker=dict(color=[discrete_teal[-1] if pilot == pilot_dropdown else discrete_teal[0] for pilot in agg_pilot_df['Pilot']]),
+            marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0] for pilot in agg_pilot_df['Pilot']]),
             hovertext=agg_pilot_df['Total_Flight_Time'],
             selector=dict(type='bar')
         )
     pilots_flight_time_plot.update(layout_coloraxis_showscale=False)
     pilots_flight_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
-    pilots_flight_time_plot.update_layout(margin=plot_margin,
-                                          paper_bgcolor=paper_bgcolor,
-                                          plot_bgcolor=paper_bgcolor)
+    pilots_flight_time_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
 
     return [pilots_flight_time_plot]
 
@@ -283,14 +272,14 @@ def update_reservation_graph(start_date, end_date, pilot_dropdown):
         reservation_sum,
         names=reservation_sum.index,
         values='count',
-        template=plot_template,
-        color_discrete_sequence=discrete_teal
+        template=globals.plot_template,
+        color_discrete_sequence=globals.discrete_teal
     )
     pilot_cancel_reason_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
-    pilot_cancel_reason_plot.update_layout(margin=plot_margin,
-                                       paper_bgcolor=paper_bgcolor,
-                                       plot_bgcolor=paper_bgcolor,
-                                       legend=legend)
+    pilot_cancel_reason_plot.update_layout(margin=globals.plot_margin,
+                                       paper_bgcolor=globals.paper_bgcolor,
+                                       plot_bgcolor=globals.paper_bgcolor,
+                                       legend=globals.legend)
 
     return [pilot_cancel_reason_plot]
 
