@@ -1,9 +1,7 @@
-import dash
+
 # Import Libraries
 import pandas as pd
-from datetime import timedelta, date
-from dash import Dash, dcc, html, dcc, callback, Input, Output, dash_table
-from dash.dependencies import Input, Output
+from dash import Dash, html, dcc, page_container
 import dash_bootstrap_components as dbc
 from icecream import ic
 import logging
@@ -12,18 +10,9 @@ logging.basicConfig(level=logging.INFO,
 
 # Import other Files
 import data_preparation as dp
-import layout as lo
-import plot as plots
+import globals
 
-# Layout
-stylesheet = dbc.themes.SLATE #YETI
-layout_color = 'dark' #None
-plot_template = 'plotly_dark' #'plotly_white'
-color_scale = 'teal'
-plot_margin = dict(l=5, r=5, t=15, b=5)
-paper_bgcolor = 'rgba(0,0,0,0)'
-plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
-discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
+globals.init()
 
 # Images
 logo_path = "assets/AW_Logo_breit.png"
@@ -40,15 +29,17 @@ start_date = end_date - pd.DateOffset(months=3)
 
 #################################### App Section ##################################################
 
-app =  Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=[stylesheet])
+app =  Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=[globals.stylesheet])
 
 app.layout = html.Div([
     html.Div([
         dbc.NavbarSimple(
             children=[
-                dbc.NavItem(dbc.NavLink('Pilots', href='/pilots')),
-                dbc.NavItem(dbc.NavLink('Aircraft', href='/aircrafts')),
+                dbc.NavItem(dbc.NavLink('Overview', href='/')),
+                dbc.NavItem(dbc.NavLink('Pilot', href='/pilot')),
+                dbc.NavItem(dbc.NavLink('Aircraft', href='/aircraft')),
                 dbc.NavItem(dbc.NavLink('School', href='/school')),
+                dbc.NavItem(dbc.NavLink('Member', href='/member')),
                 dbc.NavItem(dbc.NavLink('Finance', href='/finance')),
                 dbc.NavItem(dbc.NavLink('Analytics', href='/analytics')),
                 dcc.DatePickerRange(
@@ -64,7 +55,7 @@ app.layout = html.Div([
             dark=True,
         ),
     ]),
-    dash.page_container
+    page_container
 ])
 
 

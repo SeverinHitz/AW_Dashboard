@@ -3,24 +3,36 @@ import pandas as pd
 import geopandas as gpd
 from datetime import datetime
 from icecream import ic
+from shapely.geometry import Point
+import numpy as np
 
 # Disable the SettingWithCopyWarning
 pd.options.mode.chained_assignment = None
 
-def load_data(path):
+# -------------------------------------------- Load Data ----------------------------------------------------------#
+
+def load_data(filename):
     # Set directory
     program_path = os.path.realpath(__file__)
     cwd = os.path.dirname(program_path)
     data_dir = os.path.join(cwd, 'data')
 
-    # Import Data from Excel File
-    # Set Paths
-    path = os.path.join(data_dir, path)
-    df = pd.read_excel(path)
+    # Get file extension
+    file_extension = filename.split('.')[-1].lower()
+
+    # Import data based on file extension
+    path = os.path.join(data_dir, filename)
+    if file_extension == 'csv':
+        df = pd.read_csv(path)
+    elif file_extension in ['xls', 'xlsx']:
+        df = pd.read_excel(path)
+    else:
+        raise ValueError("Unsupported file format. Only CSV, XLS, or XLSX are supported.")
 
     return df
 
-def load_geodata(path):
+
+def load_geodata(filename, convert_crs=True):
     # Set directory
     program_path = os.path.realpath(__file__)
     cwd = os.path.dirname(program_path)
@@ -28,12 +40,33 @@ def load_geodata(path):
 
     # Import Data from Excel File
     # Set Paths
-    path = os.path.join(data_dir, path)
+    path = os.path.join(data_dir, filename)
     # Daten einlesen
     gdf = gpd.read_file(path)
-    gdf = gdf.to_crs(epsg=4326)
+    if convert_crs:
+        gdf = gdf.to_crs(epsg=4326)
 
     return gdf
+
+
+def load_eu_airports(filename):
+    # Assuming load_geodata returns a DataFrame with 'latitude_deg' and 'longitude_deg' columns
+    eu_airports_df = load_data(filename)
+
+    # Convert latitude and longitude to float
+    eu_airports_df['latitude_deg'] = eu_airports_df['latitude_deg'].astype(float)
+    eu_airports_df['longitude_deg'] = eu_airports_df['longitude_deg'].astype(float)
+
+    # Create a new DataFrame with 'name', 'ident', 'latitude', and 'longitude' columns
+    eu_airports_df = eu_airports_df[['name', 'ident', 'latitude_deg', 'longitude_deg']]
+
+    # adding the glacier LSZZ with Aletschgletscher Position as a new row
+    new_entry = {'name': 'Glacier', 'ident': 'LSZZ', 'latitude_deg': 46.50543, 'longitude_deg': 8.03335}
+    eu_airports_df = pd.concat([eu_airports_df, pd.DataFrame([new_entry])], ignore_index=True)
+
+    return eu_airports_df
+
+#----------------------------------------------- Clean up Data ----------------------------------------------------#
 
 def data_cleanup_flightlog(df):
     # Select Columns
@@ -229,6 +262,8 @@ def data_cleanup_gem_df(gdf):
 
     return gdf
 
+#-------------------------------------- Aggregate Data -----------------------------------------------------------#
+
 def date_select_df(df, start_date, end_date, date_column='Date'):
     df = df[(df[date_column] >= start_date) & (df[date_column] <= end_date)]
     return df
@@ -267,11 +302,15 @@ def aircraft_aggregation(df):
         Number_of_Flights=pd.NamedAgg(column='Flight Time', aggfunc='count'),
         Total_Fuel=pd.NamedAgg(column='Fuel', aggfunc='sum'),
         Total_Oil=pd.NamedAgg(column='Oil', aggfunc='sum'),
+        Number_of_Pilots=pd.NamedAgg(column='Pilot', aggfunc=lambda x: x.nunique()),
+        Number_of_Instruction_Flights=pd.NamedAgg(column='Flight Type', aggfunc=lambda x: (x == 'Schulung VFR').sum())
     )
     agg_df['Total_Flight_Time'] = agg_df['Total_Flight_Time'].dt.total_seconds() / 3600
 
     agg_df['Fuel_per_hour'] = agg_df['Total_Fuel'] / agg_df['Total_Flight_Time']
     agg_df['Oil_per_hour'] = agg_df['Total_Oil'] / agg_df['Total_Flight_Time']
+    agg_df['Mean_Flight_Time'] = agg_df['Total_Flight_Time']/agg_df['Number_of_Flights']
+    agg_df['Instruction_Ratio'] = agg_df['Number_of_Instruction_Flights'] / agg_df['Number_of_Flights']
 
     round_cols_1 = ['Total_Flight_Time', 'Total_Fuel', 'Fuel_per_hour']
     agg_df[round_cols_1] = agg_df[round_cols_1].round(1)
@@ -323,6 +362,7 @@ def reservation_aggregation(df):
     agg_df.reset_index(inplace=True)
     return agg_df
 
+#------------------------------------------ Merge Data ----------------------------------------------------------#
 def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Reservation_Duration'):
 
     merged_df = agg_res_df.merge(agg_pilot_df, on='Pilot', how='inner')
@@ -336,9 +376,9 @@ def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Res
     merged_df.reset_index(inplace=True, drop=True)
     return merged_df
 
-################ Specific Functions ################################################################################
+#---------------------------------------------- Site Specific Functions ---------------------------------------------#
 
-##### Main Page
+#---------------------------------------------- Main Page
 
 def sum_time_per_Column(df, select_column, sum_column, acf=None):
     if select_column:
@@ -381,11 +421,29 @@ def agg_by_Day(df, date_column, group_column, agg_column, out_column):
 
     return merged_df
 
-############## Pilots Page
+#---------------------------------------Aircraft Page
+
+def destination_aggregation(df, airports_df):
+    agg_df = df.groupby('Arrival Location').agg(
+        Total_Landings=pd.NamedAgg(column='Landings', aggfunc='sum')
+    )
+    agg_df.reset_index(inplace=True)
+    agg_df.rename(columns={'Arrival Location': 'ident'}, inplace=True)
+    merged_gdf = airports_df.merge(agg_df, on='ident', how='inner')
+    merged_gdf['log_Total_Landings'] = np.log(merged_gdf['Total_Landings'])
+
+
+    return merged_gdf
+
+
+
 
 
 
 if __name__ == '__main__':
+
+    eu_airports_file = 'eu-airports.csv'
+    eu_airport_gdf = load_eu_airports(eu_airports_file)
     flightlog_file = '240113_flightlog.xlsx'
     instructorlog_file = '240113_instructorlog.xlsx'
     member_path = '231230_members.xlsx'
@@ -401,7 +459,6 @@ if __name__ == '__main__':
     instructor_df = data_cleanup_instructorlog(instructor_df)
     member_df = data_cleanup_member(member_df)
     reservation_df = data_cleanup_reservation(reservation_df)
-    ic(reservation_df[reservation_df['Deleted']]['Deletion Reason'].value_counts())
 
 
     start_date = flight_df['Date'].min()
@@ -410,8 +467,8 @@ if __name__ == '__main__':
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-    agg_flight_df = pilot_aggregation(flight_df)
-    agg_instructor_df = instructor_aggregation(instructor_df)
+    arrival_count = destination_aggregation(flight_df, eu_airport_gdf)
+    ic(arrival_count.columns)
 
 
 

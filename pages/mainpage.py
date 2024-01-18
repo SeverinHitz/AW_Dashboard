@@ -9,20 +9,9 @@ import pandas as pd
 import plotly.express as px
 # Import other Files
 import data_preparation as dp
-import layout as lo
-import plot as plots
+import globals
 
-# Layout
-stylesheet = dbc.themes.SLATE #YETI
-layout_color = 'dark' #None
-plot_template = 'plotly_dark' #'plotly_white'
-color_scale = 'teal'
-plot_margin = dict(l=5, r=5, t=15, b=5)
-paper_bgcolor = 'rgba(0,0,0,0)'
-plot_window_style = { 'border-radius':'5px', 'background-color':'None'}
-discrete_teal = ['#2c5977', '#3a718d', '#4f90a6', '#62a5b4', '#7dbdc4', '#8fcacd', '#a1d7d6', '#E4FFFF', '#cfede9']
-grid_color = 'lightgrey'
-legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.2)')
+globals.init()
 
 # Path
 flightlog_file = '240113_flightlog.xlsx'
@@ -220,14 +209,14 @@ def update_flight_graphs(start_date, end_date):
         'Date',
         'Daily_Flight_Time',
         color='Aircraft',
-        template=plot_template,
-        color_discrete_sequence=discrete_teal
+        template=globals.plot_template,
+        color_discrete_sequence=globals.discrete_teal
     )
     main_flight_plot.update_yaxes(showgrid=False)
-    main_flight_plot.update_layout(margin=plot_margin,
-                                   paper_bgcolor=paper_bgcolor,
-                                   plot_bgcolor=paper_bgcolor,
-                                   legend=legend)
+    main_flight_plot.update_layout(margin=globals.plot_margin,
+                                   paper_bgcolor=globals.paper_bgcolor,
+                                   plot_bgcolor=globals.paper_bgcolor,
+                                   legend=globals.legend)
 
     return [main_flight_plot]
 
@@ -254,13 +243,13 @@ def update_flight_graphs(start_date, end_date):
         'Date',
         'Daily_Instruction_Time',
         color='Instructor',
-        template=plot_template,
-        color_discrete_sequence=discrete_teal
+        template=globals.plot_template,
+        color_discrete_sequence=globals.discrete_teal
     )
     main_instructor_plot.update_yaxes(showgrid=False)
-    main_instructor_plot.update_layout(margin=plot_margin,
-                                       paper_bgcolor=paper_bgcolor,
-                                       plot_bgcolor=paper_bgcolor,
-                                       legend=legend)
+    main_instructor_plot.update_layout(margin=globals.plot_margin,
+                                       paper_bgcolor=globals.paper_bgcolor,
+                                       plot_bgcolor=globals.paper_bgcolor,
+                                       legend=globals.legend)
 
     return [main_instructor_plot]

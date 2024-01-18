@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Multi Page, Basics">
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Multi Page, Pilots and Basic Layout of Aircraft">
+      <change afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/mainpage.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/mainpage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/pilots.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/pilots.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,23 +57,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_preparation.executor&quot;: &quot;Run&quot;,
-    &quot;Python.html_functions.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mainpage.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pilots.executor&quot;: &quot;Run&quot;,
-    &quot;Python.plot.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Multi-Page&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.app.executor": "Run",
+    "Python.data_preparation.executor": "Run",
+    "Python.html_functions.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.mainpage.executor": "Run",
+    "Python.pilots.executor": "Run",
+    "Python.plot.executor": "Run",
+    "Python.testing_store.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Multi-Page",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard"
   }
-}</component>
-  <component name="RunManager" selected="Python.app">
+}]]></component>
+  <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="AW_Dashboard" />
       <option name="ENV_FILES" value="" />
@@ -288,7 +292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705395635892</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Multi Page, Pilots and Basic Layout of Aircraft">
+      <option name="closed" value="true" />
+      <created>1705507152062</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1705507152062</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -326,6 +338,7 @@
     <MESSAGE value="Cleanup after adding Reservation" />
     <MESSAGE value="Styling" />
     <MESSAGE value="Multi Page, Basics" />
-    <option name="LAST_COMMIT_MESSAGE" value="Multi Page, Basics" />
+    <MESSAGE value="Multi Page, Pilots and Basic Layout of Aircraft" />
+    <option name="LAST_COMMIT_MESSAGE" value="Multi Page, Pilots and Basic Layout of Aircraft" />
   </component>
 </project>
