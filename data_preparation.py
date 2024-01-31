@@ -128,6 +128,7 @@ def data_cleanup_instructorlog(df):
     df['YYYY'] = df['Date'].dt.strftime('%Y')
     df['YY-MM'] = df['Date'].dt.strftime('%y-%m')
     df['YY-MM-DD'] = df['Date'].dt.strftime('%y-%m-%d')
+    df['YY-WW'] = df['Date'].dt.strftime('%y-%W')
 
     # Set Time as Timedelta
     df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
@@ -156,8 +157,6 @@ def data_cleanup_member(df):
     }
 
     df.rename(columns=new_columns, inplace=True)
-
-    df = df[df['Membership'] == 'Aktiv']
 
     df.sort_values('First Name', ascending=False, inplace=True)
     df.reset_index(inplace=True, drop=True)
@@ -262,6 +261,24 @@ def data_cleanup_gem_df(gdf):
 
     return gdf
 
+def data_diff_visual_bins(start_date, end_date):
+    # Calculate the date offset between start_date and end_date
+    date_offset = end_date - start_date
+
+    # Define Timedeltas for comparison (in months)
+    six_months_timedelta = pd.Timedelta(days=6 * 30.44)  # Approximately 6 months
+    twelve_months_timedelta = pd.Timedelta(days=12 * 30.44)  # Approximately 12 months
+
+    # Check the range using if statements
+    if date_offset <= six_months_timedelta:
+        col = 'Date'
+    elif date_offset <= twelve_months_timedelta:
+        col = 'YY-WW'
+    else:
+        col = 'YY-MM'
+
+    return col
+
 #-------------------------------------- Aggregate Data -----------------------------------------------------------#
 
 def date_select_df(df, start_date, end_date, date_column='Date'):
@@ -334,7 +351,8 @@ def member_aggregation(df):
     current_year = datetime.now().year
     df['Age'] = pd.to_datetime(df['Date of Birth'], errors='coerce').apply(
         lambda x: current_year - x.year if pd.notnull(x) else np.nan)
-    df['Joining Year'] = pd.to_datetime(df['Join Date'], errors='coerce').dt.year
+    df['Join Date'] = pd.to_datetime(df['Join Date'], errors='coerce')
+    df['Joining Year'] = df['Join Date'].dt.year
     # Drop rows where age or joining year is NaN
     df = df.dropna(subset=['Age', 'Joining Year'])
 

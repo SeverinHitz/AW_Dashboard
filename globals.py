@@ -22,6 +22,10 @@ def init():
     global plot_margin
     plot_margin = dict(l=5, r=5, t=5, b=5)
 
+    # Plot Margin for maps
+    global plot_margin_map
+    plot_margin_map = dict(l=0, r=0, t=0, b=0)
+
     # Transparent Background for Plots
     global paper_bgcolor
     paper_bgcolor = 'rgba(0,0,0,0)'
@@ -40,4 +44,4 @@ def init():
 
     # Parameter for Legend of Plots
     global legend
-    legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.2)')
+    legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.4)')

@@ -15,9 +15,9 @@ import globals
 globals.init()
 
 # Path
-flightlog_file = '240113_flightlog.xlsx'
-instructorlog_file = '240113_instructorlog.xlsx'
-reservationlog_file = '240113_reservationlog.xlsx'
+flightlog_file = '240131_flightlog.xlsx'
+instructorlog_file = '240131_instructorlog.xlsx'
+reservationlog_file = '240131_reservationlog.xlsx'
 eu_airports_file = 'eu-airports.csv'
 
 # Import Dataframes
@@ -225,7 +225,7 @@ def update_pilots_header(start_date, end_date, aircraft_dropdown):
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_aircraft_graphs(start_date, end_date, aircraft_dropdown):
+def update_aircraft_flight_time_plot(start_date, end_date, aircraft_dropdown):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -265,7 +265,7 @@ def update_aircraft_graphs(start_date, end_date, aircraft_dropdown):
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_reservation_graph(start_date, end_date, aircraft_dropdown):
+def update_aircraft_flight_type_plot(start_date, end_date, aircraft_dropdown):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -297,7 +297,7 @@ def update_reservation_graph(start_date, end_date, aircraft_dropdown):
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_reservation_graph(start_date, end_date, aircraft_dropdown):
+def update_aircraft_heat_map(start_date, end_date, aircraft_dropdown):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -315,7 +315,7 @@ def update_reservation_graph(start_date, end_date, aircraft_dropdown):
 
 
     # Create Reservation Plot
-    aircraft_flight_type_plot = px.density_mapbox(
+    aircraft_heatmap = px.density_mapbox(
         arrival_count,
         lat='latitude_deg',
         lon='longitude_deg',
@@ -329,10 +329,10 @@ def update_reservation_graph(start_date, end_date, aircraft_dropdown):
         color_continuous_scale=globals.color_scale,
         mapbox_style="carto-darkmatter"
     )
-    aircraft_flight_type_plot.update(layout_coloraxis_showscale=False)
-    aircraft_flight_type_plot.update_layout(margin=globals.plot_margin,
+    aircraft_heatmap.update(layout_coloraxis_showscale=False)
+    aircraft_heatmap.update_layout(margin=globals.plot_margin_map,
                                             paper_bgcolor=globals.paper_bgcolor,
                                             plot_bgcolor=globals.paper_bgcolor,
                                             legend=globals.legend)
 
-    return [aircraft_flight_type_plot]
+    return [aircraft_heatmap]

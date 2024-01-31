@@ -4,8 +4,12 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import geopandas as gpd
 import pandas as pd
+from icecream import ic
 
 import data_preparation as dp
+import globals
+
+globals.init()
 
 def sankey_diagram(df, template):
     # Select Columns
@@ -66,21 +70,24 @@ def sankey_diagram(df, template):
 
     return fig
 
-def member_histogram(df, template, color_discrete_sequence, margin, paper_bgcolor):
+def member_histogram(df):
 
     # Create the bar chart with a color scale
     fig = px.histogram(
         df,
         x='Age',
-        template=template,
-        color_discrete_sequence=color_discrete_sequence
+        template=globals.plot_template,
+        color_discrete_sequence=globals.discrete_teal
     )
-    fig.update_layout(margin=margin,
-                      paper_bgcolor=paper_bgcolor)
+
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    fig.update_layout(margin=globals.plot_margin,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor)
 
     return fig
 
-def memeber_join_linegraph(df, template, color_discrete_sequence, margin, paper_bgcolor):
+def memeber_join_linegraph(df):
     # Calculate the mean age and number of new members for each year from 2015 to 2023
     plot_df = df.groupby('Joining Year').agg({'Age at Joining': 'mean', 'AirManager ID': 'count'}).loc[
                           2015:]
@@ -97,7 +104,8 @@ def memeber_join_linegraph(df, template, color_discrete_sequence, margin, paper_
                    y=plot_df['Mean Age'],
                    mode="lines",
                    name="Mean Age",
-                   line=dict(color=color_discrete_sequence[0])),
+                   line=dict(color=globals.discrete_teal[0]),
+                   line_shape='spline'),
         secondary_y=False,
     )
 
@@ -106,7 +114,8 @@ def memeber_join_linegraph(df, template, color_discrete_sequence, margin, paper_
                    y=plot_df['Number of New Members'],
                    mode="lines",
                    name="# New Members",
-                   line=dict(color=color_discrete_sequence[5])),
+                   line=dict(color=globals.discrete_teal[-1]),
+                   line_shape='spline'),
         secondary_y=True,
     )
 
@@ -114,14 +123,21 @@ def memeber_join_linegraph(df, template, color_discrete_sequence, margin, paper_
     fig.update_yaxes(title_text="Mean Age", secondary_y=False)
     fig.update_yaxes(title_text="Number of New Members", secondary_y=True)
 
+    # Synchronize the y-axes ranges
+    fig.update_yaxes(showgrid=False, gridwidth=1, gridcolor='lightgrey', secondary_y=False)
+    fig.update_yaxes(showgrid=False, gridwidth=1, gridcolor='lightgrey', secondary_y=True)
+
     # Set the template to 'plotly_dark'
-    fig.update_layout(template=template)
-    fig.update_layout(margin=margin,
-                      paper_bgcolor=paper_bgcolor)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    fig.update_layout(template=globals.plot_template,
+                      margin=globals.plot_margin,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor,
+                      legend=globals.legend)
 
     return fig
 
-def member_location_graph(df, gdf, template, color_continuous_scale, margin, paper_bgcolor):
+def member_location_graph(df, gdf):
     df = df.groupby('PLZ').size().reset_index(name='count')
     # Merge 'agg_mem_df' with 'gem_gdf' while preserving the 'count' column
     df = pd.merge(df, gdf, on='PLZ')
@@ -130,19 +146,31 @@ def member_location_graph(df, gdf, template, color_continuous_scale, margin, pap
 
     gdf.set_index('PLZ', inplace=True)
 
+    # Find the row(s) with the maximum 'count' value
+    max_count = gdf['count'].max()
+    max_count_row = gdf[gdf['count'] == max_count].iloc[0]
+
+    # Calculate the centroid of the geometry in the selected row
+    centroid_max = max_count_row.geometry.centroid
+
+
+
+
     fig = px.choropleth_mapbox(gdf,
                                geojson=gdf.geometry,
                                locations=gdf.index,
                                color='count',
-                               color_continuous_scale=color_continuous_scale,
+                               color_continuous_scale=globals.color_scale,
                                opacity=0.8,
-                               center={"lat": 47.23848, "lon": 8.51514},
+                               center={"lat": centroid_max.y, "lon": centroid_max.x},
                                mapbox_style='open-street-map',
                                zoom=8.5)
 
-    fig.update_geos(fitbounds="locations", visible=False)
-    fig.update_layout(margin=margin,
-                      paper_bgcolor=paper_bgcolor)
+    fig.update(layout_coloraxis_showscale=False)
+    fig.update_layout(margin=globals.plot_margin_map,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor,
+                      legend=globals.legend)
 
     return fig
 

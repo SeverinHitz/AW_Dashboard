@@ -14,8 +14,8 @@ import globals
 globals.init()
 
 # Path
-flightlog_file = '240113_flightlog.xlsx'
-instructorlog_file = '240113_instructorlog.xlsx'
+flightlog_file = '240131_flightlog.xlsx'
+instructorlog_file = '240131_instructorlog.xlsx'
 
 # Import Dataframes
 flight_df = dp.load_data(flightlog_file)
@@ -26,7 +26,7 @@ flight_df = dp.data_cleanup_flightlog(flight_df)
 instructor_df = dp.data_cleanup_instructorlog(instructor_df)
 
 
-dash.register_page(__name__, path='/', name='Main')
+dash.register_page(__name__, path='/', name='Overview')
 
 layout = html.Div([
     dbc.Row([
@@ -196,6 +196,7 @@ def update_flight_graphs(start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
     # Filter Flightlog data based on the selected date range
     filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
     filled_flight_df = dp.agg_by_Day(filtered_flight_df,
@@ -229,6 +230,7 @@ def update_flight_graphs(start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+    date_bin_size = dp.data_diff_visual_bins(start_date, end_date)
     # Filter Flightlog data based on the selected date range
     filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
     filled_instructor_df = dp.agg_by_Day(filtered_instructor_df,
@@ -240,8 +242,8 @@ def update_flight_graphs(start_date, end_date):
     # Create Instructor Plot
     main_instructor_plot = px.bar(
         filled_instructor_df,
-        'Date',
-        'Daily_Instruction_Time',
+        x='Date',
+        y='Daily_Instruction_Time',
         color='Instructor',
         template=globals.plot_template,
         color_discrete_sequence=globals.discrete_teal
