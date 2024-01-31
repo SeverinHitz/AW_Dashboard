@@ -377,23 +377,14 @@ def update_member_graph(start_date, end_date):
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-    main_member_plot = plots.member_histogram(member_df,
-                                              template=plot_template,
-                                              color_discrete_sequence=discrete_teal,
-                                              margin=plot_margin,
-                                              paper_bgcolor=paper_bgcolor)
+    agg_member_df = dp.member_aggregation(member_df)
+    agg_member_df = agg_member_df[agg_member_df['Membership'] == 'Aktiv']
 
-    member_join_plot = plots.memeber_join_linegraph(member_df,
-                                              template=plot_template,
-                                              color_discrete_sequence=discrete_teal,
-                                              margin=plot_margin,
-                                              paper_bgcolor=paper_bgcolor)
+    main_member_plot = plots.member_histogram(member_df)
 
-    member_location_plot = plots.member_location_graph(member_df, gem_gdf,
-                                              template=plot_template,
-                                              color_continuous_scale=color_scale,
-                                              margin=plot_margin,
-                                              paper_bgcolor=paper_bgcolor)
+    member_join_plot = plots.memeber_join_linegraph(member_df)
+
+    member_location_plot = plots.member_location_graph(member_df, gem_gdf)
 
     return main_member_plot, member_join_plot, member_location_plot
 

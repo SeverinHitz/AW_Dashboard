@@ -9,14 +9,23 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 # Import other Files
+import plot as plots
 import data_preparation as dp
 import globals
 
 globals.init()
 
-member_path = '231230_members.xlsx'
+member_path = '240131_members.xlsx'
 member_df = dp.load_data(member_path)
 member_df = dp.data_cleanup_member(member_df)
+
+# Geographical data
+# Path
+gemeinde_path = 'PLZO_PLZ.shp'
+# Import
+gem_gdf = dp.load_geodata(gemeinde_path)
+# Cleanup
+gem_gdf = dp.data_cleanup_gem_df(gem_gdf)
 
 dash.register_page(__name__, path='/member', name='Member')
 
@@ -42,7 +51,7 @@ layout = html.Div([
         ])
         ], width=3),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("New in selected Timerange"),
+            dbc.Card([dbc.CardHeader("New Activ Members in selected Timerange"),
                       dbc.CardBody(
                           [
                               html.H4("XXX #", id='New-in-Timerange'),
@@ -91,3 +100,57 @@ layout = html.Div([
     ], className="g-0")
 ])
 
+
+@callback(
+    [Output('Number-of-Members', 'children'),
+     Output('Member-Status-Active', 'children'),
+     Output('New-in-Timerange', 'children'),
+     Output('Mean-Age-of-Active-Members', 'children')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
+)
+def update_pilots_header(start_date, end_date):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    agg_member_df = dp.member_aggregation(member_df)
+
+    # Count all Members
+    total_members = f'{len(member_df)} #'
+
+    # Count all active Members
+    active_members = f'{len(member_df[member_df['Membership']=='Aktiv'])} #'
+
+    # Select new Members in Timerange
+    in_timerange_df = agg_member_df[(agg_member_df['Join Date'] >= start_date) &\
+                                    (agg_member_df['Join Date'] <= end_date)]
+    new_members_in_timerange = f'{len(in_timerange_df[in_timerange_df['Membership']=='Aktiv'])} #'
+
+    # Mean Age of active members
+    mean_age_active_members = f'{agg_member_df[agg_member_df['Membership']=='Aktiv']['Age'].mean():.1f} J'
+
+    return total_members, active_members, new_members_in_timerange, mean_age_active_members
+
+@callback(
+    [Output('Age-Distribution-Active-Members', 'figure'),
+     Output('Admission-new-Active-Members', 'figure'),
+     Output('Place-of-Residence-Activ-Members', 'figure')],
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
+)
+def update_member_graph(start_date, end_date):
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    agg_member_df = dp.member_aggregation(member_df)
+    agg_member_df = agg_member_df[agg_member_df['Membership']=='Aktiv']
+
+    member_age_dist_plot = plots.member_histogram(agg_member_df)
+
+    member_join_plot = plots.memeber_join_linegraph(agg_member_df)
+
+    member_location_plot = plots.member_location_graph(agg_member_df, gem_gdf)
+
+    return member_age_dist_plot, member_join_plot, member_location_plot
