@@ -20,7 +20,7 @@ logo_path = "assets/AW_Logo_breit.png"
 
 # Time select
 # Path
-flightlog_file = '240113_flightlog.xlsx'
+flightlog_file = '240131_flightlog.xlsx'
 flight_df = dp.load_data(flightlog_file)
 # clean up
 flight_df = dp.data_cleanup_flightlog(flight_df)
@@ -33,9 +33,22 @@ app =  Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets
 
 app.layout = html.Div([
     html.Div([
+        dcc.Store(id='flightlog-store', storage_type='local'),
+        dcc.Store(id='instructorlog-store', storage_type='local'),
+        dcc.Store(id='reservationlog-store', storage_type='local'),
+        dcc.Store(id='member-store', storage_type='local'),
+        dcc.Store(id='finance-store', storage_type='local'),
+        dcc.Store(id='flightlog-store-date', storage_type='local'),
+        dcc.Store(id='instructorlog-store-date', storage_type='local'),
+        dcc.Store(id='reservationlog-store-date', storage_type='local'),
+        dcc.Store(id='member-store-date', storage_type='local'),
+        dcc.Store(id='finance-store-date', storage_type='local')
+    ]),
+    html.Div([
         dbc.NavbarSimple(
             children=[
-                dbc.NavItem(dbc.NavLink('Overview', href='/')),
+                dbc.NavItem(dbc.NavLink('Import', href='/')),
+                dbc.NavItem(dbc.NavLink('Overview', href='/overview')),
                 dbc.NavItem(dbc.NavLink('Pilot', href='/pilot')),
                 dbc.NavItem(dbc.NavLink('Aircraft', href='/aircraft')),
                 dbc.NavItem(dbc.NavLink('School', href='/school')),

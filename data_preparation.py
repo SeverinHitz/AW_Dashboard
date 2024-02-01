@@ -66,6 +66,9 @@ def load_eu_airports(filename):
 
     return eu_airports_df
 
+
+
+
 #----------------------------------------------- Clean up Data ----------------------------------------------------#
 
 def data_cleanup_flightlog(df):

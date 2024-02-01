@@ -13,20 +13,7 @@ import globals
 
 globals.init()
 
-# Path
-flightlog_file = '240131_flightlog.xlsx'
-instructorlog_file = '240131_instructorlog.xlsx'
-
-# Import Dataframes
-flight_df = dp.load_data(flightlog_file)
-instructor_df = dp.load_data(instructorlog_file)
-
-# clean up
-flight_df = dp.data_cleanup_flightlog(flight_df)
-instructor_df = dp.data_cleanup_instructorlog(instructor_df)
-
-
-dash.register_page(__name__, path='/', name='Overview')
+dash.register_page(__name__, path='/overview', name='Overview')
 
 layout = html.Div([
     dbc.Row([
@@ -135,10 +122,18 @@ layout = html.Div([
      Output('HB-SGZ-Hours', 'children'),
      Output('HB-SFU-Hours', 'children'),
      Output('HB-POD-Hours', 'children')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_flight_hours(start_date, end_date):
+def update_flight_hours(flightlog_dict, start_date, end_date):
+    # Load Data from Store
+    flight_df = pd.DataFrame.from_dict(flightlog_dict)
+    # Convert the 'date_column' to timestamps
+    flight_df['Date'] = pd.to_datetime(flight_df['Date'])
+    # Set Time as Timedelta
+    flight_df['Flight Time'] = pd.to_timedelta(flight_df['Flight Time'].astype(str))
+    flight_df['Block Time'] = pd.to_timedelta(flight_df['Block Time'].astype(str))
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -170,10 +165,17 @@ def update_flight_hours(start_date, end_date):
 
 @callback(
     [Output('Instructions-Hours', 'children')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('instructorlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_flight_hours(start_date, end_date):
+def update_flight_hours(instructorlog_dict, start_date, end_date):
+    # Load Data from Store
+    instructor_df = pd.DataFrame.from_dict(instructorlog_dict)
+    # Convert the 'date_column' to timestamps
+    instructor_df['Date'] = pd.to_datetime(instructor_df['Date'])
+    # Set Time as Timedelta
+    instructor_df['Duration'] = pd.to_timedelta(instructor_df['Duration'].astype(str))
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -189,10 +191,16 @@ def update_flight_hours(start_date, end_date):
 
 @callback(
     [Output('main-flight-plot', 'figure')],
-    [Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date')]
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),]
 )
-def update_flight_graphs(start_date, end_date):
+def update_flight_graphs(flightlog_dict, start_date, end_date):
+    # Load Data from Store
+    flight_df = pd.DataFrame.from_dict(flightlog_dict)
+    # Convert the 'date_column' to timestamps
+    flight_df['Date'] = pd.to_datetime(flight_df['Date'])
+
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -223,10 +231,16 @@ def update_flight_graphs(start_date, end_date):
 
 @callback(
     [Output('main-instructor-plot', 'figure')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('instructorlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_flight_graphs(start_date, end_date):
+def update_flight_graphs(instructorlog_dict, start_date, end_date):
+    # Load Data from Store
+    instructor_df = pd.DataFrame.from_dict(instructorlog_dict)
+    # Convert the 'date_column' to timestamps
+    instructor_df['Date'] = pd.to_datetime(instructor_df['Date'])
+
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
