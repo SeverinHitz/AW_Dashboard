@@ -14,31 +14,19 @@ import globals
 
 globals.init()
 
-# Path
-flightlog_file = '240131_flightlog.xlsx'
-instructorlog_file = '240131_instructorlog.xlsx'
-reservationlog_file = '240131_reservationlog.xlsx'
+
 eu_airports_file = 'eu-airports.csv'
 
-# Import Dataframes
-flight_df = dp.load_data(flightlog_file)
-reservation_df = dp.load_data(reservationlog_file)
 eu_airport_gdf = dp.load_eu_airports(eu_airports_file)
 
-# clean up
-flight_df = dp.data_cleanup_flightlog(flight_df)
-reservation_df = dp.data_cleanup_reservation(reservation_df)
 
-pilots = flight_df['Aircraft'].sort_values().unique()
-# Append '⌀ All Pilots' to the array of unique pilot names
-pilots = np.append(pilots, '⌀ All Aircrafts')
 
 dash.register_page(__name__, path='/aircraft', name='Aircraft')
 
 
 layout = html.Div([
     dbc.Row([
-        dcc.Dropdown(pilots, '⌀ All Aircrafts', id='Aircraft-Dropdown')
+        dcc.Dropdown(value='⌀ All Aircrafts', id='Aircraft-Dropdown')
     ]),
     dbc.Row([
         dbc.Col([
@@ -163,6 +151,23 @@ layout = html.Div([
     ], className="g-0")
 ])
 
+@callback(Output('Aircraft-Dropdown', 'options'),
+          Input('flightlog-store', 'data'),
+          Input('date-picker-range', 'start_date'),
+          Input('date-picker-range', 'end_date'))
+def update_dropdown(flightlog_dict, start_date, end_date):
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+
+    aircrafts = filtered_flight_df['Aircraft'].sort_values().unique()
+    # Append '⌀ All Pilots' to the array of unique pilot names
+    aircrafts = np.append(aircrafts, '⌀ All Aircrafts')
+
+    return aircrafts
+
+
+
+
 @callback(
     [Output('Aircraft-Registration', 'children'),
      Output('Aircraft-Flight-Hours', 'children'),
@@ -174,16 +179,14 @@ layout = html.Div([
      Output('Aircraft-Oil-per-Hour', 'children'),
      Output('Aircraft-Instruction-Ratio', 'children'),
      Output('Aircraft-Number-of-Pilots', 'children')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_pilots_header(start_date, end_date, aircraft_dropdown):
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    # Filter Flightlog data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
     agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
 
@@ -221,16 +224,14 @@ def update_pilots_header(start_date, end_date, aircraft_dropdown):
 
 @callback(
     [Output('Aircraft-Flight-Time-Plot', 'figure')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_aircraft_flight_time_plot(start_date, end_date, aircraft_dropdown):
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    # Filter Flightlog data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
     agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
     # Create Pilot Plot
@@ -261,16 +262,14 @@ def update_aircraft_flight_time_plot(start_date, end_date, aircraft_dropdown):
 
 @callback(
     [Output('Aircraft-Flight-Type-Plot', 'figure')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_aircraft_flight_type_plot(start_date, end_date, aircraft_dropdown):
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    # Filter Reservation data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+def update_aircraft_flight_type_plot(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     if aircraft_dropdown != '⌀ All Aircrafts':
         filtered_flight_df = filtered_flight_df[filtered_flight_df['Aircraft']==aircraft_dropdown]
     flight_type_sum = filtered_flight_df['Flight Type'].value_counts()
@@ -293,16 +292,14 @@ def update_aircraft_flight_type_plot(start_date, end_date, aircraft_dropdown):
 
 @callback(
     [Output('Aircraft-Heatmap', 'figure')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
-def update_aircraft_heat_map(start_date, end_date, aircraft_dropdown):
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    # Filter Reservation data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+def update_aircraft_heat_map(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     if aircraft_dropdown != '⌀ All Aircrafts':
         filtered_flight_df = filtered_flight_df[filtered_flight_df['Aircraft']==aircraft_dropdown]
     arrival_count = dp.destination_aggregation(filtered_flight_df, eu_airport_gdf)

@@ -143,6 +143,8 @@ def member_location_graph(df, gdf):
     df = pd.merge(df, gdf, on='PLZ')
     # Create a GeoDataFrame from the merged DataFrame
     gdf = gpd.GeoDataFrame(df, geometry='geometry')
+    # Make sure PLZ is an Integer. Because of Format Problems with direct airmanager export data
+    gdf['PLZ'] = gdf['PLZ'].astype(int)
 
     gdf.set_index('PLZ', inplace=True)
 
@@ -152,9 +154,6 @@ def member_location_graph(df, gdf):
 
     # Calculate the centroid of the geometry in the selected row
     centroid_max = max_count_row.geometry.centroid
-
-
-
 
     fig = px.choropleth_mapbox(gdf,
                                geojson=gdf.geometry,

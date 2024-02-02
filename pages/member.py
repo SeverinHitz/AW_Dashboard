@@ -15,9 +15,6 @@ import globals
 
 globals.init()
 
-member_path = '240131_members.xlsx'
-member_df = dp.load_data(member_path)
-member_df = dp.data_cleanup_member(member_df)
 
 # Geographical data
 # Path
@@ -106,13 +103,17 @@ layout = html.Div([
      Output('Member-Status-Active', 'children'),
      Output('New-in-Timerange', 'children'),
      Output('Mean-Age-of-Active-Members', 'children')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('member-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_pilots_header(start_date, end_date):
+def update_member_header(member_dict, start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
+    # Reload Data from Dict
+    member_df = dp.reload_member_dataframe_from_dict(member_dict)
 
     agg_member_df = dp.member_aggregation(member_df)
 
@@ -136,13 +137,17 @@ def update_pilots_header(start_date, end_date):
     [Output('Age-Distribution-Active-Members', 'figure'),
      Output('Admission-new-Active-Members', 'figure'),
      Output('Place-of-Residence-Activ-Members', 'figure')],
-    [Input('date-picker-range', 'start_date'),
+    [Input('member-store', 'data'),
+     Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_member_graph(start_date, end_date):
+def update_member_graph(member_dict, start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
+    # Reload Data from Dict
+    member_df = dp.reload_member_dataframe_from_dict(member_dict)
 
     agg_member_df = dp.member_aggregation(member_df)
     agg_member_df = agg_member_df[agg_member_df['Membership']=='Aktiv']

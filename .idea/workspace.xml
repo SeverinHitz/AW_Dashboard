@@ -4,12 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Aircraft Page and Layout of Member Page">
-      <change afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Upload page with storing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/analytics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/finance.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/finance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -319,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706731142331</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Upload page with storing">
+      <option name="closed" value="true" />
+      <created>1706829704772</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1706829704772</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -359,6 +374,7 @@
     <MESSAGE value="Multi Page, Basics" />
     <MESSAGE value="Multi Page, Pilots and Basic Layout of Aircraft" />
     <MESSAGE value="Aircraft Page and Layout of Member Page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Aircraft Page and Layout of Member Page" />
+    <MESSAGE value="Upload page with storing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upload page with storing" />
   </component>
 </project>
