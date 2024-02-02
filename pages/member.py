@@ -130,7 +130,7 @@ def update_member_header(member_dict, start_date, end_date):
     # Select new Members in Timerange
     in_timerange_df = agg_member_df[(agg_member_df['Join Date'] >= start_date) &\
                                     (agg_member_df['Join Date'] <= end_date)]
-    new_members_in_timerange = f'{len(in_timerange_df[in_timerange_df['Membership']=='Aktiv'])} #'
+    new_members_in_timerange = f"{len(in_timerange_df[in_timerange_df['Membership']=='Aktiv'])} #"
 
     # Mean Age of active members
     mean_age_active_members = f"{agg_member_df[agg_member_df['Membership']=='Aktiv']['Age'].mean():.1f} J"
