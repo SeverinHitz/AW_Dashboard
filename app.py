@@ -24,7 +24,7 @@ start_date = end_date - pd.DateOffset(months=3)
 
 #################################### App Section ##################################################
 
-app =  Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=[globals.stylesheet])
+app = Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=[globals.stylesheet])
 server = app.server # When deployed
 
 app.layout = html.Div([
