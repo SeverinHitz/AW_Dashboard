@@ -189,13 +189,13 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
         # Pilots Flight Time
         sum_flight_time = f'{agg_pilot_df.iloc[0]["Total_Flight_Time"]:.1f} h'
         # Pilots Number of Flights
-        sum_block_time = f'{agg_pilot_df.iloc[0]['Total_Block_Time']:.1f} h'
+        sum_block_time = f'{agg_pilot_df.iloc[0]["Total_Block_Time"]:.1f} h'
         # Pilots Flight to Block Time
-        flight_block_ratio = f'{agg_pilot_df.iloc[0]['Flight_Block_Ratio']*100:.2f} %'
+        flight_block_ratio = f'{agg_pilot_df.iloc[0]["Flight_Block_Ratio"]*100:.2f} %'
         # Pilots Number of Flights
-        sum_flights = f'{agg_pilot_df.iloc[0]['Number_of_Flights']:.0f} #'
+        sum_flights = f'{agg_pilot_df.iloc[0]["Number_of_Flights"]:.0f} #'
         # Pilots Landings
-        sum_landings = f'{agg_pilot_df.iloc[0]['Number_of_Landings']:.0f} #'
+        sum_landings = f'{agg_pilot_df.iloc[0]["Number_of_Landings"]:.0f} #'
     else:
         pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
             sum_flights, sum_landings = ('NO DATA',) * 6
@@ -227,9 +227,9 @@ def update_pilots_header(reservationlog_dict, start_date, end_date, pilot_dropdo
 
     if len(agg_reservation_df)==1:
         # Pilots Cancelled Reservation
-        reservations = f'{agg_reservation_df.iloc[0]['Reservations']:.0f} #'
+        reservations = f'{agg_reservation_df.iloc[0]["Reservations"]:.0f} #'
         # Pilots Cancelled Reservation
-        cancelled = f'{agg_reservation_df.iloc[0]['Cancelled']:.0f} #'
+        cancelled = f'{agg_reservation_df.iloc[0]["Cancelled"]:.0f} #'
     else:
         reservations, cancelled = ('NO DATA',) * 2
 
@@ -268,9 +268,9 @@ def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_da
 
     if len(agg_flight_res_df)==1:
         # Pilots Reservations to Flighttime
-        res_flight_time = f'{agg_flight_res_df.iloc[0]['Flight_to_Reservation_Time']*100:.2f} %'
+        res_flight_time = f'{agg_flight_res_df.iloc[0]["Flight_to_Reservation_Time"]*100:.2f} %'
         # Pilots Cancelled Ratio
-        cancelled_ratio = f'{agg_flight_res_df.iloc[0]['Ratio_Cancelled']*100:.2f} %'
+        cancelled_ratio = f'{agg_flight_res_df.iloc[0]["Ratio_Cancelled"]*100:.2f} %'
     else:
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
 

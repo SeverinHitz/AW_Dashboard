@@ -209,21 +209,21 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
         # Aircraft-Flight-Hours
         sum_flight_time = f'{agg_aircraft_df.iloc[0]["Total_Flight_Time"]:.1f} h'
         # Aircraft-Number-of-Flights
-        sum_flights = f'{agg_aircraft_df.iloc[0]['Number_of_Flights']:.0f} #'
+        sum_flights = f'{agg_aircraft_df.iloc[0]["Number_of_Flights"]:.0f} #'
         # Aircraft-Mean-Flight-Time
-        mean_flight_time = f'{agg_aircraft_df.iloc[0]['Mean_Flight_Time']*60:.0f} min'
+        mean_flight_time = f'{agg_aircraft_df.iloc[0]["Mean_Flight_Time"]*60:.0f} min'
         # Aircraft-Number-of-Landings
-        sum_landings = f'{agg_aircraft_df.iloc[0]['Number_of_Landings']:.0f} #'
+        sum_landings = f'{agg_aircraft_df.iloc[0]["Number_of_Landings"]:.0f} #'
         # Aircraft-Number-of-Airports
-        sum_airports = f'{agg_aircraft_df.iloc[0]['Number_of_Different_Airports']:.0f} #'
+        sum_airports = f'{agg_aircraft_df.iloc[0]["Number_of_Different_Airports"]:.0f} #'
         # Aircraft-Fuel-per-Hour
-        fuel_per_hour = f'{agg_aircraft_df.iloc[0]['Fuel_per_hour']:.1f} L'
+        fuel_per_hour = f'{agg_aircraft_df.iloc[0]["Fuel_per_hour"]:.1f} L'
         # Aircraft-Oil-per-Hour
-        oil_per_hour = f'{agg_aircraft_df.iloc[0]['Oil_per_hour']*1000:.0f} mL'
+        oil_per_hour = f'{agg_aircraft_df.iloc[0]["Oil_per_hour"]*1000:.0f} mL'
         # Aircraft-Instruction-Ratio
-        instruction_ratio = f'{agg_aircraft_df.iloc[0]['Instruction_Ratio']*100:.1f} %'
+        instruction_ratio = f'{agg_aircraft_df.iloc[0]["Instruction_Ratio"]*100:.1f} %'
         # Aircraft-Number-of-Pilots
-        sum_pilots = f'{agg_aircraft_df.iloc[0]['Number_of_Pilots']:.0f} #'
+        sum_pilots = f'{agg_aircraft_df.iloc[0]["Number_of_Pilots"]:.0f} #'
     else:
         aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
             sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 10

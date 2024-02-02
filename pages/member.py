@@ -125,7 +125,7 @@ def update_member_header(member_dict, start_date, end_date):
     total_members = f'{len(member_df)} #'
 
     # Count all active Members
-    active_members = f'{len(member_df[member_df['Membership']=='Aktiv'])} #'
+    active_members = f"{len(member_df[member_df['Membership']=='Aktiv'])} #"
 
     # Select new Members in Timerange
     in_timerange_df = agg_member_df[(agg_member_df['Join Date'] >= start_date) &\
