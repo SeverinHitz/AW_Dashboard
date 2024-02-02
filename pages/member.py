@@ -12,6 +12,7 @@ import numpy as np
 import plot as plots
 import data_preparation as dp
 import globals
+import plot
 
 globals.init()
 
@@ -108,6 +109,9 @@ layout = html.Div([
      Input('date-picker-range', 'end_date')]
 )
 def update_member_header(member_dict, start_date, end_date):
+    if member_dict is None:
+        total_members, active_members, new_members_in_timerange, mean_age_active_members = ('NO DATA',) * 4
+        return total_members, active_members, new_members_in_timerange, mean_age_active_members
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
@@ -142,6 +146,9 @@ def update_member_header(member_dict, start_date, end_date):
      Input('date-picker-range', 'end_date')]
 )
 def update_member_graph(member_dict, start_date, end_date):
+    if member_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return not_data_plot, not_data_plot, not_data_plot
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)

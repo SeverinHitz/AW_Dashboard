@@ -11,6 +11,7 @@ import numpy as np
 # Import other Files
 import data_preparation as dp
 import globals
+import plot
 
 globals.init()
 
@@ -141,6 +142,11 @@ layout = html.Div([
           Input('date-picker-range', 'start_date'),
           Input('date-picker-range', 'end_date'))
 def update_dropdown(flightlog_dict, start_date, end_date):
+    if flightlog_dict is None:
+        pilots = []
+        pilots = np.append(pilots, '⌀ All Pilots')
+        return pilots
+
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -156,10 +162,82 @@ def update_dropdown(flightlog_dict, start_date, end_date):
      Output('Pilot-Block-Hours', 'children'),
      Output('Pilot-Flight-Block-Time', 'children'),
      Output('Pilot-Number-of-Flights', 'children'),
-     Output('Pilot-Number-of-Landings', 'children'),
-     Output('Pilot-Res-to-Flight-Time', 'children'),
+     Output('Pilot-Number-of-Landings', 'children')],
+    [Input('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Pilot-Dropdown', 'value')]
+)
+def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None:
+        pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
+            sum_flights, sum_landings = ('NO DATA',) * 6
+        return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
+            sum_flights, sum_landings
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+
+    # Aggregate Pilots Data
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
+
+    if pilot_dropdown == '⌀ All Pilots':
+        agg_pilot_df = agg_pilot_df.iloc[:, 1:].mean().to_frame().T
+    else:
+        agg_pilot_df = agg_pilot_df[agg_pilot_df['Pilot']==pilot_dropdown]
+
+    if len(agg_pilot_df)==1:
+        # Pilots Flight Time
+        sum_flight_time = f'{agg_pilot_df.iloc[0]["Total_Flight_Time"]:.1f} h'
+        # Pilots Number of Flights
+        sum_block_time = f'{agg_pilot_df.iloc[0]['Total_Block_Time']:.1f} h'
+        # Pilots Flight to Block Time
+        flight_block_ratio = f'{agg_pilot_df.iloc[0]['Flight_Block_Ratio']*100:.2f} %'
+        # Pilots Number of Flights
+        sum_flights = f'{agg_pilot_df.iloc[0]['Number_of_Flights']:.0f} #'
+        # Pilots Landings
+        sum_landings = f'{agg_pilot_df.iloc[0]['Number_of_Landings']:.0f} #'
+    else:
+        pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
+            sum_flights, sum_landings = ('NO DATA',) * 6
+
+    return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
+        sum_flights, sum_landings
+
+@callback(
+    [
      Output('Pilot-Reservation', 'children'),
-     Output('Pilot-Cancelled', 'children'),
+     Output('Pilot-Cancelled', 'children')],
+    [Input('reservationlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Pilot-Dropdown', 'value')]
+)
+def update_pilots_header(reservationlog_dict, start_date, end_date, pilot_dropdown):
+    if reservationlog_dict is None:
+        reservations, cancelled = ('NO DATA',) * 2
+        return reservations, cancelled
+    # reload dataframe form dict
+    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
+    if pilot_dropdown == '⌀ All Pilots':
+        agg_reservation_df = agg_reservation_df.iloc[:, 1:].mean().to_frame().T
+    else:
+        agg_reservation_df = agg_reservation_df[agg_reservation_df['Pilot']==pilot_dropdown]
+
+    if len(agg_reservation_df)==1:
+        # Pilots Cancelled Reservation
+        reservations = f'{agg_reservation_df.iloc[0]['Reservations']:.0f} #'
+        # Pilots Cancelled Reservation
+        cancelled = f'{agg_reservation_df.iloc[0]['Cancelled']:.0f} #'
+    else:
+        reservations, cancelled = ('NO DATA',) * 2
+
+    return reservations, cancelled
+
+@callback(
+    [
+     Output('Pilot-Res-to-Flight-Time', 'children'),
      Output('Pilot-Cancelled-Ratio', 'children')],
     [Input('flightlog-store', 'data'),
      Input('reservationlog-store', 'data'),
@@ -168,6 +246,9 @@ def update_dropdown(flightlog_dict, start_date, end_date):
      Input('Pilot-Dropdown', 'value')]
 )
 def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None or reservationlog_dict is None:
+        res_flight_time, cancelled_ratio = ('NO DATA',) * 2
+        return res_flight_time, cancelled_ratio
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # reload dataframe form dict
@@ -186,30 +267,14 @@ def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_da
         agg_flight_res_df = agg_flight_res_df[agg_flight_res_df['Pilot']==pilot_dropdown]
 
     if len(agg_flight_res_df)==1:
-        # Pilots Flight Time
-        sum_flight_time = f'{agg_flight_res_df.iloc[0]["Total_Flight_Time"]:.1f} h'
-        # Pilots Number of Flights
-        sum_block_time = f'{agg_flight_res_df.iloc[0]['Total_Block_Time']:.1f} h'
-        # Pilots Flight to Block Time
-        flight_block_ratio = f'{agg_flight_res_df.iloc[0]['Flight_Block_Ratio']*100:.2f} %'
-        # Pilots Number of Flights
-        sum_flights = f'{agg_flight_res_df.iloc[0]['Number_of_Flights']:.0f} #'
-        # Pilots Landings
-        sum_landings = f'{agg_flight_res_df.iloc[0]['Number_of_Landings']:.0f} #'
         # Pilots Reservations to Flighttime
         res_flight_time = f'{agg_flight_res_df.iloc[0]['Flight_to_Reservation_Time']*100:.2f} %'
-        # Pilots Cancelled Reservation
-        reservations = f'{agg_flight_res_df.iloc[0]['Reservations']:.0f} #'
-        # Pilots Cancelled Reservation
-        cancelled = f'{agg_flight_res_df.iloc[0]['Cancelled']:.0f} #'
         # Pilots Cancelled Ratio
         cancelled_ratio = f'{agg_flight_res_df.iloc[0]['Ratio_Cancelled']*100:.2f} %'
     else:
-        pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
-            sum_flights, sum_landings, res_flight_time, reservations, cancelled, cancelled_ratio = ('NO DATA',) * 10
+        res_flight_time, cancelled_ratio = ('NO DATA',) * 2
 
-    return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
-        sum_flights, sum_landings, res_flight_time, reservations, cancelled, cancelled_ratio
+    return res_flight_time, cancelled_ratio
 
 
 @callback(
@@ -220,6 +285,9 @@ def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_da
      Input('Pilot-Dropdown', 'value')]
 )
 def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
@@ -256,6 +324,9 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
      Input('Pilot-Dropdown', 'value')]
 )
 def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dropdown):
+    if reservationlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
     if pilot_dropdown != '⌀ All Pilots':

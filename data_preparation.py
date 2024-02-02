@@ -390,6 +390,8 @@ def pilot_aggregation(df, sort_column='Total_Flight_Time'):
     agg_df['Total_Flight_Time'] = agg_df['Total_Flight_Time'].dt.total_seconds() / 3600
     agg_df['Total_Block_Time'] = agg_df['Total_Block_Time'].dt.total_seconds() / 3600
 
+    agg_df['Flight_Block_Ratio'] = agg_df['Total_Flight_Time'] / agg_df['Total_Block_Time']
+
     agg_df.sort_values(sort_column, ascending=False, inplace=True)
     agg_df.reset_index(inplace=True)
     return agg_df
@@ -480,7 +482,6 @@ def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Res
     merged_df['Flight_to_Reservation_Time'] = merged_df['Total_Flight_Time'] / merged_df['Accepted_Reservation_Duration']
     merged_df['Flight_per_Reservation'] = merged_df['Number_of_Flights'] / merged_df[
         'Accepted']
-    merged_df['Flight_Block_Ratio'] = merged_df['Total_Flight_Time'] / merged_df['Total_Block_Time']
 
     merged_df.sort_values(sort_column, ascending=False, inplace=True)
     merged_df.reset_index(inplace=True, drop=True)

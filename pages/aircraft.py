@@ -11,6 +11,7 @@ import numpy as np
 # Import other Files
 import data_preparation as dp
 import globals
+import plot
 
 globals.init()
 
@@ -156,6 +157,10 @@ layout = html.Div([
           Input('date-picker-range', 'start_date'),
           Input('date-picker-range', 'end_date'))
 def update_dropdown(flightlog_dict, start_date, end_date):
+    if flightlog_dict is None:
+        aircrafts = []
+        aircrafts = np.append(aircrafts, '⌀ All Aircrafts')
+        return aircrafts
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -185,6 +190,11 @@ def update_dropdown(flightlog_dict, start_date, end_date):
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
+            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 10
+        return aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
+            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
@@ -230,6 +240,9 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
@@ -268,6 +281,9 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_aircraft_flight_type_plot(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     if aircraft_dropdown != '⌀ All Aircrafts':
@@ -298,6 +314,9 @@ def update_aircraft_flight_type_plot(flightlog_dict, start_date, end_date, aircr
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_aircraft_heat_map(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     if aircraft_dropdown != '⌀ All Aircrafts':

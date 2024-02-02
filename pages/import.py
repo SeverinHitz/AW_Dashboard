@@ -384,6 +384,40 @@ def upload_member_data(member_upload, member_filename, member_last_modified, old
     df_as_dict = df.to_dict('records')
     return df_as_dict, formatted_date, f'File {member_filename} last modified {timestamp}', style
 
+# Finance Data
+@callback(Output('finance-store', 'data'),
+            Output('finance-store-date', 'data'),
+            Output('finance-upload-status', 'children'),
+            Output('finance-upload-status','style'),
+            Input('finance-upload', 'contents'),
+            State('finance-upload', 'filename'),
+            State('finance-upload', 'last_modified'),
+            State('finance-store', 'data'),
+            State('finance-store-date', 'data'))
+def upload_member_data(member_upload, member_filename, member_last_modified, old_data, old_data_date):
+    # Not Supported yet:
+    if True:
+        status, df, string, style = False, None, f'Not yet supported', {'color': 'orange'}
+        return status, df, string, style
+    # Try load Dataframe
+    status, df, string, style = parse_contents(member_upload, member_filename)
+    # Try Clean up
+    if status:
+        try:
+            df = dp.data_cleanup_member(df)
+        except Exception as e:
+            ic(e)
+            status, df, string, style = False, None, f'Columns do not match expectations', {'color':'red'}
+
+    # If conversion to df Failed print Reason
+    if not status:
+            return old_data, old_data_date, string, style
+
+    timestamp = datetime.fromtimestamp(member_last_modified)
+    formatted_date = timestamp.strftime('%d.%m.%Y')
+    df_as_dict = df.to_dict('records')
+    return df_as_dict, formatted_date, f'File {member_filename} last modified {timestamp}', style
+
 
 @callback(Output('flightlog-store-status', 'children'),
           Output('instructorlog-store-status', 'children'),

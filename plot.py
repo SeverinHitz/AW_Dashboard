@@ -1,4 +1,4 @@
-import dash_bootstrap_components as dbc
+# Library
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -172,6 +172,35 @@ def member_location_graph(df, gdf):
                       legend=globals.legend)
 
     return fig
+
+def not_data_figure():
+    # Use the plotly_dark template from Plotly's template collection
+    not_data_template = go.layout.Template()
+
+    not_data_template.layout.annotations = [
+        dict(
+            name="draft watermark",
+            text="NO DATA",
+            textangle=-30,
+            opacity=0.5,
+            font=dict(color="red", size=100),
+            xref="paper",
+            yref="paper",
+            x=0.5,
+            y=0.5,
+            showarrow=False,
+        )
+    ]
+
+    fig = go.Figure()
+    fig.update_layout(template=globals.plot_template)
+    fig.update_layout(template=not_data_template)
+    fig.update_layout(margin=globals.plot_margin,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor,
+                      legend=globals.legend)
+    return fig
+
 
 if __name__ == '__main__':
     flight_df, _ = dp.load_data()

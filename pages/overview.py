@@ -10,6 +10,7 @@ import plotly.express as px
 # Import other Files
 import data_preparation as dp
 import globals
+import plot
 
 globals.init()
 
@@ -127,6 +128,9 @@ layout = html.Div([
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(flightlog_dict, start_date, end_date):
+    if flightlog_dict is None:
+        sum_total, sum_flight_str, sum_cqw, sum_pox, sum_sgz, sum_sfu, sum_pod = ('NO DATA',) * 7
+        return [sum_total, sum_flight_str, sum_cqw, sum_pox, sum_sgz, sum_sfu, sum_pod]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -159,6 +163,9 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(instructorlog_dict, start_date, end_date):
+    if instructorlog_dict is None:
+        sum_instructor_hours = ('NO DATA',) * 1
+        return [sum_instructor_hours]
     # Reload Dataframe from Dict
     filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
@@ -175,6 +182,9 @@ def update_flight_hours(instructorlog_dict, start_date, end_date):
      Input('date-picker-range', 'end_date'),]
 )
 def update_flight_graphs(flightlog_dict, start_date, end_date):
+    if flightlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -207,6 +217,9 @@ def update_flight_graphs(flightlog_dict, start_date, end_date):
      Input('date-picker-range', 'end_date')]
 )
 def update_instructor_graphs(instructorlog_dict, start_date, end_date):
+    if instructorlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
     # Reload Dataframe from Dict
     filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
