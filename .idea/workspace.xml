@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Changes String quotes for deploy" />
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="lxml to requirements">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -353,7 +356,23 @@
       <option name="project" value="LOCAL" />
       <updated>1706905702448</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Changes String quotes for deploy">
+      <option name="closed" value="true" />
+      <created>1706905890122</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1706905890122</updated>
+    </task>
+    <task id="LOCAL-00026" summary="lxml to requirements">
+      <option name="closed" value="true" />
+      <created>1706906532274</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1706906532274</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -397,6 +416,7 @@
     <MESSAGE value="Error Handling" />
     <MESSAGE value="requirements" />
     <MESSAGE value="Changes String quotes for deploy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes String quotes for deploy" />
+    <MESSAGE value="lxml to requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="lxml to requirements" />
   </component>
 </project>
