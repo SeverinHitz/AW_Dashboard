@@ -4,11 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="First Try">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Upload page with storing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/analytics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/finance.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/finance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,17 +33,17 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="dev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "SeverinHitz"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SeverinHitz&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -44,26 +52,85 @@
       </UrlAndAccount>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2aB8jdqAJ7OC8F11vx3AiUvSJTH" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.data_preparation.executor": "Run",
-    "Python.html_functions.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_preparation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.html_functions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mainpage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pilots.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plot.executor&quot;: &quot;Run&quot;,
+    &quot;Python.testing_store.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Multi-Page&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages&quot;
   }
-}]]></component>
-  <component name="RunManager">
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="O:\OneDrive\Fliegen\Albis Wings VS\Analytics\Dashboard\AW_Dashboard\pages" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.app">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="AW_Dashboard" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="AW_Data_Analysis" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python">
+      <module name="AW_Dashboard" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="AW_Data_Analysis" />
+      <option name="WORKING_DIRECTORY" value="O:\OneDrive\Fliegen\Albis Wings VS\Analytics\Dashboard\AW_Dashboard" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AW_Dashboard" />
       <option name="ENV_FILES" value="" />
@@ -86,6 +153,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.app" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -127,7 +198,143 @@
       <option name="project" value="LOCAL" />
       <updated>1703791039949</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="241228">
+      <option name="closed" value="true" />
+      <created>1703803820606</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1703803820606</updated>
+    </task>
+    <task id="LOCAL-00005" summary="241229">
+      <option name="closed" value="true" />
+      <created>1703891711107</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1703891711107</updated>
+    </task>
+    <task id="LOCAL-00006" summary="241229">
+      <option name="closed" value="true" />
+      <created>1703892811259</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1703892811259</updated>
+    </task>
+    <task id="LOCAL-00007" summary="241229">
+      <option name="closed" value="true" />
+      <created>1703893622103</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1703893622103</updated>
+    </task>
+    <task id="LOCAL-00008" summary="241229">
+      <option name="closed" value="true" />
+      <created>1703893812143</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1703893812143</updated>
+    </task>
+    <task id="LOCAL-00009" summary="241230">
+      <option name="closed" value="true" />
+      <created>1703939329673</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1703939329673</updated>
+    </task>
+    <task id="LOCAL-00010" summary="241230">
+      <option name="closed" value="true" />
+      <created>1703939621639</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1703939621639</updated>
+    </task>
+    <task id="LOCAL-00011" summary="241231">
+      <option name="closed" value="true" />
+      <created>1704032344485</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704032344485</updated>
+    </task>
+    <task id="LOCAL-00012" summary="241231">
+      <option name="closed" value="true" />
+      <created>1704645037844</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1704645037844</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Reservation Section added">
+      <option name="closed" value="true" />
+      <created>1705158172095</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1705158172095</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Cleanup after adding Reservation">
+      <option name="closed" value="true" />
+      <created>1705164053689</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1705164053689</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Styling">
+      <option name="closed" value="true" />
+      <created>1705336714309</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1705336714309</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Multi Page, Basics">
+      <option name="closed" value="true" />
+      <created>1705395635892</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1705395635892</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Multi Page, Pilots and Basic Layout of Aircraft">
+      <option name="closed" value="true" />
+      <created>1705507152062</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1705507152062</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Aircraft Page and Layout of Member Page">
+      <option name="closed" value="true" />
+      <created>1705617331959</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1705617331959</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Aircraft Page and Layout of Member Page">
+      <option name="closed" value="true" />
+      <created>1706731142329</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1706731142331</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Upload page with storing">
+      <option name="closed" value="true" />
+      <created>1706829704772</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1706829704772</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -141,7 +348,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="Multi-Page" />
                       </list>
                     </value>
                   </entry>
@@ -157,6 +364,17 @@
     <MESSAGE value="Initial Commit" />
     <MESSAGE value="Test Commit" />
     <MESSAGE value="First Try" />
-    <option name="LAST_COMMIT_MESSAGE" value="First Try" />
+    <MESSAGE value="241228" />
+    <MESSAGE value="241229" />
+    <MESSAGE value="241230" />
+    <MESSAGE value="241231" />
+    <MESSAGE value="Reservation Section added" />
+    <MESSAGE value="Cleanup after adding Reservation" />
+    <MESSAGE value="Styling" />
+    <MESSAGE value="Multi Page, Basics" />
+    <MESSAGE value="Multi Page, Pilots and Basic Layout of Aircraft" />
+    <MESSAGE value="Aircraft Page and Layout of Member Page" />
+    <MESSAGE value="Upload page with storing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upload page with storing" />
   </component>
 </project>
