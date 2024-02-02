@@ -127,19 +127,8 @@ layout = html.Div([
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(flightlog_dict, start_date, end_date):
-    # Load Data from Store
-    flight_df = pd.DataFrame.from_dict(flightlog_dict)
-    # Convert the 'date_column' to timestamps
-    flight_df['Date'] = pd.to_datetime(flight_df['Date'])
-    # Set Time as Timedelta
-    flight_df['Flight Time'] = pd.to_timedelta(flight_df['Flight Time'].astype(str))
-    flight_df['Block Time'] = pd.to_timedelta(flight_df['Block Time'].astype(str))
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-
-    # Filter Flightlog data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
     # Sum of Flighttime
     sum_total = dp.sum_time_per_Column(filtered_flight_df, None, 'Flight Time')
@@ -170,18 +159,8 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(instructorlog_dict, start_date, end_date):
-    # Load Data from Store
-    instructor_df = pd.DataFrame.from_dict(instructorlog_dict)
-    # Convert the 'date_column' to timestamps
-    instructor_df['Date'] = pd.to_datetime(instructor_df['Date'])
-    # Set Time as Timedelta
-    instructor_df['Duration'] = pd.to_timedelta(instructor_df['Duration'].astype(str))
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-
-    # Filter Instructorlog data based on the selected date range
-    filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
+    # Reload Dataframe from Dict
+    filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
     # Sum Flight Time CQW
     sum_instructor_hours = dp.sum_time_per_Column(filtered_instructor_df, None, 'Duration')
@@ -196,17 +175,9 @@ def update_flight_hours(instructorlog_dict, start_date, end_date):
      Input('date-picker-range', 'end_date'),]
 )
 def update_flight_graphs(flightlog_dict, start_date, end_date):
-    # Load Data from Store
-    flight_df = pd.DataFrame.from_dict(flightlog_dict)
-    # Convert the 'date_column' to timestamps
-    flight_df['Date'] = pd.to_datetime(flight_df['Date'])
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-
-    # Filter Flightlog data based on the selected date range
-    filtered_flight_df = dp.date_select_df(flight_df, start_date, end_date)
     filled_flight_df = dp.agg_by_Day(filtered_flight_df,
                                          date_column='Date',
                                          group_column='Aircraft',
@@ -235,18 +206,10 @@ def update_flight_graphs(flightlog_dict, start_date, end_date):
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
-def update_flight_graphs(instructorlog_dict, start_date, end_date):
-    # Load Data from Store
-    instructor_df = pd.DataFrame.from_dict(instructorlog_dict)
-    # Convert the 'date_column' to timestamps
-    instructor_df['Date'] = pd.to_datetime(instructor_df['Date'])
+def update_instructor_graphs(instructorlog_dict, start_date, end_date):
+    # Reload Dataframe from Dict
+    filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
-    # Set Date as a Datetime object
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    date_bin_size = dp.data_diff_visual_bins(start_date, end_date)
-    # Filter Flightlog data based on the selected date range
-    filtered_instructor_df = dp.date_select_df(instructor_df, start_date, end_date)
     filled_instructor_df = dp.agg_by_Day(filtered_instructor_df,
                                          date_column='Date',
                                          group_column='Instructor',

@@ -34,8 +34,17 @@ data = [
 
 table_body = [html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in data])]
 
-table = dbc.Table(table_header + table_body, bordered=True, style={'font-size': 'smaller'})
+table = dbc.Table(table_header + table_body, bordered=True, style={'font-size': 'smaller', 'padding': '1px'})
 
+security_text = 'This website is intended for analysing Airmanager data. The data is not\
+ stored on the server but locally in the browser session. This stored data includes the following\
+  personal data: First name, surname, postcode and date of birth. All other personal data\
+   is discarded during initialisation. However, it is sent once to the server for data selection during upload.\
+    This connection is made via a secure https connection. It is still recommended to delete columns\
+     with highly sensitive data before they are uploaded (e.g. e-mail, telephone number, IBAN etc.).'
+
+disclosure_text ='No liability is accepted for the data and users must ensure that they operate within the\
+ organisation\'s own privacy policy'
 
 dash.register_page(__name__, path='/', name='Import')
 
@@ -47,23 +56,28 @@ layout = html.Div([
             [
                 html.P("1. Download the data from Airmanager."),
                 html.P(
-                    "2. Open the data using Excel to resolve any file conflicts and save it as a new Excel (.xlsx) file."),
-                html.P(
-                    "3. Upload the data by dragging and dropping it into the respective fields, following the structure below:"),
+                    "2. Upload the data by dragging and dropping it into the respective fields, following data is required per page:"),
                 table
             ]
         )
         ])
-        ], width=8),
+        ], width=7),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Privacy"),
+            dbc.Card([dbc.CardHeader("Data Security / Privacy"),
             dbc.CardBody(
             [
-                html.H4('Here comes some Privacy Policy Stuff'),
+                html.P(security_text),
+                html.P(disclosure_text),
+                html.A("More about Web Storage API",
+                       href="https://www.ramotion.com/blog/what-is-web-storage/"),
+                html.Br(),
+                html.A("GitHub Page", href="https://github.com/SeverinHitz"),
+                html.Br(),
+                html.A("Airmanager", href= "https://airmanager.ch/"),
             ]
         )
         ])
-        ], width=4),
+        ], width=5),
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -78,7 +92,6 @@ layout = html.Div([
                                 ]),
                                 style={
                                     'width': '100%',
-                                    'height': '60px',
                                     'lineHeight': '60px',
                                     'borderWidth': '1px',
                                     'borderStyle': 'dashed',
@@ -219,11 +232,14 @@ layout = html.Div([
 
 
 def parse_contents(contents, filename):
+    ic(filename)
     # When no File was uploaded
     if not contents:
         return False, None, f'No new File submitted', {'color':'yellow'}
+
+    allowed_suffixes = ['.xlsx', '.xls']
     # Check Ending
-    if not filename.endswith('.xlsx'):
+    if not any(filename.endswith(suffix) for suffix in allowed_suffixes):
         return False, None, f'Not a Excel File (.xlsx)', {'color':'red'}
 
     # Decode Contentstring
@@ -232,7 +248,12 @@ def parse_contents(contents, filename):
 
     # Try loading File into Pandas (if not returns None)
     try:
-        df = pd.read_excel(io.BytesIO(decoded))
+        if filename.endswith('.xlsx'):
+            df = pd.read_excel(io.BytesIO(decoded))
+        if filename.endswith('.xls'):
+            dataframes = pd.read_html(io.BytesIO(decoded), header=0)
+            df = dataframes[0]
+            df = dp.xls_format_cleanup(df)
     except Exception as e:
         ic(e)
         return False, None, f'Could not read Content', {'color':'red'}
@@ -248,13 +269,11 @@ def parse_contents(contents, filename):
             Input('flightlog-upload', 'contents'),
             State('flightlog-upload', 'filename'),
             State('flightlog-upload', 'last_modified'),
-            Input('flightlog-store', 'data'),
-            Input('flightlog-store-date', 'data'))
+            State('flightlog-store', 'data'),
+            State('flightlog-store-date', 'data'))
 def upload_flightlog_data(flightlog_upload, flightlog_filename, flightlog_last_modified, old_data, old_data_date):
     # Try load Dataframe
     status, df, string, style = parse_contents(flightlog_upload, flightlog_filename)
-
-    # Try Clean up
     if status:
         try:
             df = dp.data_cleanup_flightlog(df)
@@ -266,7 +285,6 @@ def upload_flightlog_data(flightlog_upload, flightlog_filename, flightlog_last_m
     if not status:
             return old_data, old_data_date, string, style
 
-    ic(df)
     timestamp = datetime.fromtimestamp(flightlog_last_modified)
     formatted_date = timestamp.strftime('%d.%m.%Y')
     df_as_dict = df.to_dict('records')
@@ -281,12 +299,11 @@ def upload_flightlog_data(flightlog_upload, flightlog_filename, flightlog_last_m
             Input('instructorlog-upload', 'contents'),
             State('instructorlog-upload', 'filename'),
             State('instructorlog-upload', 'last_modified'),
-            Input('instructorlog-store', 'data'),
-            Input('instructorlog-store-date', 'data'))
+            State('instructorlog-store', 'data'),
+            State('instructorlog-store-date', 'data'))
 def upload_instructorlog_data(instructorlog_upload, instructorlog_filename, instructorlog_last_modified, old_data, old_data_date):
     # Try load Dataframe
     status, df, string, style = parse_contents(instructorlog_upload, instructorlog_filename)
-
     # Try Clean up
     if status:
         try:
@@ -299,7 +316,6 @@ def upload_instructorlog_data(instructorlog_upload, instructorlog_filename, inst
     if not status:
             return old_data, old_data_date, string, style
 
-    ic(df)
     timestamp = datetime.fromtimestamp(instructorlog_last_modified)
     formatted_date = timestamp.strftime('%d.%m.%Y')
     df_as_dict = df.to_dict('records')
@@ -314,8 +330,8 @@ def upload_instructorlog_data(instructorlog_upload, instructorlog_filename, inst
             Input('reservationlog-upload', 'contents'),
             State('reservationlog-upload', 'filename'),
             State('reservationlog-upload', 'last_modified'),
-            Input('reservationlog-store', 'data'),
-            Input('reservationlog-store-date', 'data'))
+            State('reservationlog-store', 'data'),
+            State('reservationlog-store-date', 'data'))
 def upload_reservationlog_data(reservationlog_upload, reservationlog_filename, reservationlog_last_modified, old_data, old_data_date):
     # Try load Dataframe
     status, df, string, style = parse_contents(reservationlog_upload, reservationlog_filename)
@@ -332,7 +348,6 @@ def upload_reservationlog_data(reservationlog_upload, reservationlog_filename, r
     if not status:
             return old_data, old_data_date, string, style
 
-    ic(df)
     timestamp = datetime.fromtimestamp(reservationlog_last_modified)
     formatted_date = timestamp.strftime('%d.%m.%Y')
     df_as_dict = df.to_dict('records')
@@ -347,12 +362,11 @@ def upload_reservationlog_data(reservationlog_upload, reservationlog_filename, r
             Input('member-upload', 'contents'),
             State('member-upload', 'filename'),
             State('member-upload', 'last_modified'),
-            Input('member-store', 'data'),
-            Input('member-store-date', 'data'))
+            State('member-store', 'data'),
+            State('member-store-date', 'data'))
 def upload_member_data(member_upload, member_filename, member_last_modified, old_data, old_data_date):
     # Try load Dataframe
     status, df, string, style = parse_contents(member_upload, member_filename)
-
     # Try Clean up
     if status:
         try:
@@ -365,7 +379,6 @@ def upload_member_data(member_upload, member_filename, member_last_modified, old
     if not status:
             return old_data, old_data_date, string, style
 
-    ic(df)
     timestamp = datetime.fromtimestamp(member_last_modified)
     formatted_date = timestamp.strftime('%d.%m.%Y')
     df_as_dict = df.to_dict('records')

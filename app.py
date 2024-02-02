@@ -3,6 +3,7 @@
 import pandas as pd
 from dash import Dash, html, dcc, page_container
 import dash_bootstrap_components as dbc
+from datetime import datetime
 from icecream import ic
 import logging
 logging.basicConfig(level=logging.INFO,
@@ -18,13 +19,7 @@ globals.init()
 logo_path = "assets/AW_Logo_breit.png"
 
 
-# Time select
-# Path
-flightlog_file = '240131_flightlog.xlsx'
-flight_df = dp.load_data(flightlog_file)
-# clean up
-flight_df = dp.data_cleanup_flightlog(flight_df)
-end_date = flight_df['Date'].max()
+end_date = datetime.now()
 start_date = end_date - pd.DateOffset(months=3)
 
 #################################### App Section ##################################################
@@ -33,16 +28,16 @@ app =  Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets
 
 app.layout = html.Div([
     html.Div([
-        dcc.Store(id='flightlog-store', storage_type='local'),
-        dcc.Store(id='instructorlog-store', storage_type='local'),
-        dcc.Store(id='reservationlog-store', storage_type='local'),
-        dcc.Store(id='member-store', storage_type='local'),
-        dcc.Store(id='finance-store', storage_type='local'),
-        dcc.Store(id='flightlog-store-date', storage_type='local'),
-        dcc.Store(id='instructorlog-store-date', storage_type='local'),
-        dcc.Store(id='reservationlog-store-date', storage_type='local'),
-        dcc.Store(id='member-store-date', storage_type='local'),
-        dcc.Store(id='finance-store-date', storage_type='local')
+        dcc.Store(id='flightlog-store', storage_type='session'),
+        dcc.Store(id='instructorlog-store', storage_type='session'),
+        dcc.Store(id='reservationlog-store', storage_type='session'),
+        dcc.Store(id='member-store', storage_type='session'),
+        dcc.Store(id='finance-store', storage_type='session'),
+        dcc.Store(id='flightlog-store-date', storage_type='session'),
+        dcc.Store(id='instructorlog-store-date', storage_type='session'),
+        dcc.Store(id='reservationlog-store-date', storage_type='session'),
+        dcc.Store(id='member-store-date', storage_type='session'),
+        dcc.Store(id='finance-store-date', storage_type='session')
     ]),
     html.Div([
         dbc.NavbarSimple(

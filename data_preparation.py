@@ -67,9 +67,102 @@ def load_eu_airports(filename):
     return eu_airports_df
 
 
+def reload_flightlog_dataframe_from_dict(dict, start_date, end_date):
+    # Load Data from Store
+    flight_df = pd.DataFrame.from_dict(dict)
+    # Convert the 'date_column' to timestamps
+    flight_df['Date'] = pd.to_datetime(flight_df['Date'])
+    # Set Time as Timedelta
+    flight_df['Flight Time'] = pd.to_timedelta(flight_df['Flight Time'].astype(str))
+    flight_df['Block Time'] = pd.to_timedelta(flight_df['Block Time'].astype(str))
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    # Filter Flightlog data based on the selected date range
+    filtered_flight_df = date_select_df(flight_df, start_date, end_date)
+
+    return filtered_flight_df
+
+def reload_instructor_dataframe_from_dict(dict, start_date, end_date):
+    # Load Data from Store
+    instructor_df = pd.DataFrame.from_dict(dict)
+    # Convert the 'date_column' to timestamps
+    instructor_df['Date'] = pd.to_datetime(instructor_df['Date'])
+    # Set Time as Timedelta
+    instructor_df['Duration'] = pd.to_timedelta(instructor_df['Duration'].astype(str))
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    # Filter Instructorlog data based on the selected date range
+    filtered_instructor_df = date_select_df(instructor_df, start_date, end_date)
+
+    return filtered_instructor_df
+
+def reload_reservation_dataframe_from_dict(dict, start_date, end_date):
+    # Load Data from Store
+    reservation_df = pd.DataFrame.from_dict(dict)
+    # Set Time as Timedelta
+    reservation_df['Duration'] = pd.to_timedelta(reservation_df['Duration'].astype(str))
+    # Convert the 'date_column' to timestamps
+    reservation_df['From'] = pd.to_datetime(reservation_df['From'])
+    # Set Date as a Datetime object
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+
+    # Filter Instructorlog data based on the selected date range
+    filtered_reservation_df = date_select_df(reservation_df, start_date, end_date, date_column='From')
+
+    return filtered_reservation_df
+
+def reload_member_dataframe_from_dict(dict):
+    # Load Data from Store
+    member_df = pd.DataFrame.from_dict(dict)
+
+    # Convert the 'date_column' to timestamps
+    member_df['Date of Birth'] = pd.to_datetime(member_df['Date of Birth'])
+
+    return member_df
 
 
 #----------------------------------------------- Clean up Data ----------------------------------------------------#
+
+def xls_format_cleanup(df):
+    # Date Columns
+    date_columns_1 = ['Datum', 'Geburtsdatum']  # Format = dd.mm.yyyy
+    date_columns_2 = ['Eintrittsdatum'] # Format = yyyy-mm-dd
+
+    # Time Delta Columns
+    timedelta_columns = ['Dauer'] # Format = hh:mm
+
+    # Datetime Colums
+    datetime_columns = ['Von', 'Bis'] # Format = dd.mm.yyyy hh:mm:ss
+
+    for col in date_columns_1:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], format='%d.%m.%Y', errors='coerce')
+
+    for col in date_columns_2:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], format='%Y-%m-%d', errors='coerce')
+
+    for col in timedelta_columns:
+        if col in df.columns:
+            df[col] = pd.to_timedelta(df[col].astype(str) + ':00')
+
+    for col in datetime_columns:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], format='%d.%m.%Y %H:%M:%S', errors='coerce')
+
+    # Problem with Merge on integer
+    integer_columns = ['PLZ']
+
+    for col in integer_columns:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    return df
 
 def data_cleanup_flightlog(df):
     # Select Columns
@@ -142,7 +235,7 @@ def data_cleanup_instructorlog(df):
 
 def data_cleanup_member(df):
     # Select Columns
-    df = df[['AirManager ID', 'Vorname', 'Name', 'Strasse', 'PLZ', 'Ort', 'Land', 'Geburtsdatum', 'Mitgliedschaft',
+    df = df[['AirManager ID', 'Vorname', 'Name', 'PLZ', 'Geburtsdatum', 'Mitgliedschaft',
           'Eintrittsdatum']]
 
     # Rename in English
@@ -150,9 +243,7 @@ def data_cleanup_member(df):
         'AirManager ID': 'AirManager ID',
         'Vorname': 'First Name',
         'Name': 'Last Name',
-        'Strasse': 'Street',
         'PLZ': 'PLZ',
-        'Ort': 'City',
         'Land': 'Country',
         'Geburtsdatum': 'Date of Birth',
         'Mitgliedschaft': 'Membership',
@@ -357,11 +448,9 @@ def member_aggregation(df):
     df['Join Date'] = pd.to_datetime(df['Join Date'], errors='coerce')
     df['Joining Year'] = df['Join Date'].dt.year
     # Drop rows where age or joining year is NaN
-    df = df.dropna(subset=['Age', 'Joining Year'])
-
+    df = df.dropna(subset=['Age'])
     # Calculate age at joining
     df['Age at Joining'] = df['Age'] - (current_year - df['Joining Year'])
-
     return df
 
 def reservation_aggregation(df):
