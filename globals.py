@@ -45,3 +45,31 @@ def init():
     # Parameter for Legend of Plots
     global legend
     legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.4)')
+
+    global adaptiv_width_1
+    adaptiv_width_1 = {'xs':12, 'sm':5, 'md':1, 'lg':1}
+
+    global adaptiv_width_2
+    adaptiv_width_2 = {'xs':12, 'sm':5, 'md':2, 'lg':2}
+
+    global adaptiv_width_3
+    adaptiv_width_3 = {'xs':12, 'sm':5, 'md':3, 'lg':3}
+
+    global adaptiv_width_4
+    adaptiv_width_4 = {'xs':12, 'sm':12, 'md':4, 'lg':4}
+
+    global adaptiv_width_5
+    adaptiv_width_5 = {'xs':12, 'sm':12, 'md':5, 'lg':5}
+
+    global adaptiv_width_6
+    adaptiv_width_6 = {'xs':12, 'sm':12, 'md':6, 'lg':6}
+
+    global adaptiv_width_7
+    adaptiv_width_7 = {'xs':12, 'sm':12, 'md':7, 'lg':7}
+
+    global adaptiv_width_8
+    adaptiv_width_8 = {'xs':12, 'sm':12, 'md':8, 'lg':8}
+
+    global adaptiv_width_12
+    adaptiv_width_12 = {'xs':12, 'sm':12, 'md':12, 'lg':12}
+

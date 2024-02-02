@@ -61,7 +61,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=7),
+        ], **globals.adaptiv_width_7),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Data Security / Privacy"),
             dbc.CardBody(
@@ -77,7 +77,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=5),
+        ], **globals.adaptiv_width_5),
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -105,7 +105,7 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(id='flightlog-upload-status'),
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instructorlog"),
                       dbc.CardBody(
@@ -131,7 +131,7 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(id='instructorlog-upload-status'),
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Reservationlog"),
                       dbc.CardBody(
@@ -157,7 +157,7 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(id='reservationlog-upload-status'),
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Members"),
                       dbc.CardBody(
@@ -183,7 +183,7 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(id='member-upload-status'),
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Finance"),
                       dbc.CardBody(
@@ -209,7 +209,7 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(id='finance-upload-status'),
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Data Status"),
                       dbc.CardBody(
@@ -222,7 +222,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=2),
+        ], **globals.adaptiv_width_2),
     ], className="g-0")
 ])
 

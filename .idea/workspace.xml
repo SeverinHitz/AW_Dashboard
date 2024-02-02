@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="lxml to requirements">
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="small layoutchange">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -372,8 +378,27 @@
       <option name="project" value="LOCAL" />
       <updated>1706906532274</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="small layoutchange">
+      <option name="closed" value="true" />
+      <created>1706907047250</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1706907047250</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -417,6 +442,7 @@
     <MESSAGE value="requirements" />
     <MESSAGE value="Changes String quotes for deploy" />
     <MESSAGE value="lxml to requirements" />
-    <option name="LAST_COMMIT_MESSAGE" value="lxml to requirements" />
+    <MESSAGE value="small layoutchange" />
+    <option name="LAST_COMMIT_MESSAGE" value="small layoutchange" />
   </component>
 </project>

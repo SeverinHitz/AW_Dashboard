@@ -32,7 +32,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=3),
+        ], md=globals.adaptiv_width_3['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Time"),
             dbc.CardBody(
@@ -41,7 +41,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Block Time"),
                       dbc.CardBody(
@@ -50,7 +50,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flt./Blckt."),
                       dbc.CardBody(
@@ -59,7 +59,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flights"),
             dbc.CardBody(
@@ -68,7 +68,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Landings"),
             dbc.CardBody(
@@ -77,7 +77,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flt/Res"),
                       dbc.CardBody(
@@ -86,7 +86,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Reservations"),
                       dbc.CardBody(
@@ -95,7 +95,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Cancelled"),
                       dbc.CardBody(
@@ -104,7 +104,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Canc. Ratio"),
                       dbc.CardBody(
@@ -113,7 +113,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1)
+        ], md=globals.adaptiv_width_1['md'])
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -124,7 +124,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=8),
+        ], md=globals.adaptiv_width_8['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Cancellation Reason"),
                       dbc.CardBody(
@@ -133,7 +133,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=4)
+        ], md=globals.adaptiv_width_4['md'])
     ], className="g-0")
 ])
 

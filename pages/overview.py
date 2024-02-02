@@ -26,7 +26,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=2),
+        ], md=globals.adaptiv_width_2['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flights"),
             dbc.CardBody(
@@ -35,7 +35,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=2),
+        ], md=globals.adaptiv_width_2['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HB-CQW"),
             dbc.CardBody(
@@ -44,7 +44,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HB-POX"),
             dbc.CardBody(
@@ -53,7 +53,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HB-SGZ"),
                       dbc.CardBody(
@@ -62,7 +62,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HB-SFU"),
                       dbc.CardBody(
@@ -71,7 +71,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HB-POD"),
                       dbc.CardBody(
@@ -80,7 +80,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=1),
+        ], md=globals.adaptiv_width_1['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instructions Hours"),
                       dbc.CardBody(
@@ -89,7 +89,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=3),
+        ], md=globals.adaptiv_width_3['md']),
 
     ], className="g-0"),
     dbc.Row([
@@ -101,7 +101,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=6),
+        ], md=globals.adaptiv_width_6['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instruction Time"),
                       dbc.CardBody(
@@ -110,7 +110,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], width=6)
+        ], md=globals.adaptiv_width_6['md'])
     ], className="g-0")
 ])
 
