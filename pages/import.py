@@ -17,14 +17,16 @@ import globals
 globals.init()
 
 # --------------------------------------- Text --------------------------------------------------
-table_header = [
+
+# Reqirements
+requirement_header = [
     html.Thead(html.Tr([html.Th("Data Source"), html.Th("Overview"), html.Th("Pilot"),
                         html.Th("Aircraft"), html.Th("School"),
                         html.Th("Member"), html.Th("Finance"), html.Th("Analytics")]))
 ]
 
-# Sample data
-data = [
+
+data_requirement = [
     ["Flightlog", "x", "x", "x", "x", "", "", "(x)"],
     ["Instructorlog", "x", "", "", "x", "", "", "(x)"],
     ["Reservationlog", "", "x", "", "", "", "", "(x)"],
@@ -32,19 +34,49 @@ data = [
     ["Finance", "", "", "", "", "", "x", "(x)"]
 ]
 
-table_body = [html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in data])]
+requirement_body = [html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in data_requirement])]
 
-table = dbc.Table(table_header + table_body, bordered=True, style={'font-size': 'smaller', 'padding': '1px'})
+table_requirement = dbc.Table(requirement_header + requirement_body, bordered=True,
+                              style={'font-size': 'smaller', 'padding': '1px', 'border-collapse': 'collapse'})
 
-security_text = 'This website is intended for analysing Airmanager data. The data is not\
- stored on the server but locally in the browser session. This stored data includes the following\
-  personal data: First name, surname, postcode and date of birth. All other personal data\
-   is discarded during initialisation. However, it is sent once to the server for data selection during upload.\
-    This connection is made via a secure https connection. It is still recommended to delete columns\
-     with highly sensitive data before they are uploaded (e.g. e-mail, telephone number, IBAN etc.).'
+# Security
+
+security_text = ('Our website is designed for the analysis of Airmanager data. Please note that the data is\
+ not retained on our server. Instead, it\'s temporarily held in your browser\'s Web Storage during your session.\
+  The information stored locally includes your first name, surname, postcode, and date of birth.\
+   We ensure that all other personal details are removed right at the beginning of the process.\
+    However, for the purpose of data selection, the complete dataset is transmitted to our server once.\
+     This transfer is conducted over a secure HTTPS connection. Despite this security measure, we highly\
+      advise removing or anonymizing any highly sensitive information, such as email addresses, phone numbers,\
+       and bank details (IBAN, etc.), before uploading the data.')
 
 disclosure_text ='No liability is accepted for the data and users must ensure that they operate within the\
  organisation\'s own privacy policy'
+
+# Data Format
+
+format_header = [
+    html.Thead(html.Tr([html.Th("Dataset"), html.Th("Required Columns")]))
+]
+
+data_format = [
+    ["Flightlog", "'Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort', 'FlugzeitFlugzeit',\
+         'Block Zeit', 'Benzin', 'Öl', 'Landungen', 'Flugart', 'Flugzeug'"],
+    ["Instructorlog", "'Datum', 'Pilot Vorname', 'Pilot Name', 'Fluglehrer Vorname', 'Fluglehrer Name', 'Dauer'"],
+    ["Reservationlog", "'Von', 'Bis', 'Vorname', 'Name', 'Flugzeug', 'Typ', 'Gelöscht', 'Löschgrund',\
+         'Geplante Flugzeit (hh:mm)'"],
+    ["Member", "'AirManager ID', 'Vorname', 'Name', 'PLZ', 'Geburtsdatum', 'Mitgliedschaft', 'Eintrittsdatum'"],
+    ["Finance", ""]
+]
+
+format_body = [html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in data_format])]
+
+# Complete Table
+table_format = dbc.Table(format_header + format_body, bordered=True,
+                              style={'font-size': 'smaller', 'padding': '1px', 'border-collapse': 'collapse'})
+
+
+
 
 dash.register_page(__name__, path='/', name='Import')
 
@@ -56,8 +88,10 @@ layout = html.Div([
             [
                 html.P("1. Download the data from Airmanager."),
                 html.P(
-                    "2. Upload the data by dragging and dropping it into the respective fields, following data is required per page:"),
-                table
+                    "2. Upload the data by dragging and dropping it into the respective fields below,\
+                     following data is required per page:"),
+                table_requirement,
+                html.P("3. Make sure data Structure matches the list Below."),
             ]
         )
         ])
@@ -223,7 +257,24 @@ layout = html.Div([
                       )
                       ])
         ], **globals.adaptiv_width_2),
-    ], className="g-0")
+    ], className="g-0"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Data Requirements / Format"),
+            dbc.CardBody(
+            [
+                html.P([html.B("Data Size Limitation:"),
+                        " Please note, depending on your device (mobile or desktop),\
+                 the data size should only be between 5-10 MB."]),
+                html.P([html.B("Data Format and Source:"),
+                        " The data should be a direct export from AirManager or an Excel file in the .xlsx format."]),
+                html.P([html.B("Required Data:")]),
+                table_format
+            ]
+        )
+        ])
+        ], **globals.adaptiv_width_12),
+    ], className="g-0"),
 ])
 
 
