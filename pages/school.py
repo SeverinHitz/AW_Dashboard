@@ -84,6 +84,26 @@ dbc.Row([
                       ])
         ], md=globals.adaptiv_width_6['md'])
     ], className="g-0"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("HeatMap Trainee"),
+                      dbc.CardBody(
+                          [
+                              dcc.Graph(id='HeatMap-Trainee'),
+                          ]
+                      )
+                      ])
+        ], md=globals.adaptiv_width_6['md']),
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("HeatMap Instructor"),
+                      dbc.CardBody(
+                          [
+                              dcc.Graph(id='HeatMap-Instructor'),
+                          ]
+                      )
+                      ])
+        ], md=globals.adaptiv_width_6['md'])
+    ], className="g-0")
 ])
 
 
@@ -268,6 +288,41 @@ def update_trainee_instruction_time_plot(instructorlog_dict, start_date, end_dat
         )
     trainee_instructor_time_plot.update(layout_coloraxis_showscale=False)
     trainee_instructor_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    trainee_instructor_time_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
+
+    return [trainee_instructor_time_plot]
+
+@callback(
+    [Output('HeatMap-Trainee', 'figure')],
+    [Input('instructorlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Trainee-Dropdown', 'value')]
+)
+def update_trainee_heatmap(instructorlog_dict, start_date, end_date, trainee_dropdown):
+    if instructorlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
+    # reload dataframe form dict
+    filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
+
+    if trainee_dropdown != 'Σ All Trainees':
+        filtered_instructor_df = filtered_instructor_df[filtered_instructor_df['Pilot']==trainee_dropdown]
+
+    pivot_trainee_df = dp.heatmap_preparation(filtered_instructor_df, 'Duration')
+
+    # Create Pilot Plot
+    trainee_instructor_time_plot = px.imshow(
+        pivot_trainee_df,
+        x=pivot_trainee_df.columns,
+        y=pivot_trainee_df.index,
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale
+    )
+
+    trainee_instructor_time_plot.update(layout_coloraxis_showscale=False)
     trainee_instructor_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
                                           plot_bgcolor=globals.paper_bgcolor)
