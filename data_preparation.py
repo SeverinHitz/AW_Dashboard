@@ -407,6 +407,17 @@ def instructor_aggregation(df, sort_column='Total_Duration'):
     agg_df.reset_index(inplace=True)
     return agg_df
 
+def trainee_aggregation(df, sort_column='Total_Duration'):
+    agg_df = df.groupby('Pilot').agg(
+        Total_Duration=pd.NamedAgg(column='Duration', aggfunc='sum'),
+        Number_of_Different_Instructors=pd.NamedAgg(column='Instructor', aggfunc=lambda x: x.nunique()),
+        Number_of_Instructions=pd.NamedAgg(column='Duration', aggfunc='count'),
+    )
+    agg_df['Total_Duration'] = agg_df['Total_Duration'].dt.total_seconds() / 3600
+    agg_df.sort_values(sort_column, ascending=False, inplace=True)
+    agg_df.reset_index(inplace=True)
+    return agg_df
+
 def aircraft_aggregation(df):
     agg_df = df.groupby('Aircraft').agg(
         Total_Flight_Time=pd.NamedAgg(column='Flight Time', aggfunc='sum'),
@@ -473,6 +484,22 @@ def reservation_aggregation(df):
     agg_df.sort_values('Total_Reservation_Duration', ascending=False, inplace=True)
     agg_df.reset_index(inplace=True)
     return agg_df
+
+def heatmap_preparation(df, agg_column, date_column = 'Date'):
+    # Datum in Kalenderwoche und Wochentag umwandeln, Jahr hinzufügen
+    df['YearWeek'] = df[date_column].dt.strftime('%Y-W%V')
+    df['Day'] = df[date_column].dt.dayofweek
+
+    # Aktivität pro Kalenderwoche und Jahr aggregieren
+    agg_df = df.groupby(['YearWeek', 'Day'])[agg_column].sum().reset_index()
+
+    # Pivot-Tabelle für Heatmap vorbereiten
+    pivot_df = agg_df.pivot(index="Day", columns="YearWeek", values=agg_column)
+
+    pivot_df = pivot_df.applymap(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else x)
+
+    return pivot_df
+
 
 #------------------------------------------ Merge Data ----------------------------------------------------------#
 def reservation_flight_merge(agg_res_df, agg_pilot_df, sort_column='Accepted_Reservation_Duration'):

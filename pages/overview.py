@@ -169,7 +169,6 @@ def update_flight_hours(instructorlog_dict, start_date, end_date):
     # Reload Dataframe from Dict
     filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
-    # Sum Flight Time CQW
     sum_instructor_hours = dp.sum_time_per_Column(filtered_instructor_df, None, 'Duration')
 
     return [sum_instructor_hours]
