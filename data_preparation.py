@@ -482,7 +482,7 @@ def reservation_aggregation(df):
     agg_df.reset_index(inplace=True)
     return agg_df
 
-def heatmap_preparation(df, agg_column, date_column = 'Date'):
+def heatmap_preparation(df, start_date, end_date, agg_column, date_column = 'Date'):
     # Datum in Kalenderwoche und Wochentag umwandeln, Jahr hinzufügen
     df['YearWeek'] = df[date_column].dt.strftime('%Y-W%V')
     df['Day'] = df[date_column].dt.dayofweek
@@ -490,10 +490,24 @@ def heatmap_preparation(df, agg_column, date_column = 'Date'):
     # Aktivität pro Kalenderwoche und Jahr aggregieren
     agg_df = df.groupby(['YearWeek', 'Day'])[agg_column].sum().reset_index()
 
+    # Vollständigen Datumsbereich erstellen
+    date_range = pd.date_range(start=start_date, end=end_date)
+    full_df = pd.DataFrame(date_range, columns=[date_column])
+    full_df['YearWeek'] = full_df[date_column].dt.strftime('%Y-W%V')
+    full_df['Day'] = full_df[date_column].dt.dayofweek
+
+    # Einzigartige Kombinationen von YearWeek und Day erstellen
+    full_combinations = full_df[['YearWeek', 'Day']].drop_duplicates()
+
+    # Stellen Sie sicher, dass alle Kombinationen im agg_df vorhanden sind
+    agg_df = pd.merge(full_combinations, agg_df, on=['YearWeek', 'Day'], how='left').fillna(0)
+
+
     # Pivot-Tabelle für Heatmap vorbereiten
     pivot_df = agg_df.pivot(index="Day", columns="YearWeek", values=agg_column)
 
-    pivot_df = pivot_df.applymap(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else x)
+    pivot_df = pivot_df.applymap(lambda x: x.total_seconds() / 3600 if hasattr(x, 'total_seconds') else x)
+
 
     return pivot_df
 

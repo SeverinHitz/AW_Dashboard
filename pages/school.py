@@ -35,7 +35,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_2['md']),
+        ], md=globals.adaptiv_width_3['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Trainings Sets"),
             dbc.CardBody(
@@ -44,7 +44,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_2['md']),
+        ], md=globals.adaptiv_width_3['md']),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instruction Hours"),
             dbc.CardBody(
@@ -311,7 +311,7 @@ def update_trainee_heatmap(instructorlog_dict, start_date, end_date, trainee_dro
     if trainee_dropdown != 'Σ All Trainees':
         filtered_instructor_df = filtered_instructor_df[filtered_instructor_df['Pilot']==trainee_dropdown]
 
-    pivot_trainee_df = dp.heatmap_preparation(filtered_instructor_df, 'Duration')
+    pivot_trainee_df = dp.heatmap_preparation(filtered_instructor_df, start_date, end_date, 'Duration')
 
     # Create Pilot Plot
     trainee_instructor_time_plot = px.imshow(
@@ -328,3 +328,39 @@ def update_trainee_heatmap(instructorlog_dict, start_date, end_date, trainee_dro
                                           plot_bgcolor=globals.paper_bgcolor)
 
     return [trainee_instructor_time_plot]
+
+
+@callback(
+    [Output('HeatMap-Instructor', 'figure')],
+    [Input('instructorlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Instructor-Dropdown', 'value')]
+)
+def update_instructor_heatmap(instructorlog_dict, start_date, end_date, instructor_dropdown):
+    if instructorlog_dict is None:
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
+    # reload dataframe form dict
+    filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
+
+    if instructor_dropdown != 'Σ All Instructors':
+        filtered_instructor_df = filtered_instructor_df[filtered_instructor_df['Instructor']==instructor_dropdown]
+
+    pivot_instructor_df = dp.heatmap_preparation(filtered_instructor_df, start_date, end_date, 'Duration')
+
+    # Create Pilot Plot
+    instructor_instructor_time_plot = px.imshow(
+        pivot_instructor_df,
+        x=pivot_instructor_df.columns,
+        y=pivot_instructor_df.index,
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale
+    )
+
+    instructor_instructor_time_plot.update(layout_coloraxis_showscale=False)
+    instructor_instructor_time_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
+
+    return [instructor_instructor_time_plot]
