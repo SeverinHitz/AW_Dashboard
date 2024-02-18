@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Spell Correction">
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="School Page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -406,7 +406,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706951103819</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="School Page">
+      <option name="closed" value="true" />
+      <created>1708267495348</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1708267495348</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -466,6 +474,7 @@
     <MESSAGE value="basic adaptive sizing" />
     <MESSAGE value="Some Text on Import Page" />
     <MESSAGE value="Spell Correction" />
-    <option name="LAST_COMMIT_MESSAGE" value="Spell Correction" />
+    <MESSAGE value="School Page" />
+    <option name="LAST_COMMIT_MESSAGE" value="School Page" />
   </component>
 </project>

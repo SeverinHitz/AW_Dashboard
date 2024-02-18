@@ -192,6 +192,7 @@ def data_cleanup_flightlog(df):
     df['YYYY'] = df['Date'].dt.strftime('%Y')
     df['YY-MM'] = df['Date'].dt.strftime('%y-%m')
     df['YY-MM-DD'] = df['Date'].dt.strftime('%y-%m-%d')
+    df['YY-WW'] = df['Date'].dt.strftime('%y-%W')
 
     # Set Time as Timedelta
     df['Flight Time'] = pd.to_timedelta(df['Flight Time'].astype(str))
@@ -235,14 +236,12 @@ def data_cleanup_instructorlog(df):
 
 def data_cleanup_member(df):
     # Select Columns
-    df = df[['AirManager ID', 'Vorname', 'Name', 'PLZ', 'Geburtsdatum', 'Mitgliedschaft',
+    df = df[['AirManager ID', 'PLZ', 'Geburtsdatum', 'Mitgliedschaft',
           'Eintrittsdatum']]
 
     # Rename in English
     new_columns = {
         'AirManager ID': 'AirManager ID',
-        'Vorname': 'First Name',
-        'Name': 'Last Name',
         'PLZ': 'PLZ',
         'Land': 'Country',
         'Geburtsdatum': 'Date of Birth',
@@ -251,8 +250,6 @@ def data_cleanup_member(df):
     }
 
     df.rename(columns=new_columns, inplace=True)
-
-    df.sort_values('First Name', ascending=False, inplace=True)
     df.reset_index(inplace=True, drop=True)
 
     return df
