@@ -3,7 +3,7 @@
 # Libraries
 from icecream import ic
 import dash
-from dash import Dash, dcc, html, callback, Input, Output, dash_table
+from dash import Dash, dcc, html, callback, Input, Output, dash_table, State
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
@@ -134,6 +134,17 @@ layout = html.Div([
                       )
                       ])
         ], md=globals.adaptiv_width_4['md'])
+    ], className="g-0"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Pilots Logs"),
+                      dbc.CardBody(
+                          [
+                          html.Div(id="Pilots-Data-Table")
+                          ]
+                      )
+                      ])
+        ], md=globals.adaptiv_width_12['md'])
     ], className="g-0")
 ])
 
@@ -212,7 +223,7 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
      Input('date-picker-range', 'end_date'),
      Input('Pilot-Dropdown', 'value')]
 )
-def update_pilots_header(reservationlog_dict, start_date, end_date, pilot_dropdown):
+def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_date, pilot_dropdown):
     if reservationlog_dict is None:
         reservations, cancelled = ('NO DATA',) * 2
         return reservations, cancelled
@@ -349,3 +360,46 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
 
     return [pilot_cancel_reason_plot]
 
+@callback(
+    [Output('Pilots-Data-Table', 'children')],
+    [State('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Pilot-Dropdown', 'value')]
+)
+def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None:
+        df = pd.DataFrame()
+        return [dash_table.DataTable(df.to_dict('records'))]
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+
+    if pilot_dropdown != '⌀ All Pilots':
+        filtered_flight_df = filtered_flight_df[filtered_flight_df['Pilot']==pilot_dropdown]
+
+    filtered_flight_df = filtered_flight_df[['Date', 'Pilot', 'Flight Type', 'Flight Time', 'Block Time', 'Landings',
+                                             'Aircraft', 'Departure Location', 'Arrival Location']]
+
+    dict = filtered_flight_df.to_dict('records')
+
+    table = dash_table.DataTable(data=dict,
+                                 columns=[
+                                     {"name": i, "id": i, "deletable": True, "selectable": True} for i in filtered_flight_df.columns
+                                 ],
+                                 style_header={
+                                     'backgroundColor': 'rgb(30, 30, 30)',
+                                     'color': 'white'
+                                 },
+                                 style_data={
+                                     'backgroundColor': 'rgb(50, 50, 50)',
+                                     'color': 'white'
+                                 },
+                                 page_size=16,
+                                 filter_action="native",
+                                 sort_action='native',
+                                 export_format='xlsx',
+                                 export_headers='display',
+                                 )
+
+
+    return [table]

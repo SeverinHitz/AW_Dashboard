@@ -260,7 +260,7 @@ def update_trainee_instruction_time_plot(instructorlog_dict, start_date, end_dat
      Input('date-picker-range', 'end_date'),
      Input('Instructor-Dropdown', 'value')]
 )
-def update_trainee_instruction_time_plot(instructorlog_dict, start_date, end_date, trainee_dropdown):
+def update_instructor_instruction_time_plot(instructorlog_dict, start_date, end_date, trainee_dropdown):
     if instructorlog_dict is None:
         not_data_plot = plot.not_data_figure()
         return [not_data_plot]
