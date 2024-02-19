@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="School Page">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Data Table in Pilot Page">
       <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -429,7 +427,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708280829631</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Data Table in Pilot Page">
+      <option name="closed" value="true" />
+      <created>1708369771293</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1708369771293</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -490,6 +496,7 @@
     <MESSAGE value="Some Text on Import Page" />
     <MESSAGE value="Spell Correction" />
     <MESSAGE value="School Page" />
-    <option name="LAST_COMMIT_MESSAGE" value="School Page" />
+    <MESSAGE value="Data Table in Pilot Page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Data Table in Pilot Page" />
   </component>
 </project>

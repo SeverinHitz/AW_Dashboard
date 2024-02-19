@@ -379,6 +379,9 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
 
     filtered_flight_df = filtered_flight_df[['Date', 'Pilot', 'Flight Type', 'Flight Time', 'Block Time', 'Landings',
                                              'Aircraft', 'Departure Location', 'Arrival Location']]
+    # Formatieren der 'timestamp'-Spalte in 'HH:MM'
+    filtered_flight_df['Flight Time'] = round(filtered_flight_df['Flight Time'].dt.total_seconds() / 3600, 2)
+    filtered_flight_df['Block Time'] = round(filtered_flight_df['Block Time'].dt.total_seconds() / 3600, 2)
 
     dict = filtered_flight_df.to_dict('records')
 
