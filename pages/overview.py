@@ -26,7 +26,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_2['md']),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flights"),
             dbc.CardBody(
@@ -35,52 +35,43 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_2['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("HB-CQW"),
+            dbc.Card([dbc.CardHeader("Landings"),
             dbc.CardBody(
             [
-                html.H4("XXX h", id='HB-CQW-Hours'),
+                html.H4("XXX #", id='Sum-Landings'),
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("HB-POX"),
+            dbc.Card([dbc.CardHeader("Fuel used"),
             dbc.CardBody(
             [
-                html.H4("XXX h", id='HB-POX-Hours'),
+                html.H4("XXX h", id='Sum-Fuel'),
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("HB-SGZ"),
+            dbc.Card([dbc.CardHeader("Instruction Sets"),
                       dbc.CardBody(
                           [
-                              html.H4("XXX h", id='HB-SGZ-Hours'),
+                              html.H4("XXX h", id='Sum-Instruction-Sets'),
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("HB-SFU"),
+            dbc.Card([dbc.CardHeader("Trainees"),
                       dbc.CardBody(
                           [
-                              html.H4("XXX h", id='HB-SFU-Hours'),
+                              html.H4("XXX #", id='Sum-Trainees'),
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("HB-POD"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='HB-POD-Hours'),
-                          ]
-                      )
-                      ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instructions Hours"),
                       dbc.CardBody(
@@ -89,7 +80,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_2),
 
     ], className="g-0"),
     dbc.Row([
@@ -101,7 +92,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md']),
+        ], **globals.adaptiv_width_6),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instruction Time"),
                       dbc.CardBody(
@@ -110,7 +101,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md'])
+        ], **globals.adaptiv_width_6)
     ], className="g-0")
 ])
 
@@ -118,19 +109,16 @@ layout = html.Div([
 @callback(
     [Output('Flight-Hours', 'children'),
      Output('Number-of-Flights', 'children'),
-     Output('HB-CQW-Hours', 'children'),
-     Output('HB-POX-Hours', 'children'),
-     Output('HB-SGZ-Hours', 'children'),
-     Output('HB-SFU-Hours', 'children'),
-     Output('HB-POD-Hours', 'children')],
+     Output('Sum-Landings', 'children'),
+     Output('Sum-Fuel', 'children')],
     [Input('flightlog-store', 'data'),
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(flightlog_dict, start_date, end_date):
     if flightlog_dict is None:
-        sum_total, sum_flight_str, sum_cqw, sum_pox, sum_sgz, sum_sfu, sum_pod = ('NO DATA',) * 7
-        return [sum_total, sum_flight_str, sum_cqw, sum_pox, sum_sgz, sum_sfu, sum_pod]
+        sum_total, sum_flight_str, sum_landings, sum_fuel = ('NO DATA',) * 4
+        return [sum_total, sum_flight_str, sum_landings, sum_fuel]
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -141,37 +129,39 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
     sum_flight = len(filtered_flight_df)
     sum_flight_str = f'{sum_flight} #'
 
-    # Sum Flight Time CQW
-    sum_cqw = dp.sum_time_per_Column(filtered_flight_df, 'Aircraft', 'Flight Time','HB-CQW')
-    # Sum Flight Time POX
-    sum_pox = dp.sum_time_per_Column(filtered_flight_df, 'Aircraft', 'Flight Time', 'HB-POX')
-    # Sum Flight Time sgz
-    sum_sgz = dp.sum_time_per_Column(filtered_flight_df, 'Aircraft', 'Flight Time', 'HB-SGZ')
-    # Sum Flight Time sfu
-    sum_sfu = dp.sum_time_per_Column(filtered_flight_df, 'Aircraft', 'Flight Time', 'HB-SFU')
-    # Sum Flight Time pod
-    sum_pod = dp.sum_time_per_Column(filtered_flight_df, 'Aircraft', 'Flight Time', 'HB-POD')
+    # Sum of Landings
+    sum_landings = f'{filtered_flight_df["Landings"].sum():.0f} #'
+    # Sum of Fuel
+    sum_fuel = f'{filtered_flight_df["Fuel"].sum():.0f} L'
 
 
-    return [sum_total, sum_flight_str, sum_cqw, sum_pox, sum_sgz, sum_sfu, sum_pod]
+    return [sum_total, sum_flight_str, sum_landings, sum_fuel]
 
 
 @callback(
-    [Output('Instructions-Hours', 'children')],
+    [Output('Instructions-Hours', 'children'),
+     Output('Sum-Trainees', 'children'),
+     Output('Sum-Instruction-Sets', 'children')],
     [Input('instructorlog-store', 'data'),
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')]
 )
 def update_flight_hours(instructorlog_dict, start_date, end_date):
     if instructorlog_dict is None:
-        sum_instructor_hours = ('NO DATA',) * 1
-        return [sum_instructor_hours]
+        sum_instructor_hours, sum_trainees, sum_instruction_sets = ('NO DATA',) * 3
+        return [sum_instructor_hours, sum_trainees, sum_instruction_sets]
     # Reload Dataframe from Dict
     filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
 
     sum_instructor_hours = dp.sum_time_per_Column(filtered_instructor_df, None, 'Duration')
 
-    return [sum_instructor_hours]
+    sum_trainees = filtered_instructor_df['Pilot'].nunique()
+    sum_trainees = f'{sum_trainees:.0f} #'
+
+    sum_instruction_sets = len(filtered_instructor_df)
+    sum_instruction_sets = f'{sum_instruction_sets:.0f} #'
+
+    return [sum_instructor_hours, sum_trainees, sum_instruction_sets]
 
 
 @callback(

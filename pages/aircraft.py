@@ -38,7 +38,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Time"),
             dbc.CardBody(
@@ -47,7 +47,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flights"),
                       dbc.CardBody(
@@ -56,7 +56,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("⌀ Flt Time"),
                       dbc.CardBody(
@@ -65,7 +65,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Landings"),
                       dbc.CardBody(
@@ -74,7 +74,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Airports"),
                       dbc.CardBody(
@@ -83,7 +83,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Fuel p. h."),
             dbc.CardBody(
@@ -92,7 +92,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Oil p. h."),
             dbc.CardBody(
@@ -101,7 +101,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Inst. Ratio"),
                       dbc.CardBody(
@@ -110,7 +110,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
         dbc.Col([
             dbc.Card([dbc.CardHeader("# Pilots"),
             dbc.CardBody(
@@ -119,7 +119,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_1['md']),
+        ], **globals.adaptiv_width_1),
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -130,7 +130,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md']),
+        ], **globals.adaptiv_width_4),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Type"),
                       dbc.CardBody(
@@ -139,7 +139,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md']),
+        ], **globals.adaptiv_width_4),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Heatmap"),
                       dbc.CardBody(
@@ -148,7 +148,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md'])
+        ], **globals.adaptiv_width_4)
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -159,7 +159,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_12['md'])
+        ], **globals.adaptiv_width_12)
     ], className="g-0")
 ])
 

@@ -263,8 +263,7 @@ def data_cleanup_reservation(df):
            'Flugzeug',
            'Typ',
            'Gelöscht',
-           'Löschgrund',
-           'Geplante Flugzeit (hh:mm)']]
+           'Löschgrund']]
 
     new_column = {
         'Von': 'From',
@@ -274,8 +273,7 @@ def data_cleanup_reservation(df):
         'Flugzeug': 'Airplane',
         'Typ': 'Type',
         'Gelöscht': 'Deleted',
-        'Löschgrund': 'Deletion Reason',
-        'Geplante Flugzeit (hh:mm)': 'Planned Flight Time'
+        'Löschgrund': 'Deletion Reason'
     }
     df = df.rename(columns=new_column)
     # Pilot Full Name as Column

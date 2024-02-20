@@ -38,7 +38,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Members with Status Active"),
             dbc.CardBody(
@@ -47,7 +47,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("New Activ Members in selected Timerange"),
                       dbc.CardBody(
@@ -56,7 +56,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Mean Age of Active Members"),
                       dbc.CardBody(
@@ -65,7 +65,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -76,7 +76,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md']),
+        ], **globals.adaptiv_width_4),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Admission new Active Members"),
                       dbc.CardBody(
@@ -85,7 +85,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md']),
+        ], **globals.adaptiv_width_4),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Place of Residence Activ Members"),
                       dbc.CardBody(
@@ -94,7 +94,7 @@ layout = html.Div([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_4['md'])
+        ], **globals.adaptiv_width_4)
     ], className="g-0")
 ])
 

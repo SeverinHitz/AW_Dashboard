@@ -62,7 +62,7 @@ app.layout = html.Div([
             brand_href='/',
             color='primary',
             dark=True,
-            expand='sm',
+            expand='lg',
         ),
     ]),
     page_container

@@ -63,8 +63,7 @@ data_format = [
     ["Flightlog", "'Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort', 'FlugzeitFlugzeit',\
          'Block Zeit', 'Benzin', 'Öl', 'Landungen', 'Flugart', 'Flugzeug'"],
     ["Instructorlog", "'Datum', 'Pilot Vorname', 'Pilot Name', 'Fluglehrer Vorname', 'Fluglehrer Name', 'Dauer'"],
-    ["Reservationlog", "'Von', 'Bis', 'Vorname', 'Name', 'Flugzeug', 'Typ', 'Gelöscht', 'Löschgrund',\
-         'Geplante Flugzeit (hh:mm)'"],
+    ["Reservationlog", "'Von', 'Bis', 'Vorname', 'Name', 'Flugzeug', 'Typ', 'Gelöscht', 'Löschgrund'"],
     ["Member", "'AirManager ID', 'PLZ', 'Geburtsdatum', 'Mitgliedschaft', 'Eintrittsdatum'"],
     ["Finance", ""]
 ]

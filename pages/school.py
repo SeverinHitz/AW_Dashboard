@@ -21,10 +21,10 @@ layout = html.Div([
     dbc.Row([
         dbc.Col([
             dcc.Dropdown(value='Σ All Trainees', id='Trainee-Dropdown')
-        ], md=globals.adaptiv_width_6['md']),
+        ], **globals.adaptiv_width_6),
         dbc.Col([
             dcc.Dropdown(value='Σ All Instructors', id='Instructor-Dropdown')
-        ], md=globals.adaptiv_width_6['md']),
+        ], **globals.adaptiv_width_6),
     ]),
     dbc.Row([
         dbc.Col([
@@ -35,7 +35,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Trainings Sets"),
             dbc.CardBody(
@@ -44,7 +44,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instruction Hours"),
             dbc.CardBody(
@@ -53,7 +53,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Trainees"),
             dbc.CardBody(
@@ -62,7 +62,7 @@ layout = html.Div([
             ]
         )
         ])
-        ], md=globals.adaptiv_width_3['md']),
+        ], **globals.adaptiv_width_3),
     ], className="g-0"),
 dbc.Row([
         dbc.Col([
@@ -73,7 +73,7 @@ dbc.Row([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md']),
+        ], **globals.adaptiv_width_6),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Instructor Instruction Time Plot"),
                       dbc.CardBody(
@@ -82,7 +82,7 @@ dbc.Row([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md'])
+        ], **globals.adaptiv_width_6)
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
@@ -93,7 +93,7 @@ dbc.Row([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md']),
+        ], **globals.adaptiv_width_6),
         dbc.Col([
             dbc.Card([dbc.CardHeader("HeatMap Instructor"),
                       dbc.CardBody(
@@ -102,7 +102,7 @@ dbc.Row([
                           ]
                       )
                       ])
-        ], md=globals.adaptiv_width_6['md'])
+        ], **globals.adaptiv_width_6)
     ], className="g-0")
 ])
 
