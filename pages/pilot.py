@@ -137,7 +137,7 @@ layout = html.Div([
     ], className="g-0"),
     dbc.Row([
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Pilots Logs"),
+            dbc.Card([dbc.CardHeader("Pilots Logs", id='Pilots-Data-Table-Header'),
                       dbc.CardBody(
                           [
                           html.Div(id="Pilots-Data-Table")
@@ -361,7 +361,8 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
     return [pilot_cancel_reason_plot]
 
 @callback(
-    [Output('Pilots-Data-Table', 'children')],
+    [Output('Pilots-Data-Table', 'children'),
+     Output('Pilots-Data-Table-Header', 'children'),],
     [State('flightlog-store', 'data'),
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
@@ -370,7 +371,7 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
 def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
     if flightlog_dict is None:
         df = pd.DataFrame()
-        return [dash_table.DataTable(df.to_dict('records'))]
+        return [dash_table.DataTable(df.to_dict('records')), 'Pilots Log [No Data]']
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
@@ -400,9 +401,25 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
                                  page_size=16,
                                  filter_action="native",
                                  sort_action='native',
+                                 tooltip_data=[
+                                     {
+                                         column: {'value': str(value), 'type': 'markdown'}
+                                         for column, value in row.items()
+                                     } for row in filtered_flight_df.to_dict('records')
+                                 ],
+
+                                 # Overflow into ellipsis
+                                 style_cell={
+                                     'overflow': 'hidden',
+                                     'textOverflow': 'ellipsis',
+                                     'maxWidth': 0,
+                                 },
+                                 tooltip_delay=0,
                                  export_format='xlsx',
                                  export_headers='display',
                                  )
 
+    header = f'Pilots Log {pilot_dropdown}'
 
-    return [table]
+
+    return [table, header]

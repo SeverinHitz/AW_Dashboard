@@ -3,7 +3,7 @@
 # Libraries
 from icecream import ic
 import dash
-from dash import Dash, dcc, html, callback, Input, Output, dash_table
+from dash import Dash, dcc, html, callback, Input, Output, dash_table, State
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
@@ -149,6 +149,17 @@ layout = html.Div([
                       )
                       ])
         ], md=globals.adaptiv_width_4['md'])
+    ], className="g-0"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Aircraft Logs", id='Aircraft-Data-Table-Header'),
+                      dbc.CardBody(
+                          [
+                          html.Div(id="Aircraft-Data-Table")
+                          ]
+                      )
+                      ])
+        ], md=globals.adaptiv_width_12['md'])
     ], className="g-0")
 ])
 
@@ -352,3 +363,68 @@ def update_aircraft_heat_map(flightlog_dict, start_date, end_date, aircraft_drop
                                             legend=globals.legend)
 
     return [aircraft_heatmap]
+
+
+@callback(
+    [Output('Aircraft-Data-Table', 'children'),
+     Output('Aircraft-Data-Table-Header', 'children'),],
+    [State('flightlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('Aircraft-Dropdown', 'value')]
+)
+def update_aircrafts_header_flightpart(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        df = pd.DataFrame()
+        return [dash_table.DataTable(df.to_dict('records')), 'Aircrafts Log [No Data]']
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+
+    if aircraft_dropdown != '⌀ All Aircrafts':
+        filtered_flight_df = filtered_flight_df[filtered_flight_df['Aircraft']==aircraft_dropdown]
+
+    filtered_flight_df = filtered_flight_df[['Date', 'Aircraft', 'Pilot', 'Flight Type', 'Flight Time', 'Block Time',
+                                             'Landings', 'Departure Location', 'Arrival Location']]
+    # Formatieren der 'timestamp'-Spalte in 'HH:MM'
+    filtered_flight_df['Flight Time'] = round(filtered_flight_df['Flight Time'].dt.total_seconds() / 3600, 2)
+    filtered_flight_df['Block Time'] = round(filtered_flight_df['Block Time'].dt.total_seconds() / 3600, 2)
+
+    dict = filtered_flight_df.to_dict('records')
+
+    table = dash_table.DataTable(data=dict,
+                                 columns=[
+                                     {"name": i, "id": i, "deletable": True, "selectable": True} for i in filtered_flight_df.columns
+                                 ],
+                                 style_header={
+                                     'backgroundColor': 'rgb(30, 30, 30)',
+                                     'color': 'white'
+                                 },
+                                 style_data={
+                                     'backgroundColor': 'rgb(50, 50, 50)',
+                                     'color': 'white'
+                                 },
+                                 page_size=16,
+                                 filter_action="native",
+                                 sort_action='native',
+                                 tooltip_data=[
+                                     {
+                                         column: {'value': str(value), 'type': 'markdown'}
+                                         for column, value in row.items()
+                                     } for row in filtered_flight_df.to_dict('records')
+                                 ],
+
+                                 # Overflow into ellipsis
+                                 style_cell={
+                                     'overflow': 'hidden',
+                                     'textOverflow': 'ellipsis',
+                                     'maxWidth': 0,
+                                 },
+                                 tooltip_delay=0,
+                                 export_format='xlsx',
+                                 export_headers='display',
+                                 )
+
+    header = f'Aircrafts Log {aircraft_dropdown}'
+
+
+    return [table, header]
