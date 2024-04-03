@@ -167,7 +167,7 @@ def xls_format_cleanup(df):
 def data_cleanup_flightlog(df):
     # Select Columns
     df = df[['Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort',\
-        'FlugzeitFlugzeit', 'Block Zeit', 'Benzin', 'Öl', 'Landungen',\
+        'Flugzeit', 'Block Zeit', 'Benzin', 'Öl', 'Landungen',\
         'Flugart', 'Flugzeug']]
 
     # Rename Columns
@@ -177,7 +177,7 @@ def data_cleanup_flightlog(df):
         'Name': 'Last Name',
         'Abflugort': 'Departure Location',
         'Ankunftsort': 'Arrival Location',
-        'FlugzeitFlugzeit': 'Flight Time',
+        'Flugzeit': 'Flight Time',
         'Block Zeit': 'Block Time',
         'Benzin': 'Fuel',
         'Öl': 'Oil',
