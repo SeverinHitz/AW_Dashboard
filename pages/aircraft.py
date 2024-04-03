@@ -126,7 +126,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Flight Time"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Aircraft-Flight-Time-Plot'),
+                              dcc.Loading(
+                                  id='loading-Aircraft-Flight-Time-Plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Aircraft-Flight-Time-Plot'))),
                           ]
                       )
                       ])
@@ -135,7 +139,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Flight Type"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Aircraft-Flight-Type-Plot'),
+                              dcc.Loading(
+                                  id='loading-Aircraft-Flight-Type-Plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Aircraft-Flight-Type-Plot'))),
                           ]
                       )
                       ])
@@ -144,7 +152,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Heatmap"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Aircraft-Heatmap'),
+                              dcc.Loading(
+                                  id='loading-Aircraft-Heatmap',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Aircraft-Heatmap'))),
                           ]
                       )
                       ])
@@ -155,7 +167,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Aircraft Logs", id='Aircraft-Data-Table-Header'),
                       dbc.CardBody(
                           [
-                          html.Div(id="Aircraft-Data-Table")
+                              dcc.Loading(
+                                  id='loading-Aircraft-Data-Table',
+                                  type='default',
+                                  children=html.Div(
+                                      html.Div(id="Aircraft-Data-Table")))
                           ]
                       )
                       ])

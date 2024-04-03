@@ -121,7 +121,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Flight Time"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Pilots-Flight-Time-Plot'),
+                              dcc.Loading(
+                                  id='loading-Pilots-Flight-Time-Plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Pilots-Flight-Time-Plot'))),
                           ]
                       )
                       ])
@@ -130,7 +134,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Cancellation Reason"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Pilot-Cancel-Reason'),
+                              dcc.Loading(
+                                  id='loading-Pilot-Cancel-Reason',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Pilot-Cancel-Reason'))),
                           ]
                       )
                       ])
@@ -142,7 +150,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Pilots Logs", id='Pilots-Data-Table-Header'),
                       dbc.CardBody(
                           [
-                          html.Div(id="Pilots-Data-Table")
+                              dcc.Loading(
+                                  id='loading-Pilots-Data-Table',
+                                  type='default',
+                                  children=html.Div(
+                                      html.Div(id="Pilots-Data-Table")))
                           ]
                       )
                       ])

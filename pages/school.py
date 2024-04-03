@@ -69,7 +69,11 @@ dbc.Row([
             dbc.Card([dbc.CardHeader("Trainee Instruction Time Plot"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Trainee-Instruction-Time-Plot'),
+                              dcc.Loading(
+                                  id='loading-Trainee-Instruction-Time-Plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Trainee-Instruction-Time-Plot'))),
                           ]
                       )
                       ])
@@ -78,7 +82,11 @@ dbc.Row([
             dbc.Card([dbc.CardHeader("Instructor Instruction Time Plot"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Instructor-Instruction-Time-Plot'),
+                              dcc.Loading(
+                                  id='loading-Instructor-Instruction-Time-Plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Instructor-Instruction-Time-Plot'))),
                           ]
                       )
                       ])
@@ -89,7 +97,11 @@ dbc.Row([
             dbc.Card([dbc.CardHeader("HeatMap Trainee"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='HeatMap-Trainee'),
+                              dcc.Loading(
+                                  id='loading-HeatMap-Trainee',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='HeatMap-Trainee'))),
                           ]
                       )
                       ])
@@ -98,7 +110,11 @@ dbc.Row([
             dbc.Card([dbc.CardHeader("HeatMap Instructor"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='HeatMap-Instructor'),
+                              dcc.Loading(
+                                  id='loading-HeatMap-Instructor',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='HeatMap-Instructor'))),
                           ]
                       )
                       ])

@@ -90,7 +90,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Flight Time"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='main-flight-plot'),
+                              dcc.Loading(
+                                  id='loading-main-flight-plot',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='main-flight-plot'))),
                           ]
                       )
                       ])
@@ -99,7 +103,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Instruction Time"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='main-instructor-plot'),
+                              dcc.Loading(
+                                  id='loading-main-instructor-plot',
+                                  type='cube',
+                                  children=html.Div(
+                                          dcc.Graph(id='main-instructor-plot'))),
                           ]
                       )
                       ])

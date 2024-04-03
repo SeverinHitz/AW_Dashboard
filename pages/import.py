@@ -132,7 +132,11 @@ layout = html.Div([
                             ),
                           ]
                       ),
-                      dbc.CardFooter(id='flightlog-upload-status'),
+                      dbc.CardFooter(
+                          dcc.Loading(
+                          id='loading-flightlog',
+                          type='dot',
+                          children=html.Div(id='flightlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -158,7 +162,11 @@ layout = html.Div([
                               ),
                           ]
                       ),
-                      dbc.CardFooter(id='instructorlog-upload-status'),
+                      dbc.CardFooter(
+                          dcc.Loading(
+                          id='loading-instructorlog',
+                          type='dot',
+                          children=html.Div(id='instructorlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -184,7 +192,11 @@ layout = html.Div([
                               ),
                           ]
                       ),
-                      dbc.CardFooter(id='reservationlog-upload-status'),
+                      dbc.CardFooter(
+                          dcc.Loading(
+                          id='loading-reservationlog',
+                          type='dot',
+                          children=html.Div(id='reservationlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -210,7 +222,11 @@ layout = html.Div([
                               ),
                           ]
                       ),
-                      dbc.CardFooter(id='member-upload-status'),
+                      dbc.CardFooter(
+                          dcc.Loading(
+                              id='loading-member',
+                              type='dot',
+                              children=html.Div(id='member-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -241,7 +257,11 @@ layout = html.Div([
         ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Data Status"),
-                      dbc.CardBody(
+                      dcc.Loading(
+                          id='loading-member',
+                          type='dot',
+                          children=html.Div(
+                              dbc.CardBody(
                           [
                               html.Div(id='flightlog-store-status'),
                               html.Div(id='instructorlog-store-status'),
@@ -249,7 +269,7 @@ layout = html.Div([
                               html.Div(id='member-store-status'),
                               html.Div(id='finance-store-status'),
                           ]
-                      )
+                      )))
                       ])
         ], **globals.adaptiv_width_2),
     ], className="g-0"),

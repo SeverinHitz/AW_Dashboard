@@ -72,7 +72,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Age Distribution Active Members"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Age-Distribution-Active-Members'),
+                              dcc.Loading(
+                                  id='loading-Age-Distribution-Active-Members',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Age-Distribution-Active-Members'))),
                           ]
                       )
                       ])
@@ -81,7 +85,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Admission new Active Members"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Admission-new-Active-Members'),
+                              dcc.Loading(
+                                  id='loading-Admission-new-Active-Members',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Admission-new-Active-Members'))),
                           ]
                       )
                       ])
@@ -90,7 +98,11 @@ layout = html.Div([
             dbc.Card([dbc.CardHeader("Place of Residence Activ Members"),
                       dbc.CardBody(
                           [
-                              dcc.Graph(id='Place-of-Residence-Activ-Members'),
+                              dcc.Loading(
+                                  id='loading-Place-of-Residence-Activ-Members',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='Place-of-Residence-Activ-Members'))),
                           ]
                       )
                       ])
