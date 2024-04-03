@@ -18,72 +18,76 @@ dash.register_page(__name__, path='/overview', name='Overview')  # Page Setup
 
 layout = html.Div([
     # First Row with KPI
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flight Hours"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Flight-Hours'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_2),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flights"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Number-of-Flights'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Landings"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Sum-Landings'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Fuel used"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Sum-Fuel'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_2),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Instruction Sets"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Sum-Instruction-Sets'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_2),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Trainees"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Sum-Trainees'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_2),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Instructions Hours"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Instructions-Hours'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_2),
+    dcc.Loading(
+        id='loading-kpi-overview',
+        type='default',
+        children=html.Div(
+            dbc.Row([
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flight Hours"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Flight-Hours'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_2),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flights"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Number-of-Flights'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Landings"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Sum-Landings'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Fuel used"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Sum-Fuel'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_2),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Instruction Sets"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Sum-Instruction-Sets'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_2),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Trainees"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX #", id='Sum-Trainees'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_2),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Instructions Hours"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Instructions-Hours'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_2),
 
-    ], className="g-0"),
+        ], className="g-0"))),
     # First Row with Graphs
     dbc.Row([
         dbc.Col([

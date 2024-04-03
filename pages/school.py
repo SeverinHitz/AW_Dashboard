@@ -26,45 +26,49 @@ layout = html.Div([
             dcc.Dropdown(value='Σ All Instructors', id='Instructor-Dropdown')
         ], **globals.adaptiv_width_6),
     ]),
+    dcc.Loading(
+        id='loading-kpi-school',
+        type='default',
+        children=html.Div(
+            dbc.Row([
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Instruction Hours"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Instruction-Hours-Trainee'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Trainings Sets"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Trainings-Sets-Trainee'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Instruction Hours"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Instruction-Hours-Instructor'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Trainees"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Number-of-Trainees'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+        ], className="g-0"))),
     dbc.Row([
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Instruction Hours"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Instruction-Hours-Trainee'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Trainings Sets"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Trainings-Sets-Trainee'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Instruction Hours"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Instruction-Hours-Instructor'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Trainees"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Number-of-Trainees'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-    ], className="g-0"),
-dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Trainee Instruction Time Plot"),
                       dbc.CardBody(

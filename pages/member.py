@@ -29,44 +29,48 @@ dash.register_page(__name__, path='/member', name='Member')
 
 
 layout = html.Div([
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Total Members"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Number-of-Members'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Members with Status Active"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Member-Status-Active'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("New Activ Members in selected Timerange"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='New-in-Timerange'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Mean Age of Active Members"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Mean-Age-of-Active-Members'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_3),
-    ], className="g-0"),
+    dcc.Loading(
+        id='loading-kpi-members',
+        type='default',
+        children=html.Div(
+            dbc.Row([
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Total Members"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Number-of-Members'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Members with Status Active"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Member-Status-Active'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("New Activ Members in selected Timerange"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX #", id='New-in-Timerange'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Mean Age of Active Members"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Mean-Age-of-Active-Members'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_3),
+        ], className="g-0"))),
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Age Distribution Active Members"),

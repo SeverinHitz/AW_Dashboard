@@ -29,98 +29,102 @@ layout = html.Div([
     dbc.Row([
         dcc.Dropdown(value='⌀ All Aircrafts', id='Aircraft-Dropdown')
     ]),
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Aircraft"),
-            dbc.CardBody(
-            [
-                html.H4("Name", id='Aircraft-Registration'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flight Time"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Aircraft-Flight-Hours'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flights"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Aircraft-Number-of-Flights'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("⌀ Flt Time"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Landings"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Aircraft-Number-of-Landings'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Airports"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Aircraft-Number-of-Airports'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Fuel p. h."),
-            dbc.CardBody(
-            [
-                html.H4("XXX L", id='Aircraft-Fuel-per-Hour'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Oil p. h."),
-            dbc.CardBody(
-            [
-                html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Inst. Ratio"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("# Pilots"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-    ], className="g-0"),
+    dcc.Loading(
+        id='loading-kpi-aircraft',
+        type='default',
+        children=html.Div(
+            dbc.Row([
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Aircraft"),
+                dbc.CardBody(
+                [
+                    html.H4("Name", id='Aircraft-Registration'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flight Time"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Aircraft-Flight-Hours'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flights"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX #", id='Aircraft-Number-of-Flights'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("⌀ Flt Time"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Landings"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX #", id='Aircraft-Number-of-Landings'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Airports"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX #", id='Aircraft-Number-of-Airports'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Fuel p. h."),
+                dbc.CardBody(
+                [
+                    html.H4("XXX L", id='Aircraft-Fuel-per-Hour'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Oil p. h."),
+                dbc.CardBody(
+                [
+                    html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Inst. Ratio"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("# Pilots"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+        ], className="g-0"))),
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Time"),

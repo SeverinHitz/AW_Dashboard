@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="fix column-missmatch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="loading-state" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -69,7 +64,7 @@
     "Python.testing_store.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "loading-state",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages"
   }

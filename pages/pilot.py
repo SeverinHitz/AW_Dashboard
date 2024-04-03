@@ -23,98 +23,102 @@ layout = html.Div([
         dcc.Dropdown(value='⌀ All Pilots', id='Pilot-Dropdown')
     ]),
     # KPI Row Pilot
-    dbc.Row([
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Pilot"),
-            dbc.CardBody(
-            [
-                html.H4("Name", id='Pilot-Name'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_3),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flight Time"),
-            dbc.CardBody(
-            [
-                html.H4("XXX h", id='Pilot-Flight-Hours'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Block Time"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Block-Hours'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flt./Blckt."),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Flight-Block-Time'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flights"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Pilot-Number-of-Flights'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Landings"),
-            dbc.CardBody(
-            [
-                html.H4("XXX #", id='Pilot-Number-of-Landings'),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Flt/Res"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Res-to-Flight-Time'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Reservations"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Pilot-Reservation'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Cancelled"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Pilot-Cancelled'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Canc. Ratio"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Cancelled-Ratio'),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_1)
-    ], className="g-0"),
+    dcc.Loading(
+        id='loading-kpi-pilot',
+        type='default',
+        children=html.Div(
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Pilot"),
+                dbc.CardBody(
+                [
+                    html.H4("Name", id='Pilot-Name'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_3),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flight Time"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX h", id='Pilot-Flight-Hours'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Block Time"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX %", id='Pilot-Block-Hours'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flt./Blckt."),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX %", id='Pilot-Flight-Block-Time'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flights"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Pilot-Number-of-Flights'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Landings"),
+                dbc.CardBody(
+                [
+                    html.H4("XXX #", id='Pilot-Number-of-Landings'),
+                ]
+            )
+            ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Flt/Res"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX %", id='Pilot-Res-to-Flight-Time'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Reservations"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Pilot-Reservation'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Cancelled"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX h", id='Pilot-Cancelled'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1),
+            dbc.Col([
+                dbc.Card([dbc.CardHeader("Canc. Ratio"),
+                          dbc.CardBody(
+                              [
+                                  html.H4("XXX %", id='Pilot-Cancelled-Ratio'),
+                              ]
+                          )
+                          ])
+            ], **globals.adaptiv_width_1)
+        ], className="g-0"))),
     # First Row of Plots
     dbc.Row([
         dbc.Col([
