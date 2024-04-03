@@ -1,34 +1,37 @@
-
-# Import Libraries
+# Import necessary libraries
 import pandas as pd
 from dash import Dash, html, dcc, page_container
 import dash_bootstrap_components as dbc
 from datetime import datetime
-from icecream import ic
 import logging
+from icecream import ic
+
+# Set up logging configuration
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s - %(message)s')
 
-# Import other Files
+# Import other files
 import data_preparation as dp
 import globals
 
+# Initialize global variables
 globals.init()
 
-# Images
+# Path to logo image
 logo_path = "assets/AW_Logo_breit.png"
 
-
+# Define start and end dates for date picker range
 end_date = datetime.now()
 start_date = end_date - pd.DateOffset(months=3)
 
-#################################### App Section ##################################################
-
+# Initialize Dash app
 app = Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=[globals.stylesheet])
-server = app.server # When deployed
+server = app.server  # When deployed
 
+# Define layout of the app
 app.layout = html.Div([
     html.Div([
+        # Stores for session data
         dcc.Store(id='flightlog-store', storage_type='session'),
         dcc.Store(id='instructorlog-store', storage_type='session'),
         dcc.Store(id='reservationlog-store', storage_type='session'),
@@ -41,6 +44,7 @@ app.layout = html.Div([
         dcc.Store(id='finance-store-date', storage_type='session')
     ]),
     html.Div([
+        # Navigation bar
         dbc.NavbarSimple(
             children=[
                 dbc.NavItem(dbc.NavLink('Import', href='/')),
@@ -68,9 +72,6 @@ app.layout = html.Div([
     page_container
 ])
 
-
-
-
+# Run the app if this script is being executed directly
 if __name__ == '__main__':
-    # Run app
     app.run_server(debug=False)

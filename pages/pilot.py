@@ -1,28 +1,28 @@
 # Pilot page
 
 # Libraries
-from icecream import ic
-import dash
-from dash import Dash, dcc, html, callback, Input, Output, dash_table, State
-import dash_bootstrap_components as dbc
-import pandas as pd
-import plotly.express as px
+from icecream import ic  # Debugging library for printing variable values
+import dash   # Core Dash library
+from dash import Dash, dcc, html, callback, Input, Output, dash_table, State  # Dash components for building
+import dash_bootstrap_components as dbc  # Dash components styled with Bootstrap
+import pandas as pd  # Data manipulation library
+import plotly.express as px  # Library for handling dates and times
 import numpy as np
 # Import other Files
-import data_preparation as dp
-import globals
+import data_preparation as dp  # Custom module for data preparation tasks
+import globals  # Custom module for global variables and settings
 import plot
 
-globals.init()
+globals.init()  # Initialize global variables
 
-
-
-dash.register_page(__name__, path='/pilot', name='Pilot')
+dash.register_page(__name__, path='/pilot', name='Pilot')  # Page Setup
 
 layout = html.Div([
+    # Dropdown Menu
     dbc.Row([
         dcc.Dropdown(value='⌀ All Pilots', id='Pilot-Dropdown')
     ]),
+    # KPI Row Pilot
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Pilot"),
@@ -115,6 +115,7 @@ layout = html.Div([
                       ])
         ], **globals.adaptiv_width_1)
     ], className="g-0"),
+    # First Row of Plots
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Time"),
@@ -135,6 +136,7 @@ layout = html.Div([
                       ])
         ], **globals.adaptiv_width_4)
     ], className="g-0"),
+    # Datatable Pilots
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Pilots Logs", id='Pilots-Data-Table-Header'),
@@ -148,39 +150,40 @@ layout = html.Div([
     ], className="g-0")
 ])
 
-@callback(Output('Pilot-Dropdown', 'options'),
-          Input('flightlog-store', 'data'),
+# Callback that populates the Dropdownmenu from the Data
+@callback(Output('Pilot-Dropdown', 'options'),  # Dropdown Data
+          Input('flightlog-store', 'data'),  # Flightlog Data Dict
           Input('date-picker-range', 'start_date'),
           Input('date-picker-range', 'end_date'))
 def update_dropdown(flightlog_dict, start_date, end_date):
-    if flightlog_dict is None:
+    if flightlog_dict is None: # If no Flightlog Data is Available
         pilots = []
-        pilots = np.append(pilots, '⌀ All Pilots')
+        pilots = np.append(pilots, '⌀ All Pilots') # Append the generic Item to list
         return pilots
 
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-
-    pilots = filtered_flight_df['Pilot'].sort_values().unique()
+    pilots = filtered_flight_df['Pilot'].sort_values().unique()  # Get Unique Pilots
     # Append '⌀ All Pilots' to the array of unique pilot names
     pilots = np.append(pilots, '⌀ All Pilots')
 
     return pilots
 
+# Callback that handles the KPI form the Flightlog per Pilot
 @callback(
-    [Output('Pilot-Name', 'children'),
-     Output('Pilot-Flight-Hours', 'children'),
-     Output('Pilot-Block-Hours', 'children'),
-     Output('Pilot-Flight-Block-Time', 'children'),
-     Output('Pilot-Number-of-Flights', 'children'),
-     Output('Pilot-Number-of-Landings', 'children')],
-    [Input('flightlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+    [Output('Pilot-Name', 'children'),  # Name of Pilot
+     Output('Pilot-Flight-Hours', 'children'),  # KPI Flight hours
+     Output('Pilot-Block-Hours', 'children'),  # KPI Block Hours
+     Output('Pilot-Flight-Block-Time', 'children'),  # KPI Ratio Flight to Block
+     Output('Pilot-Number-of-Flights', 'children'),  # KPI Number of Flights
+     Output('Pilot-Number-of-Landings', 'children')],  # KPI Number of Landings
+    [Input('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Datepicker
+     Input('date-picker-range', 'end_date'),  # End Date form Datepicker
+     Input('Pilot-Dropdown', 'value')]  # Selected Pilot from Dropdown
 )
 def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
-    if flightlog_dict is None:
+    if flightlog_dict is None: # If no Flightlog is available
         pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
             sum_flights, sum_landings = ('NO DATA',) * 6
         return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
@@ -191,7 +194,7 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
     # Aggregate Pilots Data
     agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
 
-    if pilot_dropdown == '⌀ All Pilots':
+    if pilot_dropdown == '⌀ All Pilots': # If All Pilots are selected
         agg_pilot_df = agg_pilot_df.iloc[:, 1:].mean().to_frame().T
     else:
         agg_pilot_df = agg_pilot_df[agg_pilot_df['Pilot']==pilot_dropdown]
@@ -214,24 +217,25 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
     return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
         sum_flights, sum_landings
 
+# Callback that handles Reservationslog KPIs
 @callback(
     [
-     Output('Pilot-Reservation', 'children'),
-     Output('Pilot-Cancelled', 'children')],
-    [Input('reservationlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+     Output('Pilot-Reservation', 'children'),  # KPI Pilots Reservations
+     Output('Pilot-Cancelled', 'children')],  # KPI Reservation cancelled
+    [Input('reservationlog-store', 'data'),  # Reservation log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value')]  # Value from Dropdown
 )
 def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_date, pilot_dropdown):
-    if reservationlog_dict is None:
+    if reservationlog_dict is None:  # If No Reservations log Data is available
         reservations, cancelled = ('NO DATA',) * 2
         return reservations, cancelled
     # reload dataframe form dict
     filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
 
-    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
-    if pilot_dropdown == '⌀ All Pilots':
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # Aggregate Date
+    if pilot_dropdown == '⌀ All Pilots':  # If all Pilots are Selected
         agg_reservation_df = agg_reservation_df.iloc[:, 1:].mean().to_frame().T
     else:
         agg_reservation_df = agg_reservation_df[agg_reservation_df['Pilot']==pilot_dropdown]
@@ -241,39 +245,37 @@ def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_da
         reservations = f'{agg_reservation_df.iloc[0]["Reservations"]:.0f} #'
         # Pilots Cancelled Reservation
         cancelled = f'{agg_reservation_df.iloc[0]["Cancelled"]:.0f} #'
-    else:
+    else:  # If Data is empty
         reservations, cancelled = ('NO DATA',) * 2
 
     return reservations, cancelled
 
+# Callback that handles the combinded KPIs from Flightlog and Reservation log
 @callback(
     [
-     Output('Pilot-Res-to-Flight-Time', 'children'),
-     Output('Pilot-Cancelled-Ratio', 'children')],
-    [Input('flightlog-store', 'data'),
-     Input('reservationlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+     Output('Pilot-Res-to-Flight-Time', 'children'),  # KPI Flight to Res Time
+     Output('Pilot-Cancelled-Ratio', 'children')],  # KPI Cancelled Ratio
+    [Input('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('reservationlog-store', 'data'),  # Reservation Log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value')]  # Selected Pilot from Dropdown
 )
-def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown):
-    if flightlog_dict is None or reservationlog_dict is None:
+def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None or reservationlog_dict is None:  # If one of the logs is not available
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
         return res_flight_time, cancelled_ratio
-    # reload dataframe form dict
+    # reload flightlog dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-    # reload dataframe form dict
+    # reload reservation dataframe form dict
     filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
 
-    reservation_sum = filtered_reservation_df[filtered_reservation_df['Deleted']]['Deletion Reason'].value_counts()
-    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # aggregate reservations log
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df) # Aggregate Flight log Data
+    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df) # Merge the flight and reservation log
 
-    # Aggregate Pilots Data
-    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
-
-    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df)
-    if pilot_dropdown == '⌀ All Pilots':
-        agg_flight_res_df = agg_flight_res_df.iloc[:, 1:].mean().to_frame().T
+    if pilot_dropdown == '⌀ All Pilots':  # If all Pilots are selected
+        agg_flight_res_df = agg_flight_res_df.iloc[:, 1:].mean().to_frame().T  # Calculate Mean of Columns and transform
     else:
         agg_flight_res_df = agg_flight_res_df[agg_flight_res_df['Pilot']==pilot_dropdown]
 
@@ -282,21 +284,21 @@ def update_pilots_header(flightlog_dict, reservationlog_dict, start_date, end_da
         res_flight_time = f'{agg_flight_res_df.iloc[0]["Flight_to_Reservation_Time"]*100:.2f} %'
         # Pilots Cancelled Ratio
         cancelled_ratio = f'{agg_flight_res_df.iloc[0]["Ratio_Cancelled"]*100:.2f} %'
-    else:
+    else:  # If no Data is given
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
 
     return res_flight_time, cancelled_ratio
 
-
+# Callback that handles the Flight Time Graph
 @callback(
-    [Output('Pilots-Flight-Time-Plot', 'figure')],
-    [Input('flightlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+    [Output('Pilots-Flight-Time-Plot', 'figure')],  # Flight Time Graph
+    [Input('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value')]  # Value from Pilots Dropdown
 )
 def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
-    if flightlog_dict is None:
+    if flightlog_dict is None:  # If no Flight log Data is available
         not_data_plot = plot.not_data_figure()
         return [not_data_plot]
     # reload dataframe form dict
@@ -312,7 +314,7 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
         template=globals.plot_template,
         color_continuous_scale=globals.color_scale
     )
-    # Update the color of the selected pilot in the bar plot
+    # Update the color of the bar Plot so the Pilot selected is visable
     if pilot_dropdown != '⌀ All Pilots':
         pilots_flight_time_plot.update_traces(
             marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0] for pilot in agg_pilot_df['Pilot']]),
@@ -327,20 +329,22 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
 
     return [pilots_flight_time_plot]
 
+
+# Callback that handles the Reservations Log Graph
 @callback(
-    [Output('Pilot-Cancel-Reason', 'figure')],
-    [Input('reservationlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+    [Output('Pilot-Cancel-Reason', 'figure')],  # Reservations log Graph
+    [Input('reservationlog-store', 'data'),  # Reservations log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value')]  # Selected Pilot in Dropdown
 )
 def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dropdown):
-    if reservationlog_dict is None:
+    if reservationlog_dict is None:  # If no Reservationslog is Available
         not_data_plot = plot.not_data_figure()
         return [not_data_plot]
     # reload dataframe form dict
     filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
-    if pilot_dropdown != '⌀ All Pilots':
+    if pilot_dropdown != '⌀ All Pilots':  # If All Pilts are Selected
         filtered_reservation_df = filtered_reservation_df[filtered_reservation_df['Pilot']==pilot_dropdown]
     reservation_sum = filtered_reservation_df[filtered_reservation_df['Deleted']]['Deletion Reason'].value_counts()
 
@@ -360,22 +364,23 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
 
     return [pilot_cancel_reason_plot]
 
+# Callback that handles the Datatable for Pilots
 @callback(
-    [Output('Pilots-Data-Table', 'children'),
-     Output('Pilots-Data-Table-Header', 'children'),],
-    [State('flightlog-store', 'data'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('Pilot-Dropdown', 'value')]
+    [Output('Pilots-Data-Table', 'children'),  # Datatable
+     Output('Pilots-Data-Table-Header', 'children'),],  # CardHeader with Name of Pilots
+    [State('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value')]  # Selected Pilot form Dropdown
 )
 def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
-    if flightlog_dict is None:
+    if flightlog_dict is None:  # If no Flight Log Data is available
         df = pd.DataFrame()
         return [dash_table.DataTable(df.to_dict('records')), 'Pilots Log [No Data]']
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
 
-    if pilot_dropdown != '⌀ All Pilots':
+    if pilot_dropdown != '⌀ All Pilots':  # If all Pilots are Selected
         filtered_flight_df = filtered_flight_df[filtered_flight_df['Pilot']==pilot_dropdown]
 
     filtered_flight_df = filtered_flight_df[['Date', 'Pilot', 'Flight Type', 'Flight Time', 'Block Time', 'Landings',
@@ -384,10 +389,10 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
     filtered_flight_df['Flight Time'] = round(filtered_flight_df['Flight Time'].dt.total_seconds() / 3600, 2)
     filtered_flight_df['Block Time'] = round(filtered_flight_df['Block Time'].dt.total_seconds() / 3600, 2)
 
-    dict = filtered_flight_df.to_dict('records')
+    dict = filtered_flight_df.to_dict('records')  # Change to Dict for Dash Data Table
 
     table = dash_table.DataTable(data=dict,
-                                 columns=[
+                                 columns=[  # Setup for Columns
                                      {"name": i, "id": i, "deletable": True, "selectable": True} for i in filtered_flight_df.columns
                                  ],
                                  style_header={
@@ -398,16 +403,15 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
                                      'backgroundColor': 'rgb(50, 50, 50)',
                                      'color': 'white'
                                  },
-                                 page_size=16,
+                                 page_size=16,  # Listed Entrys per Page
                                  filter_action="native",
                                  sort_action='native',
                                  tooltip_data=[
-                                     {
+                                     {  # Tool Tip so overflow can be visable in a Popup
                                          column: {'value': str(value), 'type': 'markdown'}
                                          for column, value in row.items()
                                      } for row in filtered_flight_df.to_dict('records')
                                  ],
-
                                  # Overflow into ellipsis
                                  style_cell={
                                      'overflow': 'hidden',

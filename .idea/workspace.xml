@@ -7,15 +7,9 @@
     <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Data Table in Pilot Page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/import.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/import.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/member.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +67,7 @@
     "Python.testing_store.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Generic-Overview-Page",
+    "git-widget-placeholder": "Code-documentation",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages"
   }
@@ -153,8 +147,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.main" />
       <item itemvalue="Python.app" />
+      <item itemvalue="Python.main" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -453,7 +447,15 @@
       <option name="project" value="LOCAL" />
       <updated>1708370271852</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Generic Overview | Addaptive Sizing">
+      <option name="closed" value="true" />
+      <created>1708445777418</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1708445777418</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -515,6 +517,7 @@
     <MESSAGE value="Spell Correction" />
     <MESSAGE value="School Page" />
     <MESSAGE value="Data Table in Pilot Page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Data Table in Pilot Page" />
+    <MESSAGE value="Generic Overview | Addaptive Sizing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Generic Overview | Addaptive Sizing" />
   </component>
 </project>
