@@ -10,6 +10,8 @@ import plotly.express as px
 import numpy as np
 # Import other Files
 import data_preparation as dp
+import trend_calculation as tc
+import string_func as sf
 import globals
 import plot
 
@@ -48,51 +50,57 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Aircraft-Flight-Hours'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Flight-Hours-Trend')
                 ]
             )
             ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flights"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX #", id='Aircraft-Number-of-Flights'),
-                              ]
-                          )
-                          ])
+                  dbc.CardBody(
+                      [
+                          html.H4("XXX #", id='Aircraft-Number-of-Flights'),
+                          html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Flights-Trend')
+                      ]
+                  )
+                  ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("⌀ Flt Time"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Mean-Flight-Time-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Landings"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX #", id='Aircraft-Number-of-Landings'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX #", id='Aircraft-Number-of-Landings'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Landings-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Airports"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX #", id='Aircraft-Number-of-Airports'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX #", id='Aircraft-Number-of-Airports'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Airports-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Fuel p. h."),
                 dbc.CardBody(
                 [
                     html.H4("XXX L", id='Aircraft-Fuel-per-Hour'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Fuel-per-Hour-Trend')
                 ]
             )
             ])
@@ -102,24 +110,27 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Oil-per-Hour-Trend')
                 ]
             )
             ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Inst. Ratio"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
-                              ]
-                          )
-                          ])
+                  dbc.CardBody(
+                      [
+                          html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
+                          html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Instruction-Ratio-Trend')
+                      ]
+                  )
+                  ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("# Pilots"),
                 dbc.CardBody(
                 [
                     html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Pilots-Trend')
                 ]
             )
             ])
@@ -202,30 +213,110 @@ def update_dropdown(flightlog_dict, start_date, end_date):
     return aircrafts
 
 
-
-
 @callback(
-    [Output('Aircraft-Registration', 'children'),
-     Output('Aircraft-Flight-Hours', 'children'),
+    [Output('Aircraft-Registration', 'children')],
+    [Input('Aircraft-Dropdown', 'value')])
+def update_pilots_header(aircraft_dropdown):
+    return [aircraft_dropdown]
+
+
+@callback([Output('Aircraft-Flight-Hours', 'children'),
+     Output('Aircraft-Flight-Hours-Trend', 'children'),
+     Output('Aircraft-Flight-Hours-Trend', 'style'),
+
      Output('Aircraft-Number-of-Flights', 'children'),
+     Output('Aircraft-Number-of-Flights-Trend', 'children'),
+     Output('Aircraft-Number-of-Flights-Trend', 'style'),
+
      Output('Aircraft-Mean-Flight-Time', 'children'),
+     Output('Aircraft-Mean-Flight-Time-Trend', 'children'),
+     Output('Aircraft-Mean-Flight-Time-Trend', 'style'),
+
      Output('Aircraft-Number-of-Landings', 'children'),
+     Output('Aircraft-Number-of-Landings-Trend', 'children'),
+     Output('Aircraft-Number-of-Landings-Trend', 'style'),
+
      Output('Aircraft-Number-of-Airports', 'children'),
+     Output('Aircraft-Number-of-Airports-Trend', 'children'),
+     Output('Aircraft-Number-of-Airports-Trend', 'style'),
+
      Output('Aircraft-Fuel-per-Hour', 'children'),
+     Output('Aircraft-Fuel-per-Hour-Trend', 'children'),
+     Output('Aircraft-Fuel-per-Hour-Trend', 'style'),
+
      Output('Aircraft-Oil-per-Hour', 'children'),
+     Output('Aircraft-Oil-per-Hour-Trend', 'children'),
+     Output('Aircraft-Oil-per-Hour-Trend', 'style'),
+
      Output('Aircraft-Instruction-Ratio', 'children'),
-     Output('Aircraft-Number-of-Pilots', 'children')],
+     Output('Aircraft-Instruction-Ratio-Trend', 'children'),
+     Output('Aircraft-Instruction-Ratio-Trend', 'style'),
+
+     Output('Aircraft-Number-of-Pilots', 'children'),
+     Output('Aircraft-Number-of-Pilots-Trend', 'children'),
+     Output('Aircraft-Number-of-Pilots-Trend', 'style')],
     [Input('flightlog-store', 'data'),
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    ic(aircraft_dropdown)
     if flightlog_dict is None:
-        aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
-            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 10
-        return aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
-            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots
+        sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
+            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 9
+        sum_flight_time_trend, sum_flights_trend, mean_flight_time_trend, sum_landings_trend, \
+            sum_airports_trend, fuel_per_hour_trend, oil_per_hour_trend, instruction_ratio_trend, sum_pilots_trend\
+            = ('trend na',) * 9
+        sum_flight_time_trend_style, sum_flights_trend_style, \
+            mean_flight_time_trend_style, sum_landings_trend_style, sum_airports_trend_style, \
+            fuel_per_hour_trend_style, oil_per_hour_trend_style, instruction_ratio_trend_style,\
+            sum_pilots_trend_style = ('NO DATA',) * 9
+        return [sum_flight_time, sum_flight_time_trend, sum_flight_time_trend_style,
+                sum_flights, sum_flights_trend, sum_flights_trend_style,
+                mean_flight_time, mean_flight_time_trend, mean_flight_time_trend_style,
+                sum_landings, sum_landings_trend, sum_landings_trend_style,
+                sum_airports, sum_airports_trend, sum_airports_trend_style,
+                fuel_per_hour, fuel_per_hour_trend, fuel_per_hour_trend_style,
+                oil_per_hour, oil_per_hour_trend, oil_per_hour_trend_style,
+                instruction_ratio, instruction_ratio_trend, instruction_ratio_trend_style,
+                sum_pilots, sum_pilots_trend, sum_pilots_trend_style]
+
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+        filtered_flight_df_trend = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date,
+                                                                           offset)
+        # Aggregate Pilots Data
+        agg_aircraft_df_trend = dp.aircraft_aggregation(filtered_flight_df_trend)
+        if len(filtered_flight_df) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_aircraft_page_flightlog(agg_aircraft_df,
+                                                                       agg_aircraft_df_trend,
+                                                                       aircraft_dropdown)
+        kpi = sf.trend_string_aircraft_page_flightlog(selected)
+        # Get Return list with trend
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
+
+    except Exception as e:  # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_aircraft_page_flightlog(filtered_flight_df, aircraft_dropdown)  # Only the Kpis
+        kpi = sf.trend_string_overview_page_flightlog(selected)
+        trend_strings, trend_styles = sf.trend_string()
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
+
+    return return_list
+
+'''
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # Aggregate Pilots Data
@@ -262,7 +353,7 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
     return aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
             sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots
 
-
+'''
 @callback(
     [Output('Aircraft-Flight-Time-Plot', 'figure')],
     [Input('flightlog-store', 'data'),

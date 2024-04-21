@@ -41,7 +41,8 @@ app.layout = html.Div([
         dcc.Store(id='instructorlog-store-date', storage_type='session'),
         dcc.Store(id='reservationlog-store-date', storage_type='session'),
         dcc.Store(id='member-store-date', storage_type='session'),
-        dcc.Store(id='finance-store-date', storage_type='session')
+        dcc.Store(id='finance-store-date', storage_type='session'),
+        dcc.Store(id='trend-switch', storage_type='session')
     ]),
     html.Div([
         # Navigation bar
@@ -55,6 +56,7 @@ app.layout = html.Div([
                 dbc.NavItem(dbc.NavLink('Member', href='/member')),
                 dbc.NavItem(dbc.NavLink('Finance', href='/finance')),
                 dbc.NavItem(dbc.NavLink('Analytics', href='/analytics')),
+                # dcc.RadioItems(['last Year', 'last Periode'], 'last Year'),
                 dcc.DatePickerRange(
                     id='date-picker-range',
                     start_date=start_date,

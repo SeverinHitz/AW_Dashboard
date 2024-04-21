@@ -67,7 +67,7 @@ def load_eu_airports(filename):
     return eu_airports_df
 
 
-def reload_flightlog_dataframe_from_dict(dict, start_date, end_date):
+def reload_flightlog_dataframe_from_dict(dict, start_date, end_date, offset=0):
     # Load Data from Store
     flight_df = pd.DataFrame.from_dict(dict)
     # Convert the 'date_column' to timestamps
@@ -79,12 +79,17 @@ def reload_flightlog_dataframe_from_dict(dict, start_date, end_date):
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
+    if offset != 0:
+        # Subtract one year from start_date and end_date
+        start_date -= pd.DateOffset(years=offset)
+        end_date -= pd.DateOffset(years=offset)
+
     # Filter Flightlog data based on the selected date range
     filtered_flight_df = date_select_df(flight_df, start_date, end_date)
 
     return filtered_flight_df
 
-def reload_instructor_dataframe_from_dict(dict, start_date, end_date):
+def reload_instructor_dataframe_from_dict(dict, start_date, end_date, offset=0):
     # Load Data from Store
     instructor_df = pd.DataFrame.from_dict(dict)
     # Convert the 'date_column' to timestamps
@@ -94,6 +99,11 @@ def reload_instructor_dataframe_from_dict(dict, start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
+    if offset != 0:
+        # Subtract one year from start_date and end_date
+        start_date -= pd.DateOffset(years=offset)
+        end_date -= pd.DateOffset(years=offset)
 
     # Filter Instructorlog data based on the selected date range
     filtered_instructor_df = date_select_df(instructor_df, start_date, end_date)

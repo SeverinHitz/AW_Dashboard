@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="fix column-missmatch">
+    <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="loading state (KPI)">
+      <change afterPath="$PROJECT_DIR$/string_func.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trend_calculation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,7 +28,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="loading-state" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -64,7 +69,7 @@
     "Python.testing_store.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Trend-KPI",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages"
   }
@@ -468,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1712142832421</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="loading state (KPI)">
+      <option name="closed" value="true" />
+      <created>1712146135047</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1712146135047</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -506,7 +519,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="First Try" />
     <MESSAGE value="241228" />
     <MESSAGE value="241229" />
     <MESSAGE value="241230" />
@@ -531,6 +543,7 @@
     <MESSAGE value="Generic Overview | Addaptive Sizing" />
     <MESSAGE value="Code Documentation" />
     <MESSAGE value="fix column-missmatch" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix column-missmatch" />
+    <MESSAGE value="loading state (KPI)" />
+    <option name="LAST_COMMIT_MESSAGE" value="loading state (KPI)" />
   </component>
 </project>

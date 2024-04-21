@@ -9,6 +9,8 @@ import pandas as pd  # Data manipulation library
 import plotly.express as px  # Library for handling dates and times
 # Import other Files
 import data_preparation as dp  # Custom module for data preparation tasks
+import trend_calculation as tc
+import string_func as sf
 import globals  # Custom module for global variables and settings
 import plot
 
@@ -28,6 +30,7 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Flight-Hours'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Flight-Hours-Trend')
                 ]
             )
             ])
@@ -37,6 +40,7 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Number-of-Flights'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Number-of-Flights-Trend')
                 ]
             )
             ])
@@ -46,6 +50,7 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX #", id='Sum-Landings'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Sum-Landings-Trend')
                 ]
             )
             ])
@@ -55,36 +60,40 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Sum-Fuel'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Sum-Fuel-Trend')
                 ]
             )
             ])
             ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Instruction Sets"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX h", id='Sum-Instruction-Sets'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX h", id='Sum-Instruction-Sets'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Sum-Instruction-Sets-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Trainees"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX #", id='Sum-Trainees'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX #", id='Sum-Trainees'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Sum-Trainees-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Instructions Hours"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX h", id='Instructions-Hours'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX h", id='Instructions-Hours'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Instructions-Hours-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_2),
 
         ], className="g-0"))),
@@ -123,40 +132,77 @@ layout = html.Div([
 # Callback that handles the KPI from the Flightlog
 @callback(
     [Output('Flight-Hours', 'children'),  # KPI Flighthours
+    Output('Flight-Hours-Trend', 'children'),  # KPI Flighthours Trend
+     Output('Flight-Hours-Trend', 'style'),  # KPI Flighthours Trend Style
+
      Output('Number-of-Flights', 'children'),  # KPI Number of Flights
+     Output('Number-of-Flights-Trend', 'children'),  # KPI Number of Flights Trend
+     Output('Number-of-Flights-Trend', 'style'),  # KPI Number of Flights Trend Style
+
      Output('Sum-Landings', 'children'),  # KPI Sum Landings
-     Output('Sum-Fuel', 'children')],  # KPI Sum Fuel
+     Output('Sum-Landings-Trend', 'children'),  # KPI Sum Landings Trend
+     Output('Sum-Landings-Trend', 'style'),  # KPI Sum Landings Trend Style
+
+     Output('Sum-Fuel', 'children'),  # KPI Sum Fuel
+     Output('Sum-Fuel-Trend', 'children'),  # KPI Sum Fuel Trend
+     Output('Sum-Fuel-Trend', 'style')],  # KPI Sum Fuel Trend
+
     [Input('flightlog-store', 'data'),  # Flightlog Data Dict
      Input('date-picker-range', 'start_date'),  # Selected Start Date
      Input('date-picker-range', 'end_date')]  # Selected End Date
 )
 def update_flight_hours(flightlog_dict, start_date, end_date):
     if flightlog_dict is None:  # If no Flightlog is given
-        sum_total, sum_flight_str, sum_landings, sum_fuel = ('NO DATA',) * 4
-        return [sum_total, sum_flight_str, sum_landings, sum_fuel]
+        sum_total, sum_flight, sum_landings, sum_fuel = ('NO DATA',) * 4
+        sum_total_trend, sum_flight_trend, sum_landings_trend, sum_fuel_trend = ('trend na',) * 4
+        sum_total_trend_style, sum_flight_trend_style, sum_landings_trend_style, sum_fuel_trend_style = ({'color': 'grey'},) * 4
+        return [sum_total, sum_total_trend, sum_total_trend_style,
+                sum_flight, sum_flight_trend, sum_flight_trend_style,
+                sum_landings, sum_landings_trend, sum_landings_trend_style,
+                sum_fuel, sum_fuel_trend, sum_fuel_trend_style]
+
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+        filtered_flight_df_trend = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date, offset)
+        if len(filtered_flight_df) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_overview_page_flightlog(filtered_flight_df, filtered_flight_df_trend)
+        kpi = sf.trend_string_overview_page_flightlog(selected)
+        # Get Return list with trend
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    # Sum of Flighttime per Column (return is direct a String)
-    sum_total = dp.sum_time_per_Column(filtered_flight_df, None, 'Flight Time')
+    except Exception as e: # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_overview_page_flightlog(filtered_flight_df) # Only the Kpis
+        kpi = sf.trend_string_overview_page_flightlog(selected)
+        trend_strings, trend_styles = sf.trend_string()
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    # Sum of Flights
-    sum_flight = len(filtered_flight_df)
-    sum_flight_str = f'{sum_flight} #'
+    return return_list
 
-    # Sum of Landings
-    sum_landings = f'{filtered_flight_df["Landings"].sum():.0f} #'
-    # Sum of Fuel
-    sum_fuel = f'{filtered_flight_df["Fuel"].sum():.0f} L'
-
-
-    return [sum_total, sum_flight_str, sum_landings, sum_fuel]
 
 # Callback that handles the KPI from the Instructor Log
 @callback(
     [Output('Instructions-Hours', 'children'),  # KPI Instruction Hours
+     Output('Instructions-Hours-Trend', 'children'),  # KPI Instruction Hours Trend
+     Output('Instructions-Hours-Trend', 'style'),  # KPI Instruction Hours Trend Style
+
      Output('Sum-Trainees', 'children'),  # KPI SUM Trainees
-     Output('Sum-Instruction-Sets', 'children')],  # KPI Sum Instruction Sets
+     Output('Sum-Trainees-Trend', 'children'),  # KPI SUM Trainees Trend
+     Output('Sum-Trainees-Trend', 'style'),  # KPI SUM Trainees Trend Style
+
+     Output('Sum-Instruction-Sets', 'children'),  # KPI Sum Instruction Sets
+     Output('Sum-Instruction-Sets-Trend', 'children'),  # KPI Sum Instruction Sets Trend
+     Output('Sum-Instruction-Sets-Trend', 'style')],  # KPI Sum Instruction Sets Trend Style
+
     [Input('instructorlog-store', 'data'),  # Instructorlog Data Dict
      Input('date-picker-range', 'start_date'),  # Start Date from Datepicker
      Input('date-picker-range', 'end_date')]  # End Date form Datepicker
@@ -164,22 +210,38 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
 def update_flight_hours(instructorlog_dict, start_date, end_date):
     if instructorlog_dict is None:  # If no Instructorlog Data is available
         sum_instructor_hours, sum_trainees, sum_instruction_sets = ('NO DATA',) * 3
-        return [sum_instructor_hours, sum_trainees, sum_instruction_sets]
-    # Reload Dataframe from Dict
-    filtered_instructor_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
+        sum_instructor_hours_trend, sum_trainees_trend, sum_instruction_sets_trend = ('trend na',) * 3
+        sum_instructor_hours_trend_style, sum_trainees_trend_style, sum_instruction_sets_trend_style = ({'color': 'grey'},) * 3
+        return [sum_instructor_hours, sum_instructor_hours_trend, sum_instructor_hours_trend_style,
+                sum_trainees, sum_trainees_trend, sum_trainees_trend_style,
+                sum_instruction_sets, sum_instruction_sets_trend, sum_instruction_sets_trend_style]
 
-    # Sum Instructor Hours (Function returns direct String)
-    sum_instructor_hours = dp.sum_time_per_Column(filtered_instructor_df, None, 'Duration')
+    # reload dataframe form dict
+    filtered_flight_df = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date)
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+        filtered_flight_df_trend = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date, offset)
+        if len(filtered_flight_df) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_overview_page_instructorlog(filtered_flight_df, filtered_flight_df_trend)
+        kpi = sf.trend_string_overview_page_instructorlog(selected)
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    # Sum of Trainees
-    sum_trainees = filtered_instructor_df['Pilot'].nunique()
-    sum_trainees = f'{sum_trainees:.0f} #'
+    except Exception as e:  # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_overview_page_instructorlog(filtered_flight_df)  # Only the Kpis
+        kpi = sf.trend_string_overview_page_instructorlog(selected)
+        trend_strings, trend_styles = sf.trend_string()
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    # Sum of Instruction Sets
-    sum_instruction_sets = len(filtered_instructor_df)
-    sum_instruction_sets = f'{sum_instruction_sets:.0f} #'
 
-    return [sum_instructor_hours, sum_trainees, sum_instruction_sets]
+    return return_list
 
 # Callback that handles the Main Flight Plot
 @callback(
