@@ -1,9 +1,9 @@
 from icecream import ic
 
-def trend_string(trends=None):
+def trend_string(len_selected, trends=None):
     # Create the Trendstring
-    trend_strings = ('trend na',) * 4
-    trend_styles = ({'color': 'grey'},) * 4
+    trend_strings = ('trend na',) * len_selected
+    trend_styles = ({'color': 'grey'},) * len_selected
 
     if trends is not None:
         trend_strings = []

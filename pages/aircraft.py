@@ -309,51 +309,13 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
 
     except Exception as e:  # If over one year or not possible to load Data
         print(e)
-        selected = tc.sum_aircraft_page_flightlog(filtered_flight_df, aircraft_dropdown)  # Only the Kpis
-        kpi = sf.trend_string_overview_page_flightlog(selected)
-        trend_strings, trend_styles = sf.trend_string()
+        selected = tc.sum_aircraft_page_flightlog(agg_aircraft_df, aircraft_dropdown)  # Only the Kpis
+        kpi = sf.trend_string_aircraft_page_flightlog(selected)
+        trend_strings, trend_styles = sf.trend_string(len(selected))
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
     return return_list
 
-'''
-    # reload dataframe form dict
-    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-    # Aggregate Pilots Data
-    agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
-
-    if aircraft_dropdown == '⌀ All Aircrafts':
-        agg_aircraft_df = agg_aircraft_df.iloc[:, 1:].mean().to_frame().T
-    else:
-        agg_aircraft_df = agg_aircraft_df[agg_aircraft_df['Aircraft']==aircraft_dropdown]
-
-    if len(agg_aircraft_df)==1:
-        # Aircraft-Flight-Hours
-        sum_flight_time = f'{agg_aircraft_df.iloc[0]["Total_Flight_Time"]:.1f} h'
-        # Aircraft-Number-of-Flights
-        sum_flights = f'{agg_aircraft_df.iloc[0]["Number_of_Flights"]:.0f} #'
-        # Aircraft-Mean-Flight-Time
-        mean_flight_time = f'{agg_aircraft_df.iloc[0]["Mean_Flight_Time"]*60:.0f} min'
-        # Aircraft-Number-of-Landings
-        sum_landings = f'{agg_aircraft_df.iloc[0]["Number_of_Landings"]:.0f} #'
-        # Aircraft-Number-of-Airports
-        sum_airports = f'{agg_aircraft_df.iloc[0]["Number_of_Different_Airports"]:.0f} #'
-        # Aircraft-Fuel-per-Hour
-        fuel_per_hour = f'{agg_aircraft_df.iloc[0]["Fuel_per_hour"]:.1f} L'
-        # Aircraft-Oil-per-Hour
-        oil_per_hour = f'{agg_aircraft_df.iloc[0]["Oil_per_hour"]*1000:.0f} mL'
-        # Aircraft-Instruction-Ratio
-        instruction_ratio = f'{agg_aircraft_df.iloc[0]["Instruction_Ratio"]*100:.1f} %'
-        # Aircraft-Number-of-Pilots
-        sum_pilots = f'{agg_aircraft_df.iloc[0]["Number_of_Pilots"]:.0f} #'
-    else:
-        aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
-            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 10
-
-    return aircraft_dropdown, sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
-            sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots
-
-'''
 @callback(
     [Output('Aircraft-Flight-Time-Plot', 'figure')],
     [Input('flightlog-store', 'data'),

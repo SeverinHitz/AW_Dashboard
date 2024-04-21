@@ -183,7 +183,7 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
         print(e)
         selected = tc.sum_overview_page_flightlog(filtered_flight_df) # Only the Kpis
         kpi = sf.trend_string_overview_page_flightlog(selected)
-        trend_strings, trend_styles = sf.trend_string()
+        trend_strings, trend_styles = sf.trend_string(len(selected))
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
     return return_list
@@ -237,7 +237,7 @@ def update_flight_hours(instructorlog_dict, start_date, end_date):
         print(e)
         selected = tc.sum_overview_page_instructorlog(filtered_flight_df)  # Only the Kpis
         kpi = sf.trend_string_overview_page_instructorlog(selected)
-        trend_strings, trend_styles = sf.trend_string()
+        trend_strings, trend_styles = sf.trend_string(len(selected))
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
 

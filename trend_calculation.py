@@ -15,7 +15,7 @@ def trend_calculation(selected, selected_t_minus):
         trend.append((selected[i] / selected_t_minus[i] * 100) - 100)
 
     # Extract
-    trend_strings, trend_styles = sf.trend_string(trend)
+    trend_strings, trend_styles = sf.trend_string(len(selected), trend)
 
     return trend_strings, trend_styles
 
