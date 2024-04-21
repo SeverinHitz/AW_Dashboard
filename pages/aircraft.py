@@ -261,7 +261,6 @@ def update_pilots_header(aircraft_dropdown):
      Input('Aircraft-Dropdown', 'value')]
 )
 def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown):
-    ic(aircraft_dropdown)
     if flightlog_dict is None:
         sum_flight_time, sum_flights, mean_flight_time, sum_landings, \
             sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 9
