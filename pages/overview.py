@@ -170,7 +170,7 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
         # Reload with offset
         offset = 1  # in years
         filtered_flight_df_trend = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date, offset)
-        if len(filtered_flight_df) < 1:
+        if len(filtered_flight_df_trend) < 1:
             raise ValueError("Empty Dataframe")
         # Select kpi and select kpi minus offset
         selected, selected_t_minus = tc.select_overview_page_flightlog(filtered_flight_df, filtered_flight_df_trend)
@@ -225,7 +225,7 @@ def update_flight_hours(instructorlog_dict, start_date, end_date):
         # Reload with offset
         offset = 1  # in years
         filtered_flight_df_trend = dp.reload_instructor_dataframe_from_dict(instructorlog_dict, start_date, end_date, offset)
-        if len(filtered_flight_df) < 1:
+        if len(filtered_flight_df_trend) < 1:
             raise ValueError("Empty Dataframe")
         # Select kpi and select kpi minus offset
         selected, selected_t_minus = tc.select_overview_page_instructorlog(filtered_flight_df, filtered_flight_df_trend)

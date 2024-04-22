@@ -110,7 +110,7 @@ def reload_instructor_dataframe_from_dict(dict, start_date, end_date, offset=0):
 
     return filtered_instructor_df
 
-def reload_reservation_dataframe_from_dict(dict, start_date, end_date):
+def reload_reservation_dataframe_from_dict(dict, start_date, end_date, offset=0):
     # Load Data from Store
     reservation_df = pd.DataFrame.from_dict(dict)
     # Set Time as Timedelta
@@ -120,6 +120,11 @@ def reload_reservation_dataframe_from_dict(dict, start_date, end_date):
     # Set Date as a Datetime object
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+
+    if offset != 0:
+        # Subtract one year from start_date and end_date
+        start_date -= pd.DateOffset(years=offset)
+        end_date -= pd.DateOffset(years=offset)
 
     # Filter Instructorlog data based on the selected date range
     filtered_reservation_df = date_select_df(reservation_df, start_date, end_date, date_column='From')

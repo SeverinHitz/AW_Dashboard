@@ -295,7 +295,7 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
                                                                            offset)
         # Aggregate Pilots Data
         agg_aircraft_df_trend = dp.aircraft_aggregation(filtered_flight_df_trend)
-        if len(filtered_flight_df) < 1:
+        if len(filtered_flight_df_trend) < 1:
             raise ValueError("Empty Dataframe")
         # Select kpi and select kpi minus offset
         selected, selected_t_minus = tc.select_aircraft_page_flightlog(agg_aircraft_df,
@@ -313,6 +313,7 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
         trend_strings, trend_styles = sf.trend_string(len(selected))
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
+    ic(return_list)
     return return_list
 
 @callback(

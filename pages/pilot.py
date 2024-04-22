@@ -10,6 +10,8 @@ import plotly.express as px  # Library for handling dates and times
 import numpy as np
 # Import other Files
 import data_preparation as dp  # Custom module for data preparation tasks
+import trend_calculation as tc
+import string_func as sf
 import globals  # Custom module for global variables and settings
 import plot
 
@@ -42,33 +44,37 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Pilot-Flight-Hours'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Flight-Hours-Trend')
                 ]
             )
             ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Block Time"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX %", id='Pilot-Block-Hours'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX %", id='Pilot-Block-Hours'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Block-Hours-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flt./Blckt."),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX %", id='Pilot-Flight-Block-Time'),
-                              ]
-                          )
-                          ])
+                      dbc.CardBody(
+                          [
+                              html.H4("XXX %", id='Pilot-Flight-Block-Time'),
+                              html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Flight-Block-Time-Trend')
+                          ]
+                      )
+                      ])
             ], **globals.adaptiv_width_1),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flights"),
                 dbc.CardBody(
                 [
                     html.H4("XXX #", id='Pilot-Number-of-Flights'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Number-of-Flights-Trend')
                 ]
             )
             ])
@@ -78,6 +84,7 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX #", id='Pilot-Number-of-Landings'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Number-of-Landings-Trend')
                 ]
             )
             ])
@@ -87,6 +94,7 @@ layout = html.Div([
                           dbc.CardBody(
                               [
                                   html.H4("XXX %", id='Pilot-Res-to-Flight-Time'),
+                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Res-to-Flight-Time-Trend')
                               ]
                           )
                           ])
@@ -96,6 +104,7 @@ layout = html.Div([
                           dbc.CardBody(
                               [
                                   html.H4("XXX h", id='Pilot-Reservation'),
+                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Reservation-Trend')
                               ]
                           )
                           ])
@@ -105,6 +114,7 @@ layout = html.Div([
                           dbc.CardBody(
                               [
                                   html.H4("XXX h", id='Pilot-Cancelled'),
+                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Trend')
                               ]
                           )
                           ])
@@ -114,6 +124,7 @@ layout = html.Div([
                           dbc.CardBody(
                               [
                                   html.H4("XXX %", id='Pilot-Cancelled-Ratio'),
+                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Ratio-Trend')
                               ]
                           )
                           ])
@@ -185,14 +196,35 @@ def update_dropdown(flightlog_dict, start_date, end_date):
 
     return pilots
 
+@callback(
+    [Output('Pilot-Name', 'children')],  # Name of Pilot
+    [Input('Pilot-Dropdown', 'value')]  # Selected Pilot from Dropdown
+)
+def update_pilots_name(pilot_dropdown):
+    return [pilot_dropdown]
+
 # Callback that handles the KPI form the Flightlog per Pilot
 @callback(
-    [Output('Pilot-Name', 'children'),  # Name of Pilot
-     Output('Pilot-Flight-Hours', 'children'),  # KPI Flight hours
+    [Output('Pilot-Flight-Hours', 'children'),  # KPI Flight hours
+     Output('Pilot-Flight-Hours-Trend', 'children'),  # KPI Flight hours Trend
+     Output('Pilot-Flight-Hours-Trend', 'style'),  # KPI Flight hours Trend Style
+
      Output('Pilot-Block-Hours', 'children'),  # KPI Block Hours
+     Output('Pilot-Block-Hours-Trend', 'children'),  # KPI Block Hours Trend
+     Output('Pilot-Block-Hours-Trend', 'style'),  # KPI Block Hours Trend Style
+
      Output('Pilot-Flight-Block-Time', 'children'),  # KPI Ratio Flight to Block
+     Output('Pilot-Flight-Block-Time-Trend', 'children'),  # KPI Ratio Flight to Block Trend
+     Output('Pilot-Flight-Block-Time-Trend', 'style'),  # KPI Ratio Flight to Block
+
      Output('Pilot-Number-of-Flights', 'children'),  # KPI Number of Flights
-     Output('Pilot-Number-of-Landings', 'children')],  # KPI Number of Landings
+     Output('Pilot-Number-of-Flights-Trend', 'children'),  # KPI Number of Flights Trend
+     Output('Pilot-Number-of-Flights-Trend', 'style'),  # KPI Number of Flights Trend Style
+
+     Output('Pilot-Number-of-Landings', 'children'),  # KPI Number of Landings
+     Output('Pilot-Number-of-Landings-Trend', 'children'),  # KPI Number of Landings Trend
+     Output('Pilot-Number-of-Landings-Trend', 'style')],  # KPI Number of Landings Trend Style
+
     [Input('flightlog-store', 'data'),  # Flight log Data Dict
      Input('date-picker-range', 'start_date'),  # Start Date from Datepicker
      Input('date-picker-range', 'end_date'),  # End Date form Datepicker
@@ -200,77 +232,121 @@ def update_dropdown(flightlog_dict, start_date, end_date):
 )
 def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_dropdown):
     if flightlog_dict is None: # If no Flightlog is available
-        pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
-            sum_flights, sum_landings = ('NO DATA',) * 6
-        return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
-            sum_flights, sum_landings
+        sum_flight_time, sum_block_time, flight_block_ratio, \
+            sum_flights, sum_landings = ('NO DATA',) * 5
+        sum_flight_time_trend, sum_block_time_trend, flight_block_ratio_trend, \
+            sum_flights_trend, sum_landings_trend = ('trend na',) * 5
+        sum_flight_time_trend_style, sum_block_time_trend_style, flight_block_ratio_trend_style, \
+            sum_flights_trend_style, sum_landings_trend_style = ({'color': 'grey'},) * 5
+        return [sum_flight_time, sum_flight_time_trend, sum_flight_time_trend_style,
+                sum_block_time, sum_block_time_trend, sum_block_time_trend_style,
+                flight_block_ratio, flight_block_ratio_trend, flight_block_ratio_trend_style,
+                sum_flights, sum_flights_trend, sum_flights_trend_style,
+                sum_landings, sum_landings_trend, sum_landings_trend_style]
+
     # reload dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-
     # Aggregate Pilots Data
     agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+        filtered_flight_df_trend = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date,
+                                                                           offset)
+        # Aggregate Pilots Data
+        agg_pilot_df_trend = dp.pilot_aggregation(filtered_flight_df_trend)
+        if len(filtered_flight_df_trend) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_pilot_page_flightlog(agg_pilot_df,
+                                                                       agg_pilot_df_trend,
+                                                                       pilot_dropdown)
+        kpi = sf.trend_string_pilot_page_flightlog(selected)
+        # Get Return list with trend
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    if pilot_dropdown == '⌀ All Pilots': # If All Pilots are selected
-        agg_pilot_df = agg_pilot_df.iloc[:, 1:].mean().to_frame().T
-    else:
-        agg_pilot_df = agg_pilot_df[agg_pilot_df['Pilot']==pilot_dropdown]
+    except Exception as e:  # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_pilot_page_flightlog(agg_pilot_df, pilot_dropdown)  # Only the Kpis
+        kpi = sf.trend_string_pilot_page_flightlog(selected)
+        trend_strings, trend_styles = sf.trend_string(len(selected))
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    if len(agg_pilot_df)==1:
-        # Pilots Flight Time
-        sum_flight_time = f'{agg_pilot_df.iloc[0]["Total_Flight_Time"]:.1f} h'
-        # Pilots Number of Flights
-        sum_block_time = f'{agg_pilot_df.iloc[0]["Total_Block_Time"]:.1f} h'
-        # Pilots Flight to Block Time
-        flight_block_ratio = f'{agg_pilot_df.iloc[0]["Flight_Block_Ratio"]*100:.2f} %'
-        # Pilots Number of Flights
-        sum_flights = f'{agg_pilot_df.iloc[0]["Number_of_Flights"]:.0f} #'
-        # Pilots Landings
-        sum_landings = f'{agg_pilot_df.iloc[0]["Number_of_Landings"]:.0f} #'
-    else:
-        pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio, \
-            sum_flights, sum_landings = ('NO DATA',) * 6
-
-    return pilot_dropdown, sum_flight_time, sum_block_time, flight_block_ratio,\
-        sum_flights, sum_landings
+    return return_list
 
 # Callback that handles Reservationslog KPIs
 @callback(
     [
      Output('Pilot-Reservation', 'children'),  # KPI Pilots Reservations
-     Output('Pilot-Cancelled', 'children')],  # KPI Reservation cancelled
+     Output('Pilot-Reservation-Trend', 'children'),  # KPI Pilots Reservations Trend
+     Output('Pilot-Reservation-Trend', 'style'),  # KPI Pilots Reservations Trend Style
+
+     Output('Pilot-Cancelled', 'children'),  # KPI Reservation cancelled
+     Output('Pilot-Cancelled-Trend', 'children'),  # KPI Reservation cancelled Trend
+     Output('Pilot-Cancelled-Trend', 'style')],  # KPI Reservation cancelled Trend Style
+
     [Input('reservationlog-store', 'data'),  # Reservation log Data Dict
      Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
      Input('date-picker-range', 'end_date'),  # End Date from Date Picker
-     Input('Pilot-Dropdown', 'value')]  # Value from Dropdown
+     Input('Pilot-Dropdown', 'value')],  # Value from Dropdown
 )
 def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_date, pilot_dropdown):
     if reservationlog_dict is None:  # If No Reservations log Data is available
         reservations, cancelled = ('NO DATA',) * 2
-        return reservations, cancelled
+        reservations_trend, cancelled_trend = ('trend na',) * 2
+        reservations_trend_style, cancelled_trend_style = ({'color': 'grey'},) * 2
+        return [reservations, reservations_trend, reservations_trend_style,
+                cancelled, cancelled_trend, cancelled_trend_style]
+
     # reload dataframe form dict
-    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+    filtered_flight_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_reservation_df = dp.reservation_aggregation(filtered_flight_df)
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+        filtered_reservation_df_trend = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date,
+                                                                           offset)
+        # Aggregate Pilots Data
+        agg_reservation_df_trend = dp.reservation_aggregation(filtered_reservation_df_trend)
+        if len(filtered_reservation_df_trend) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_pilot_page_reservationlog(agg_reservation_df,
+                                                                       agg_reservation_df_trend,
+                                                                       pilot_dropdown)
+        kpi = sf.trend_string_pilot_page_reservationlog(selected)
+        # Get Return list with trend
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # Aggregate Date
-    if pilot_dropdown == '⌀ All Pilots':  # If all Pilots are Selected
-        agg_reservation_df = agg_reservation_df.iloc[:, 1:].mean().to_frame().T
-    else:
-        agg_reservation_df = agg_reservation_df[agg_reservation_df['Pilot']==pilot_dropdown]
+    except Exception as e:  # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_pilot_page_reservationlog(agg_reservation_df, pilot_dropdown)  # Only the Kpis
+        kpi = sf.trend_string_pilot_page_reservationlog(selected)
+        trend_strings, trend_styles = sf.trend_string(len(selected))
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    if len(agg_reservation_df)==1:
-        # Pilots Cancelled Reservation
-        reservations = f'{agg_reservation_df.iloc[0]["Reservations"]:.0f} #'
-        # Pilots Cancelled Reservation
-        cancelled = f'{agg_reservation_df.iloc[0]["Cancelled"]:.0f} #'
-    else:  # If Data is empty
-        reservations, cancelled = ('NO DATA',) * 2
-
-    return reservations, cancelled
+    return return_list
 
 # Callback that handles the combined KPIs from Flightlog and Reservation log
 @callback(
     [
      Output('Pilot-Res-to-Flight-Time', 'children'),  # KPI Flight to Res Time
-     Output('Pilot-Cancelled-Ratio', 'children')],  # KPI Cancelled Ratio
+     Output('Pilot-Res-to-Flight-Time-Trend', 'children'),  # KPI Flight to Res Time Trend
+     Output('Pilot-Res-to-Flight-Time-Trend', 'style'),  # KPI Flight to Res Time Trend Style
+
+     Output('Pilot-Cancelled-Ratio', 'children'),  # KPI Cancelled Ratio
+     Output('Pilot-Cancelled-Ratio-Trend', 'children'),  # KPI Cancelled Ratio Trend
+     Output('Pilot-Cancelled-Ratio-Trend', 'style')],  # KPI Cancelled Ratio Trend Style
+
     [Input('flightlog-store', 'data'),  # Flight log Data Dict
      Input('reservationlog-store', 'data'),  # Reservation Log Data Dict
      Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
@@ -280,7 +356,13 @@ def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_da
 def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown):
     if flightlog_dict is None or reservationlog_dict is None:  # If one of the logs is not available
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
-        return res_flight_time, cancelled_ratio
+        res_flight_time_trend, cancelled_ratio_trend = ('trend na',) * 2
+        res_flight_time_trend_style, cancelled_ratio_trend_style = ({'color': 'grey'},) * 2
+        return [res_flight_time, res_flight_time_trend, res_flight_time_trend_style,
+                cancelled_ratio, cancelled_ratio_trend, cancelled_ratio_trend_style]
+
+
+
     # reload flightlog dataframe form dict
     filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
     # reload reservation dataframe form dict
@@ -290,6 +372,46 @@ def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, star
     agg_pilot_df = dp.pilot_aggregation(filtered_flight_df) # Aggregate Flight log Data
     agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df) # Merge the flight and reservation log
 
+    try:  # Try reload of with offset of one year
+        # Check if the time difference is over one year
+        if abs((pd.Timestamp(start_date) - pd.Timestamp(end_date)).days) > 365:
+            raise ValueError("Difference is over a Year.")
+        # Reload with offset
+        offset = 1  # in years
+
+        filtered_flight_df_trend = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date,
+                                                                           offset)
+        filtered_reservation_df_trend = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date,
+                                                                           offset)
+
+        agg_reservation_df_trend = dp.reservation_aggregation(filtered_reservation_df_trend)  # aggregate reservations log
+        agg_pilot_df_trend = dp.pilot_aggregation(filtered_flight_df_trend)  # Aggregate Flight log Data
+        agg_flight_res_df_trend = dp.reservation_flight_merge(agg_reservation_df_trend,
+                                                        agg_pilot_df_trend)  # Merge the flight and reservation log
+
+
+        if len(filtered_flight_df_trend) < 1:
+            raise ValueError("Empty Dataframe")
+        # Select kpi and select kpi minus offset
+        selected, selected_t_minus = tc.select_pilot_page_flight_reservation_log(agg_flight_res_df,
+                                                                       agg_flight_res_df_trend,
+                                                                       pilot_dropdown)
+        kpi = sf.trend_string_pilot_page_flight_reservation_log(selected)
+        # Get Return list with trend
+        trend_strings, trend_styles = tc.trend_calculation(selected, selected_t_minus)
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
+
+    except Exception as e:  # If over one year or not possible to load Data
+        print(e)
+        selected = tc.sum_pilot_page_flight_reservation_log(agg_flight_res_df, pilot_dropdown)  # Only the Kpis
+        kpi = sf.trend_string_pilot_page_flight_reservation_log(selected)
+        trend_strings, trend_styles = sf.trend_string(len(selected))
+        return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
+
+    return return_list
+
+
+'''
     if pilot_dropdown == '⌀ All Pilots':  # If all Pilots are selected
         agg_flight_res_df = agg_flight_res_df.iloc[:, 1:].mean().to_frame().T  # Calculate Mean of Columns and transform
     else:
@@ -304,6 +426,7 @@ def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, star
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
 
     return res_flight_time, cancelled_ratio
+'''
 
 # Callback that handles the Flight Time Graph
 @callback(

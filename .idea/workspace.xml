@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1a982205-b1ba-41ac-8947-7c802dc49e40" name="Changes" comment="Trend Overview and Aircraft page">
-      <change afterPath="$PROJECT_DIR$/assets/favicon.ico" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/globals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/aircraft.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/aircraft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/overview.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/overview.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/pilot.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/pilot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/school.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/school.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string_func.py" beforeDir="false" afterPath="$PROJECT_DIR$/string_func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trend_calculation.py" beforeDir="false" afterPath="$PROJECT_DIR$/trend_calculation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,24 +57,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Run",
-    "Python.data_preparation.executor": "Run",
-    "Python.html_functions.executor": "Run",
-    "Python.import.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.mainpage.executor": "Run",
-    "Python.pilots.executor": "Run",
-    "Python.plot.executor": "Run",
-    "Python.testing_store.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Trend-KPI",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_preparation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.html_functions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mainpage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pilots.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plot.executor&quot;: &quot;Run&quot;,
+    &quot;Python.testing_store.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Trend-KPI&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;O:/OneDrive/Fliegen/Albis Wings VS/Analytics/Dashboard/AW_Dashboard/pages&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="O:\OneDrive\Fliegen\Albis Wings VS\Analytics\Dashboard\AW_Dashboard\pages" />
@@ -527,7 +531,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="loading-state" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>
