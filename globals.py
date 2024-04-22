@@ -28,7 +28,7 @@ def init():
 
     # Transparent Background for Plots
     global paper_bgcolor
-    paper_bgcolor = 'rgba(0,0,0,0)'
+    paper_bgcolor = 'rgba(50,56,62,255)'
 
     # Border Around Plotwindow for smooth edges
     global plot_window_style
@@ -47,7 +47,7 @@ def init():
     legend = dict(yanchor="top", y=0.99, xanchor="left", x=0.01, bgcolor='rgba(255, 255, 255, 0.4)')
 
     global adaptiv_width_1
-    adaptiv_width_1 = {'xs':12, 'sm':6, 'md':3, 'lg':2, 'xl':1}
+    adaptiv_width_1 = {'xs':6, 'sm':6, 'md':3, 'lg':2, 'xl':1}
 
     global adaptiv_width_2
     adaptiv_width_2 = {'xs':12, 'sm':6, 'md':3, 'lg':2, 'xl':2}

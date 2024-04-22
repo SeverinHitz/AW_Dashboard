@@ -266,7 +266,7 @@ def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_da
 
     return reservations, cancelled
 
-# Callback that handles the combinded KPIs from Flightlog and Reservation log
+# Callback that handles the combined KPIs from Flightlog and Reservation log
 @callback(
     [
      Output('Pilot-Res-to-Flight-Time', 'children'),  # KPI Flight to Res Time
