@@ -4,7 +4,7 @@ def init():
     # Stylsheet for General Look out of Bootstrap:
     # https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/explorer/
     global stylesheet
-    stylesheet = dbc.themes.SLATE #YETI
+    stylesheet = dbc.themes.SLATE #SLATE
 
     # Layoutcolor for general look, works with the Stylesheet
     global layout_color

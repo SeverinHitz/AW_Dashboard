@@ -78,65 +78,50 @@ dash.register_page(__name__, path='/', name='Import')
 layout = html.Div([
     dbc.Row([
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Instructions"),
-            dbc.CardBody(
-            [
-                html.P("1. Download the data from Airmanager."),
-                html.P(
-                    "2. Upload the data by dragging and dropping it into the respective fields below,\
-                     following data is required per page:"),
-                table_requirement,
-                html.P("3. Make sure data Structure matches the list Below."),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_7),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Data Security / Privacy"),
-            dbc.CardBody(
-            [
-                html.P(security_text),
-                html.P(disclosure_text),
-                html.A("More about Web Storage API",
-                       href="https://www.ramotion.com/blog/what-is-web-storage/"),
-                html.Br(),
-                html.A("GitHub Page", href="https://github.com/SeverinHitz"),
-                html.Br(),
-                html.A("Airmanager", href= "https://airmanager.ch/"),
-            ]
-        )
-        ])
-        ], **globals.adaptiv_width_5),
-    ], className="g-0"),
-    dbc.Row([
+            dbc.Card([dbc.CardHeader("Data Status"),
+                      dcc.Loading(
+                          id='loading-member',
+                          type='dot',
+                          children=html.Div(
+                              dbc.CardBody(
+                                  [
+                                      html.Div(id='flightlog-store-status'),
+                                      html.Div(id='instructorlog-store-status'),
+                                      html.Div(id='reservationlog-store-status'),
+                                      html.Div(id='member-store-status'),
+                                      html.Div(id='finance-store-status'),
+                                  ]
+                              )))
+                      ])
+        ], **globals.adaptiv_width_2),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flightlog"),
                       dbc.CardBody(
                           [
-                            dcc.Upload(
-                                id='flightlog-upload',
-                                children=html.Div([
-                                    'Drag and Drop or ',
-                                    html.A('Select Files')
-                                ]),
-                                style={
-                                    'width': '100%',
-                                    'lineHeight': '60px',
-                                    'borderWidth': '1px',
-                                    'borderStyle': 'dashed',
-                                    'borderRadius': '5px',
-                                    'textAlign': 'center'
-                                },
-                                # Allow multiple files to be uploaded
-                                multiple=False
-                            ),
+                              dcc.Upload(
+                                  id='flightlog-upload',
+                                  children=html.Div([
+                                      'Drag and Drop or ',
+                                      html.A('Select Files')
+                                  ]),
+                                  style={
+                                      'width': '100%',
+                                      'lineHeight': '60px',
+                                      'borderWidth': '1px',
+                                      'borderStyle': 'dashed',
+                                      'borderRadius': '5px',
+                                      'textAlign': 'center'
+                                  },
+                                  # Allow multiple files to be uploaded
+                                  multiple=False
+                              ),
                           ]
                       ),
                       dbc.CardFooter(
                           dcc.Loading(
-                          id='loading-flightlog',
-                          type='dot',
-                          children=html.Div(id='flightlog-upload-status'))),
+                              id='loading-flightlog',
+                              type='dot',
+                              children=html.Div(id='flightlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -164,9 +149,9 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(
                           dcc.Loading(
-                          id='loading-instructorlog',
-                          type='dot',
-                          children=html.Div(id='instructorlog-upload-status'))),
+                              id='loading-instructorlog',
+                              type='dot',
+                              children=html.Div(id='instructorlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -194,9 +179,9 @@ layout = html.Div([
                       ),
                       dbc.CardFooter(
                           dcc.Loading(
-                          id='loading-reservationlog',
-                          type='dot',
-                          children=html.Div(id='reservationlog-upload-status'))),
+                              id='loading-reservationlog',
+                              type='dot',
+                              children=html.Div(id='reservationlog-upload-status'))),
                       ])
         ], **globals.adaptiv_width_2),
         dbc.Col([
@@ -255,24 +240,41 @@ layout = html.Div([
                       dbc.CardFooter(id='finance-upload-status'),
                       ])
         ], **globals.adaptiv_width_2),
-        dbc.Col([
-            dbc.Card([dbc.CardHeader("Data Status"),
-                      dcc.Loading(
-                          id='loading-member',
-                          type='dot',
-                          children=html.Div(
-                              dbc.CardBody(
-                          [
-                              html.Div(id='flightlog-store-status'),
-                              html.Div(id='instructorlog-store-status'),
-                              html.Div(id='reservationlog-store-status'),
-                              html.Div(id='member-store-status'),
-                              html.Div(id='finance-store-status'),
-                          ]
-                      )))
-                      ])
-        ], **globals.adaptiv_width_2),
     ], className="g-0"),
+
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Instructions"),
+            dbc.CardBody(
+            [
+                html.P("1. Download the data from Airmanager."),
+                html.P(
+                    "2. Upload the data by dragging and dropping it into the respective fields below,\
+                     following data is required per page:"),
+                table_requirement,
+                html.P("3. Make sure data Structure matches the list Below."),
+            ]
+        )
+        ])
+        ], **globals.adaptiv_width_7),
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Data Security / Privacy"),
+            dbc.CardBody(
+            [
+                html.P(security_text),
+                html.P(disclosure_text),
+                html.A("More about Web Storage API",
+                       href="https://www.ramotion.com/blog/what-is-web-storage/"),
+                html.Br(),
+                html.A("GitHub Page", href="https://github.com/SeverinHitz"),
+                html.Br(),
+                html.A("Airmanager", href= "https://airmanager.ch/"),
+            ]
+        )
+        ])
+        ], **globals.adaptiv_width_5),
+    ], className="g-0"),
+
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Data Requirements / Format"),
@@ -282,7 +284,8 @@ layout = html.Div([
                         " Please note, depending on your device (mobile or desktop),\
                  the data size should only be between 5-10 MB."]),
                 html.P([html.B("Data Format and Source:"),
-                        " The data should be a direct export from AirManager or an Excel file in the .xlsx format."]),
+                        " The data should be a direct export from AirManager\
+                         in the .xls format or an Excel file in the .xlsx format."]),
                 html.P([html.B("Required Data:")]),
                 table_format
             ]

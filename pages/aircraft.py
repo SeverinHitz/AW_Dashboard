@@ -313,7 +313,6 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
         trend_strings, trend_styles = sf.trend_string(len(selected))
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
-    ic(return_list)
     return return_list
 
 @callback(
