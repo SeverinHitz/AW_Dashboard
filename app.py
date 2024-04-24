@@ -18,7 +18,7 @@ import globals
 globals.init()
 
 # Path to logo image
-logo_path = "assets/AW_Logo_breit.png"
+logo_path = "assets/AirStats_Breit.png"
 
 # Define start and end dates for date picker range
 end_date = datetime.now()
