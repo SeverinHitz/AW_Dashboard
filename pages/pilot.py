@@ -146,7 +146,9 @@ layout = html.Div([
                       ])
         ], **globals.adaptiv_width_8),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Cancellation Reason"),
+            dbc.Card([dbc.CardHeader("Cancellation Reason 🛈", id='Pilot-Cancel-Reason-Header'),
+                      dbc.Tooltip('Based on the cancellation reason stated and compared against a keyword list',
+                                          target='Pilot-Cancel-Reason-Header'),
                       dbc.CardBody(
                           [
                               dcc.Loading(
@@ -235,7 +237,7 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
         sum_flight_time, sum_block_time, flight_block_ratio, \
             sum_flights, sum_landings = ('NO DATA',) * 5
         sum_flight_time_trend, sum_block_time_trend, flight_block_ratio_trend, \
-            sum_flights_trend, sum_landings_trend = ('trend na',) * 5
+            sum_flights_trend, sum_landings_trend = ('trend n/a',) * 5
         sum_flight_time_trend_style, sum_block_time_trend_style, flight_block_ratio_trend_style, \
             sum_flights_trend_style, sum_landings_trend_style = ({'color': 'grey'},) * 5
         return [sum_flight_time, sum_flight_time_trend, sum_flight_time_trend_style,
@@ -297,7 +299,7 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
 def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_date, pilot_dropdown):
     if reservationlog_dict is None:  # If No Reservations log Data is available
         reservations, cancelled = ('NO DATA',) * 2
-        reservations_trend, cancelled_trend = ('trend na',) * 2
+        reservations_trend, cancelled_trend = ('trend n/a',) * 2
         reservations_trend_style, cancelled_trend_style = ({'color': 'grey'},) * 2
         return [reservations, reservations_trend, reservations_trend_style,
                 cancelled, cancelled_trend, cancelled_trend_style]
@@ -356,7 +358,7 @@ def update_pilots_header_reservationpart(reservationlog_dict, start_date, end_da
 def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown):
     if flightlog_dict is None or reservationlog_dict is None:  # If one of the logs is not available
         res_flight_time, cancelled_ratio = ('NO DATA',) * 2
-        res_flight_time_trend, cancelled_ratio_trend = ('trend na',) * 2
+        res_flight_time_trend, cancelled_ratio_trend = ('trend n/a',) * 2
         res_flight_time_trend_style, cancelled_ratio_trend_style = ({'color': 'grey'},) * 2
         return [res_flight_time, res_flight_time_trend, res_flight_time_trend_style,
                 cancelled_ratio, cancelled_ratio_trend, cancelled_ratio_trend_style]

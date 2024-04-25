@@ -188,7 +188,7 @@ def update_instructor_dropdown(instructorlog_dict, start_date, end_date):
 def update_trainee_header(instructorlog_dict, start_date, end_date, trainee_dropdown):
     if instructorlog_dict is None:
         instruction_hours_trainee, trainings_sets_trainee = ('NO DATA',) * 2
-        instruction_hours_trainee_trend, trainings_sets_trainee_trend = ('trend na',) * 2
+        instruction_hours_trainee_trend, trainings_sets_trainee_trend = ('trend n/a',) * 2
         instruction_hours_trainee_trend_style, trainings_sets_trainee_trend_style = ({'color': 'grey'},) * 2
         return [instruction_hours_trainee, instruction_hours_trainee_trend, instruction_hours_trainee_trend_style,
                 trainings_sets_trainee, trainings_sets_trainee_trend, trainings_sets_trainee_trend_style]
@@ -247,7 +247,7 @@ def update_trainee_header(instructorlog_dict, start_date, end_date, trainee_drop
 def update_instructor_header(instructorlog_dict, start_date, end_date, instructor_dropdown):
     if instructorlog_dict is None:
         instruction_hours_instructor, trainees_per_instructor = ('NO DATA',) * 2
-        instruction_hours_instructor_trend, trainees_per_instructor_trend = ('trend na',) * 2
+        instruction_hours_instructor_trend, trainees_per_instructor_trend = ('trend n/a',) * 2
         instruction_hours_instructor_trend_style, trainees_per_instructor_trend_style = ({'color': 'grey'},) * 2
         return [instruction_hours_instructor, instruction_hours_instructor_trend, instruction_hours_instructor_trend_style,
                 trainees_per_instructor, trainees_per_instructor_trend, trainees_per_instructor_trend_style]

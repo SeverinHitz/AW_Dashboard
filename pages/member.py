@@ -86,7 +86,9 @@ layout = html.Div([
                       ])
         ], **globals.adaptiv_width_4),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Admission new Active Members"),
+            dbc.Card([dbc.CardHeader("Admission new Active Members 🛈", id='Admission-new-Active-Members-Header'),
+                      dbc.Tooltip('Major errors and data gaps in Airmanager database',
+                                          target='Admission-new-Active-Members-Header'),
                       dbc.CardBody(
                           [
                               dcc.Loading(

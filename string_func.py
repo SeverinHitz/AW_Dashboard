@@ -2,7 +2,7 @@ from icecream import ic
 
 def trend_string(len_selected, trends=None):
     # Create the Trendstring
-    trend_strings = ('trend na',) * len_selected
+    trend_strings = ('trend n/a',) * len_selected
     trend_styles = ({'color': 'grey'},) * len_selected
 
     if trends is not None:

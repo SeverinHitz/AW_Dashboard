@@ -30,7 +30,9 @@ layout = html.Div([
                 dbc.CardBody(
                 [
                     html.H4("XXX h", id='Flight-Hours'),
-                    html.H6("→ XX %", style={'color': 'grey'}, id='Flight-Hours-Trend')
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Flight-Hours-Trend'),
+                    dbc.Tooltip('Difference between selected period and same period one year ago',
+                                target='Flight-Hours-Trend')
                 ]
             )
             ])
@@ -154,7 +156,7 @@ layout = html.Div([
 def update_flight_hours(flightlog_dict, start_date, end_date):
     if flightlog_dict is None:  # If no Flightlog is given
         sum_total, sum_flight, sum_landings, sum_fuel = ('NO DATA',) * 4
-        sum_total_trend, sum_flight_trend, sum_landings_trend, sum_fuel_trend = ('trend na',) * 4
+        sum_total_trend, sum_flight_trend, sum_landings_trend, sum_fuel_trend = ('trend n/a',) * 4
         sum_total_trend_style, sum_flight_trend_style, sum_landings_trend_style, sum_fuel_trend_style = ({'color': 'grey'},) * 4
         return [sum_total, sum_total_trend, sum_total_trend_style,
                 sum_flight, sum_flight_trend, sum_flight_trend_style,
@@ -210,7 +212,7 @@ def update_flight_hours(flightlog_dict, start_date, end_date):
 def update_flight_hours(instructorlog_dict, start_date, end_date):
     if instructorlog_dict is None:  # If no Instructorlog Data is available
         sum_instructor_hours, sum_trainees, sum_instruction_sets = ('NO DATA',) * 3
-        sum_instructor_hours_trend, sum_trainees_trend, sum_instruction_sets_trend = ('trend na',) * 3
+        sum_instructor_hours_trend, sum_trainees_trend, sum_instruction_sets_trend = ('trend n/a',) * 3
         sum_instructor_hours_trend_style, sum_trainees_trend_style, sum_instruction_sets_trend_style = ({'color': 'grey'},) * 3
         return [sum_instructor_hours, sum_instructor_hours_trend, sum_instructor_hours_trend_style,
                 sum_trainees, sum_trainees_trend, sum_trainees_trend_style,

@@ -266,7 +266,7 @@ def update_pilots_header(flightlog_dict, start_date, end_date, aircraft_dropdown
             sum_airports, fuel_per_hour, oil_per_hour, instruction_ratio, sum_pilots = ('NO DATA',) * 9
         sum_flight_time_trend, sum_flights_trend, mean_flight_time_trend, sum_landings_trend, \
             sum_airports_trend, fuel_per_hour_trend, oil_per_hour_trend, instruction_ratio_trend, sum_pilots_trend\
-            = ('trend na',) * 9
+            = ('trend n/a',) * 9
         sum_flight_time_trend_style, sum_flights_trend_style, \
             mean_flight_time_trend_style, sum_landings_trend_style, sum_airports_trend_style, \
             fuel_per_hour_trend_style, oil_per_hour_trend_style, instruction_ratio_trend_style,\

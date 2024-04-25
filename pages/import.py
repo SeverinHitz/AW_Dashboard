@@ -58,7 +58,7 @@ format_header = [
 ]
 
 data_format = [
-    ["Flightlog", "'Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort', 'FlugzeitFlugzeit',\
+    ["Flightlog", "'Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort', 'Flugzeit',\
          'Block Zeit', 'Benzin', 'Öl', 'Landungen', 'Flugart', 'Flugzeug'"],
     ["Instructorlog", "'Datum', 'Pilot Vorname', 'Pilot Name', 'Fluglehrer Vorname', 'Fluglehrer Name', 'Dauer'"],
     ["Reservationlog", "'Von', 'Bis', 'Vorname', 'Name', 'Flugzeug', 'Typ', 'Gelöscht', 'Löschgrund'"],
@@ -253,7 +253,7 @@ layout = html.Div([
                      following data is required per page:"),
                 table_requirement,
                 html.P("3. Make sure data Structure matches the list Below."),
-            ]
+            ],
         )
         ])
         ], **globals.adaptiv_width_7),

@@ -64,7 +64,8 @@ app.layout = html.Div([
                     display_format='DD.MM.YYYY'
                 ),
             ],
-            brand=html.Img(src=logo_path, height='40px'),
+            brand=[html.Img(src=logo_path, height='40px'), html.B('1.0', style={'color': 'rgba(0,203,233,255)',
+                                                                                'fontSize': 12})],
             brand_href='/',
             color='primary',
             dark=True,
