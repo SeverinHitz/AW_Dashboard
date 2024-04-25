@@ -40,7 +40,8 @@ table_requirement = dbc.Table(requirement_header + requirement_body, bordered=Tr
                               style={'font-size': 'smaller', 'padding': '1px', 'border-collapse': 'collapse'})
 
 # Security Section: Provides information on data security and privacy
-security_text = ('This website is designed for the analysis of Airmanager data. Please note that the data is\
+security_text = ('This website is designed to analyse Airmanager data. It is a third party application \
+and has no association with the developers of Airmanager. Please note that the data is\
  not retained on the server. Instead, it\'s temporarily held in your browser\'s Web Storage during your session.\
   The information stored locally includes first name, surname, and but not in combination with postcode, and date of birth.\
    It\'s ensured that all other personal details are removed right at the beginning of the process.\
@@ -256,23 +257,23 @@ layout = html.Div([
             ],
         )
         ])
-        ], **globals.adaptiv_width_7),
+        ], **globals.adaptiv_width_6),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Data Security / Privacy"),
             dbc.CardBody(
             [
                 html.P(security_text),
                 html.P(disclosure_text),
-                html.A("More about Web Storage API",
-                       href="https://www.ramotion.com/blog/what-is-web-storage/"),
-                html.Br(),
                 html.A("GitHub Page", href="https://github.com/SeverinHitz"),
                 html.Br(),
                 html.A("Airmanager", href= "https://airmanager.ch/"),
+                html.Br(),
+                html.A("More about Web Storage API",
+                       href="https://www.ramotion.com/blog/what-is-web-storage/"),
             ]
         )
         ])
-        ], **globals.adaptiv_width_5),
+        ], **globals.adaptiv_width_6),
     ], className="g-0"),
 
     dbc.Row([
