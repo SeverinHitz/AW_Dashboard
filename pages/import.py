@@ -43,8 +43,8 @@ table_requirement = dbc.Table(requirement_header + requirement_body, bordered=Tr
 security_text = ('This website is designed to analyse Airmanager data. It is a third party application \
 and has no association with the developers of Airmanager. Please note that the data is\
  not retained on the server. Instead, it\'s temporarily held in your browser\'s Web Storage during your session.\
-  The information stored locally includes first name, surname, and but not in combination with postcode, and date of birth.\
-   It\'s ensured that all other personal details are removed right at the beginning of the process.\
+  The personal information stored locally includes first name, surname, and but not in combination with postcode,\
+   and date of birth. It\'s ensured that all other personal details are removed right at the beginning of the process.\
     However, for the purpose of data selection, the complete dataset is transmitted to the server once.\
      All transfer\'s are conducted over a secure HTTPS connection. Despite this security measure, it\'s highly\
       advised to remove or anonymize any highly sensitive information, such as email addresses, phone numbers,\
