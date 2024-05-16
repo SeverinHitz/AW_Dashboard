@@ -413,23 +413,6 @@ def update_pilots_header_combined_part(flightlog_dict, reservationlog_dict, star
     return return_list
 
 
-'''
-    if pilot_dropdown == '⌀ All Pilots':  # If all Pilots are selected
-        agg_flight_res_df = agg_flight_res_df.iloc[:, 1:].mean().to_frame().T  # Calculate Mean of Columns and transform
-    else:
-        agg_flight_res_df = agg_flight_res_df[agg_flight_res_df['Pilot']==pilot_dropdown]
-
-    if len(agg_flight_res_df)==1:
-        # Pilots Reservations to Flighttime
-        res_flight_time = f'{agg_flight_res_df.iloc[0]["Flight_to_Reservation_Time"]*100:.2f} %'
-        # Pilots Cancelled Ratio
-        cancelled_ratio = f'{agg_flight_res_df.iloc[0]["Ratio_Cancelled"]*100:.2f} %'
-    else:  # If no Data is given
-        res_flight_time, cancelled_ratio = ('NO DATA',) * 2
-
-    return res_flight_time, cancelled_ratio
-'''
-
 # Callback that handles the Flight Time Graph
 @callback(
     [Output('Pilots-Flight-Time-Plot', 'figure')],  # Flight Time Graph
@@ -467,6 +450,12 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
     pilots_flight_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
                                           plot_bgcolor=globals.paper_bgcolor)
+
+    # Calculate the mean of Total_Flight_Time
+    mean_flight_time = agg_pilot_df['Total_Flight_Time'].mean()
+
+    # Add a horizontal line for the mean
+    pilots_flight_time_plot.add_hline(y=mean_flight_time, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=4)
 
     return [pilots_flight_time_plot]
 

@@ -353,6 +353,12 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
                                           paper_bgcolor=globals.paper_bgcolor,
                                           plot_bgcolor=globals.paper_bgcolor)
 
+    # Calculate the mean of Total_Flight_Time
+    mean_flight_time = agg_aircraft_df['Total_Flight_Time'].mean()
+
+    # Add a horizontal line for the mean
+    aircraft_flight_time_plot.add_hline(y=mean_flight_time, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=4)
+
     return [aircraft_flight_time_plot]
 
 

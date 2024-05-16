@@ -7,6 +7,7 @@ from dash import Dash, dcc, html, callback, Input, Output, dash_table  # Dash co
 import dash_bootstrap_components as dbc  # Dash components styled with Bootstrap
 import pandas as pd  # Data manipulation library
 import plotly.express as px  # Library for handling dates and times
+import plotly.graph_objects as go
 # Import other Files
 import data_preparation as dp  # Custom module for data preparation tasks
 import trend_calculation as tc
@@ -280,6 +281,18 @@ def update_flight_graphs(flightlog_dict, start_date, end_date):
                                    plot_bgcolor=globals.paper_bgcolor,  # Plot Background Color
                                    legend=globals.legend)  # Legend Styling
 
+    # Group by 'Date' and sum the flight times
+    daily_sum = filled_flight_df.groupby('Date').sum()
+
+    # Calculate the rolling mean over a 7-day window
+    daily_sum['7D_MA'] = daily_sum['Daily_Flight_Time'].rolling(window='7D', center=True).mean()
+
+    main_flight_plot.add_trace(go.Scatter(x=daily_sum.index,
+                                          y=daily_sum['7D_MA'],
+                                          mode='lines',
+                                          line=dict(color='rgba(0,203,233,255)', width=4, shape='spline', smoothing=1.0),
+                                          name='7-Day average'))
+
     return [main_flight_plot]
 
 # Callback that handles the Instructor Figure
@@ -317,5 +330,18 @@ def update_instructor_graphs(instructorlog_dict, start_date, end_date):
                                        paper_bgcolor=globals.paper_bgcolor,
                                        plot_bgcolor=globals.paper_bgcolor,
                                        legend=globals.legend)
+
+    # Group by 'Date' and sum the flight times
+    daily_sum = filled_instructor_df.groupby('Date').sum()
+
+    # Calculate the rolling mean over a 7-day window
+    daily_sum['7D_MA'] = daily_sum['Daily_Instruction_Time'].rolling(window='7D', center=True).mean()
+
+    main_instructor_plot.add_trace(go.Scatter(x=daily_sum.index,
+                                          y=daily_sum['7D_MA'],
+                                          mode='lines',
+                                          line=dict(color='rgba(0,203,233,255)', width=4, shape='spline',
+                                                    smoothing=1.0),
+                                          name='7-Day average'))
 
     return [main_instructor_plot]
