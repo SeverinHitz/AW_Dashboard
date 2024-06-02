@@ -519,7 +519,7 @@ def heatmap_preparation(df, start_date, end_date, agg_column, date_column = 'Dat
     # Pivot-Tabelle für Heatmap vorbereiten
     pivot_df = agg_df.pivot(index="Day", columns="YearWeek", values=agg_column)
 
-    pivot_df = pivot_df.map(lambda x: x.total_seconds() / 3600 if hasattr(x, 'total_seconds') else x)
+    pivot_df = pivot_df.applymap(lambda x: x.total_seconds() / 3600 if hasattr(x, 'total_seconds') else x)
 
 
     return pivot_df
