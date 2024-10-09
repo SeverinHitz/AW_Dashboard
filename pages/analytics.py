@@ -42,11 +42,11 @@ def load_data_from_store(data_source, flightlog, instructorlog, reservationlog,\
     if data_source == 'flightlog':
         df = dp.reload_flightlog_dataframe_from_dict(flightlog, start_date, end_date)
         df = dp.pilot_aggregation(df)
-    elif data_source == 'instructorlog':
+    if data_source == 'instructorlog':
         df = dp.reload_instructor_dataframe_from_dict(instructorlog, start_date, end_date)
-    elif data_source == 'reservationlog':
+    if data_source == 'reservationlog':
         df = dp.reload_reservation_dataframe_from_dict(reservationlog, start_date, end_date)
-    elif data_source == 'member':
+    if data_source == 'member':
         df = dp.reload_member_dataframe_from_dict(member, start_date, end_date)
     return df
 
