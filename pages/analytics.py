@@ -3,7 +3,7 @@
 # Libraries
 from icecream import ic
 import dash
-from dash import html, dcc, Input, Output, callback
+from dash import html, dcc, Input, Output, callback, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
@@ -21,9 +21,9 @@ layout = html.Div([
         dcc.Dropdown(id='dropdown-data-source', placeholder='Select Data Source')
     ]),
     # Card for Linear Regression, select two variables and one label
-    dcc.Loading(id="loading-linear-regression", children=[
-        dbc.Card([
-            dbc.CardHeader('Linear Regression'),
+    dbc.Card([
+        dbc.CardHeader('Linear Regression'),
+        dcc.Loading(id="loading-linear-regression", children=[
             dbc.CardBody([
                 html.H5('Select Variables'),
                 dcc.Dropdown(id='dropdown-x-linear-regression', placeholder='Select X Variable'),
@@ -34,20 +34,38 @@ layout = html.Div([
             ])
         ])
     ]),
+    # Card for Time Series Analysis
+    dbc.Card([
+        dbc.CardHeader('Time Series Analysis'),
+        dcc.Loading(id="loading-time-series-analysis", children=[
+            dbc.CardBody([
+                html.H5('Select Variables'),
+                dcc.Dropdown(id='dropdown-x-time-series', placeholder='Select X Variable'),
+                dcc.Dropdown(id='dropdown-y-time-series', placeholder='Select Y Variable'),
+                html.Button('Run Time Series Analysis', id='button-run-time-series-analysis', n_clicks=0),
+                html.Div(id='output-time-series-analysis')
+            ])
+        ])
+    ])    
 ])
 
 # Helper Function to load data from store into dataframe
 def load_data_from_store(data_source, flightlog, instructorlog, reservationlog,\
-                          member, finance, start_date, end_date):
+                          member, finance, start_date, end_date, aggregation=True):
     if data_source == 'flightlog':
         df = dp.reload_flightlog_dataframe_from_dict(flightlog, start_date, end_date)
-        df = dp.pilot_aggregation(df)
+        if aggregation:
+            df = dp.pilot_aggregation(df)
     elif data_source == 'instructorlog':
         df = dp.reload_instructor_dataframe_from_dict(instructorlog, start_date, end_date)
+        if aggregation:
+            df = dp.instructor_aggregation(df)
     elif data_source == 'reservationlog':
         df = dp.reload_reservation_dataframe_from_dict(reservationlog, start_date, end_date)
+        if aggregation:
+            df = dp.aircraft_aggregation(df)
     elif data_source == 'member':
-        df = dp.reload_member_dataframe_from_dict(member, start_date, end_date)
+        df = dp.reload_member_dataframe_from_dict(member)
     return df
 
 
@@ -107,9 +125,9 @@ def update_dropdown_variables(data_source, flightlog_dict, instructorlog_dict, r
 @callback(
     Output('output-linear-regression', 'children'),
     [Input('button-run-linear-regression', 'n_clicks'),
-     Input('dropdown-x-linear-regression', 'value'),
-     Input('dropdown-y-linear-regression', 'value'),
-     Input('dropdown-label-linear-regression', 'value'),
+     State('dropdown-x-linear-regression', 'value'),
+     State('dropdown-y-linear-regression', 'value'),
+     State('dropdown-label-linear-regression', 'value'),
      Input('dropdown-data-source', 'value'),
      Input('flightlog-store', 'data'),
      Input('instructorlog-store', 'data'),
@@ -152,3 +170,73 @@ def run_linear_regression(n_clicks, x, y, label, data_source, flightlog_dict, in
                                           plot_bgcolor=globals.paper_bgcolor)
         n_clicks = 0
         return dcc.Graph(figure=linear_regression_plot)
+
+
+# Fill dropdown options in Time Series Analysis Card with columns from selected data source
+@callback(
+    [Output('dropdown-x-time-series', 'options'),
+     Output('dropdown-y-time-series', 'options')],
+    [Input('dropdown-data-source', 'value'),
+     Input('flightlog-store', 'data'),
+     Input('instructorlog-store', 'data'),
+     Input('reservationlog-store', 'data'),
+     Input('member-store', 'data'),
+     Input('finance-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
+)
+def update_dropdown_variables(data_source, flightlog_dict, instructorlog_dict, reservationlog_dict,\
+                                 member_dict, finance_dict, start_date, end_date):
+    if data_source is None:
+        return [], []
+    else:
+        # reload dataframe form dict
+        df = load_data_from_store(data_source, flightlog_dict, instructorlog_dict,\
+                                  reservationlog_dict, member_dict, finance_dict, start_date, end_date,\
+                                      aggregation=False)
+        return [{'label': col, 'value': col} for col in df.columns],\
+            [{'label': col, 'value': col} for col in df.columns]
+
+
+# Run Time Series Analysis an retrun plot
+@callback(
+    Output('output-time-series-analysis', 'children'),
+    [Input('button-run-time-series-analysis', 'n_clicks'),
+     State('dropdown-x-time-series', 'value'),
+     State('dropdown-y-time-series', 'value'),
+     Input('dropdown-data-source', 'value'),
+     Input('flightlog-store', 'data'),
+     Input('instructorlog-store', 'data'),
+     Input('reservationlog-store', 'data'),
+     Input('member-store', 'data'),
+     Input('finance-store', 'data'),
+     Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date')]
+)
+def run_time_series_analysis(n_clicks, x, y, data_source, flightlog_dict, instructorlog_dict,\
+                            reservationlog_dict, member_dict, finance_dict, start_date, end_date):
+    if n_clicks == 0:
+        return ''
+    else:
+        # reload dataframe form dict
+        df = load_data_from_store(data_source, flightlog_dict, instructorlog_dict,\
+                                  reservationlog_dict, member_dict, finance_dict, start_date, end_date,
+                                  aggregation=False)
+        
+        # Convert timedelta64 columns to total seconds
+        if pd.api.types.is_timedelta64_dtype(df[x]):
+            df[x] = df[x].dt.total_hours()
+        if pd.api.types.is_timedelta64_dtype(df[y]):
+            df[y] = df[y].dt.total_hours()
+        
+        # run time series analysis
+        time_series_plot = px.line(df, x=x, y=y,
+                                   template=globals.plot_template,
+                                   color_discrete_sequence=globals.discrete_teal)
+        time_series_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+        time_series_plot.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+        time_series_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
+        n_clicks = 0
+        return dcc.Graph(figure=time_series_plot)

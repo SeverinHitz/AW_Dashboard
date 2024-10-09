@@ -8,6 +8,8 @@ import dash_bootstrap_components as dbc  # Dash components styled with Bootstrap
 import pandas as pd  # Data manipulation library
 import plotly.express as px  # Library for handling dates and times
 import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning) # Because pandas.sort_values gives a FutureWarning
 # Import other Files
 import data_preparation as dp  # Custom module for data preparation tasks
 import trend_calculation as tc
@@ -156,6 +158,38 @@ layout = html.Div([
                                   type='cube',
                                   children=html.Div(
                                       dcc.Graph(id='Pilot-Cancel-Reason'))),
+                          ]
+                      )
+                      ])
+        ], **globals.adaptiv_width_4)
+    ], className="g-0"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader([
+                    "Custom Bar Plot 🛈",
+                    dcc.Dropdown(id='Pilot-Custom-Barplot-Dropdown')
+                ], id='Pilot-Custom-Barplot-header'),
+                dbc.CardBody(
+                    [
+                        dcc.Loading(
+                            id='loading-Pilot-Custom-Barplot',
+                            type='cube',
+                            children=html.Div(
+                                dcc.Graph(id='Pilot-Custom-Barplot'))),
+                    ]
+                )
+            ])
+        ], **globals.adaptiv_width_8),
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("TBD", id='tbd-1'),
+                      dbc.CardBody(
+                          [
+                              dcc.Loading(
+                                  id='loading-tbd-1',
+                                  type='cube',
+                                  children=html.Div(
+                                      dcc.Graph(id='graph-tbd-1'))),
                           ]
                       )
                       ])
@@ -455,14 +489,14 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
     mean_flight_time = agg_pilot_df['Total_Flight_Time'].mean()
 
     # Add a horizontal line for the mean
-    pilots_flight_time_plot.add_hline(y=mean_flight_time, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=4)
+    pilots_flight_time_plot.add_hline(y=mean_flight_time, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=2)
 
     return [pilots_flight_time_plot]
 
 
-# Callback that handles the Reservations Log Graph
+# Callback that handles the Cancel Reason Graph
 @callback(
-    [Output('Pilot-Cancel-Reason', 'figure')],  # Reservations log Graph
+    [Output('Pilot-Cancel-Reason', 'figure')],  # Cancel Reason Graph
     [Input('reservationlog-store', 'data'),  # Reservations log Data Dict
      Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
      Input('date-picker-range', 'end_date'),  # End Date from Date Picker
@@ -493,6 +527,122 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
                                        legend=globals.legend)
 
     return [pilot_cancel_reason_plot]
+
+
+# Callback that fills the Custom Barplot Dropdown with the available Columns from merged Dataframe
+@callback(
+    [Output('Pilot-Custom-Barplot-Dropdown', 'options'), # Custom Barplot Dropdown Data
+     Output('Pilot-Custom-Barplot-Dropdown', 'value')],  # Custom Barplot Dropdown Value
+    [Input('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('reservationlog-store', 'data'),
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date')]  # End Date from Date Picker]  # Reservation log Data Dict
+)
+def update_custom_barplot_dropdown(flightlog_dict, reservationlog_dict, start_date, end_date):
+    if flightlog_dict is None or reservationlog_dict is None:
+        return []
+    # reload flightlog dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    # reload reservation dataframe form dict
+    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+    # Aggregate Pilots Data
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
+    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df)
+
+    # Get the Columns of the merged Dataframe
+    columns = agg_flight_res_df.columns
+    columns = columns[columns != 'Pilot']  # Remove the Pilot Column
+    columns = columns[columns != 'Date']  # Remove the Date Column
+    columns = columns[columns != 'Total_Flight_Time']  # Remove the Flight Time Column
+
+    # Create Dropdown Options
+    dropdown_options = [{'label': column, 'value': column} for column in columns]
+
+    # Set the Default Value of the Dropdown
+    default_value = columns[0]
+
+    return [dropdown_options, default_value]
+
+
+# Callback that handles the Custom Barplot Ratio Graph
+@callback(
+    [Output('Pilot-Custom-Barplot', 'figure')],  # Flight Time Graph
+    [Input('flightlog-store', 'data'),  # Flight log Data Dict
+     Input('reservationlog-store', 'data'),  # Reservation log Data Dict
+     Input('date-picker-range', 'start_date'),  # Start Date from Date Picker
+     Input('date-picker-range', 'end_date'),  # End Date from Date Picker
+     Input('Pilot-Dropdown', 'value'), # Value from Pilots Dropdown
+     Input('Pilot-Custom-Barplot-Dropdown', 'value')]  # Value from Custom Barplot Dropdown
+)
+def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown, custom_barplot_dropdown):
+    if flightlog_dict is None or reservationlog_dict is None:  # If one of the logs is not available
+        not_data_plot = plot.not_data_figure()
+        return [not_data_plot]
+    # reload flightlog dataframe form dict
+    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    # reload reservation dataframe form dict
+    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+
+    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # aggregate reservations log
+    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df) # Aggregate Flight log Data
+    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df) # Merge the flight and reservation log
+
+    # Sort the Dataframe by Ratio_Cancelled that can handle none values
+    agg_flight_res_df = agg_flight_res_df.sort_values(by=custom_barplot_dropdown, na_position='last', ascending=False)
+
+    # Create Plot
+    pilots_cancel_ratio_plot = px.bar(
+        agg_flight_res_df,
+        'Pilot',
+        custom_barplot_dropdown,
+        color=custom_barplot_dropdown,
+        template=globals.plot_template,
+        color_continuous_scale=globals.color_scale
+    )
+    # Update the color of the bar Plot so the Pilot selected is visable
+    if pilot_dropdown != '⌀ All Pilots':
+        pilots_cancel_ratio_plot.update_traces(
+            marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0]\
+                               for pilot in agg_flight_res_df['Pilot']]),
+            hovertext=agg_flight_res_df[custom_barplot_dropdown],
+            selector=dict(type='bar')
+        )
+    pilots_cancel_ratio_plot.update(layout_coloraxis_showscale=False)
+    pilots_cancel_ratio_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    pilots_cancel_ratio_plot.update_layout(margin=globals.plot_margin,
+                                          paper_bgcolor=globals.paper_bgcolor,
+                                          plot_bgcolor=globals.paper_bgcolor)
+
+    # Calculate the mean
+    mean_val = agg_flight_res_df[custom_barplot_dropdown].mean()
+    # Add a horizontal line for the mean and a lighly filled area for the 95 % confidence interval
+    pilots_cancel_ratio_plot.add_hline(y=mean_val, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=2)
+    # Calculate the 95% confidence interval
+    upper_bound = agg_flight_res_df[custom_barplot_dropdown].quantile(0.975)
+    lower_bound = agg_flight_res_df[custom_barplot_dropdown].quantile(0.025)
+    # Add a filled area for the 95% confidence interval
+    pilots_cancel_ratio_plot.add_shape(
+        type="rect",
+        x0=0,
+        x1=len(agg_flight_res_df) - 1,
+        y0=lower_bound,
+        y1=upper_bound,
+        fillcolor="rgba(0,203,233,0.2)",
+        line=dict(width=0),
+    )
+
+    return [pilots_cancel_ratio_plot]
+
+# Callback that handles the TBD Graph (only no data plot)
+@callback(
+    [Output('graph-tbd-1', 'figure')],  # Flight Time Graph
+    [Input('Pilot-Dropdown', 'value')]  # Value from Pilots Dropdown
+)
+def update_pilot_graphs(pilot_dropdown):
+    not_data_plot = plot.not_data_figure()
+    return [not_data_plot]
+
 
 # Callback that handles the Datatable for Pilots
 @callback(
