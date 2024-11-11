@@ -285,7 +285,7 @@ def data_cleanup_reservation(df):
         'Bis': 'To',
         'Vorname': 'First Name',
         'Name': 'Last Name',
-        'Flugzeug': 'Airplane',
+        'Flugzeug': 'Aircraft',
         'Typ': 'Type',
         'Gelöscht': 'Deleted',
         'Löschgrund': 'Deletion Reason'

@@ -63,7 +63,7 @@ def load_data_from_store(data_source, flightlog, instructorlog, reservationlog,\
     if data_source == 'reservationlog':
         df = dp.reload_reservation_dataframe_from_dict(reservationlog, start_date, end_date)
         if aggregation:
-            df = dp.aircraft_aggregation(df)
+            df = dp.reservation_aggregation(df)
     if data_source == 'member':
         df = dp.reload_member_dataframe_from_dict(member)
     return df
