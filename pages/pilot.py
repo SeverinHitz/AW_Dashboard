@@ -213,6 +213,28 @@ layout = html.Div([
     ], className="g-0")
 ])
 
+
+# Function that checks and loads the Flightlog and Reservationlog and returns only the available Data
+# as a Dataframe as a merged single Dataframe
+def load_flight_reservation_data(flightlog_dict, reservationlog_dict, start_date, end_date):
+    if flightlog_dict is None and reservationlog_dict is None:  # If no Data is available
+        return None
+    elif flightlog_dict is None:  # If only Reservationlog is available
+        filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+        agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # aggregate reservations log
+        return agg_reservation_df
+    elif reservationlog_dict is None:  # If only Flightlog is available
+        filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+        agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)  # Aggregate Flight log Data
+        return agg_pilot_df
+    else:  # If both logs are available
+        filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+        filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
+        agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # aggregate reservations log
+        agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)  # Aggregate Flight log Data
+        agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df)  # Merge the flight and reservation log
+        return agg_flight_res_df
+
 # Callback that populates the Dropdownmenu from the Data
 @callback(Output('Pilot-Dropdown', 'options'),  # Dropdown Data
           Input('flightlog-store', 'data'),  # Flightlog Data Dict
@@ -306,7 +328,7 @@ def update_pilots_header_flightpart(flightlog_dict, start_date, end_date, pilot_
         return_list = [item for sublist in zip(kpi, trend_strings, trend_styles) for item in sublist]
 
     except Exception as e:  # If over one year or not possible to load Data
-        print(e)
+        print(f'Catched Exeption: {e}')
         selected = tc.sum_pilot_page_flightlog(agg_pilot_df, pilot_dropdown)  # Only the Kpis
         kpi = sf.trend_string_pilot_page_flightlog(selected)
         trend_strings, trend_styles = sf.trend_string(len(selected))
@@ -474,9 +496,10 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
     )
     # Update the color of the bar Plot so the Pilot selected is visable
     if pilot_dropdown != '⌀ All Pilots':
+        hovertext = [f"Pilot={pilot}\n{time}" for pilot, time in zip(agg_pilot_df['Pilot'], agg_pilot_df['Total_Flight_Time'])]
         pilots_flight_time_plot.update_traces(
             marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0] for pilot in agg_pilot_df['Pilot']]),
-            hovertext=agg_pilot_df['Total_Flight_Time'],
+            hovertext=hovertext,
             selector=dict(type='bar')
         )
     pilots_flight_time_plot.update(layout_coloraxis_showscale=False)
@@ -539,19 +562,13 @@ def update_reservation_graph(reservationlog_dict, start_date, end_date, pilot_dr
      Input('date-picker-range', 'end_date')]  # End Date from Date Picker]  # Reservation log Data Dict
 )
 def update_custom_barplot_dropdown(flightlog_dict, reservationlog_dict, start_date, end_date):
-    if flightlog_dict is None or reservationlog_dict is None:
-        return []
-    # reload flightlog dataframe form dict
-    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-    # reload reservation dataframe form dict
-    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
-    # Aggregate Pilots Data
-    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df)
-    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)
-    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df)
+    agg_df = load_flight_reservation_data(flightlog_dict, reservationlog_dict, start_date, end_date)
+
+    if agg_df is None:
+        return [[], '']
 
     # Get the Columns of the merged Dataframe
-    columns = agg_flight_res_df.columns
+    columns = agg_df.columns
     columns = columns[columns != 'Pilot']  # Remove the Pilot Column
     columns = columns[columns != 'Date']  # Remove the Date Column
     columns = columns[columns != 'Total_Flight_Time']  # Remove the Flight Time Column
@@ -576,24 +593,18 @@ def update_custom_barplot_dropdown(flightlog_dict, reservationlog_dict, start_da
      Input('Pilot-Custom-Barplot-Dropdown', 'value')]  # Value from Custom Barplot Dropdown
 )
 def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_date, pilot_dropdown, custom_barplot_dropdown):
-    if flightlog_dict is None or reservationlog_dict is None:  # If one of the logs is not available
+    agg_df = load_flight_reservation_data(flightlog_dict, reservationlog_dict, start_date, end_date)
+
+    if agg_df is None:  # If no Data is available
         not_data_plot = plot.not_data_figure()
         return [not_data_plot]
-    # reload flightlog dataframe form dict
-    filtered_flight_df = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
-    # reload reservation dataframe form dict
-    filtered_reservation_df = dp.reload_reservation_dataframe_from_dict(reservationlog_dict, start_date, end_date)
-
-    agg_reservation_df = dp.reservation_aggregation(filtered_reservation_df)  # aggregate reservations log
-    agg_pilot_df = dp.pilot_aggregation(filtered_flight_df) # Aggregate Flight log Data
-    agg_flight_res_df = dp.reservation_flight_merge(agg_reservation_df, agg_pilot_df) # Merge the flight and reservation log
 
     # Sort the Dataframe by Ratio_Cancelled that can handle none values
-    agg_flight_res_df = agg_flight_res_df.sort_values(by=custom_barplot_dropdown, na_position='last', ascending=False)
+    agg_df = agg_df.sort_values(by=custom_barplot_dropdown, na_position='last', ascending=False)
 
     # Create Plot
     pilots_cancel_ratio_plot = px.bar(
-        agg_flight_res_df,
+        agg_df,
         'Pilot',
         custom_barplot_dropdown,
         color=custom_barplot_dropdown,
@@ -604,8 +615,8 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
     if pilot_dropdown != '⌀ All Pilots':
         pilots_cancel_ratio_plot.update_traces(
             marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0]\
-                               for pilot in agg_flight_res_df['Pilot']]),
-            hovertext=agg_flight_res_df[custom_barplot_dropdown],
+                               for pilot in agg_df['Pilot']]),
+            hovertext=agg_df[custom_barplot_dropdown],
             selector=dict(type='bar')
         )
     pilots_cancel_ratio_plot.update(layout_coloraxis_showscale=False)
@@ -615,17 +626,17 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
                                           plot_bgcolor=globals.paper_bgcolor)
 
     # Calculate the mean
-    mean_val = agg_flight_res_df[custom_barplot_dropdown].mean()
+    mean_val = agg_df[custom_barplot_dropdown].mean()
     # Add a horizontal line for the mean and a lighly filled area for the 95 % confidence interval
     pilots_cancel_ratio_plot.add_hline(y=mean_val, line_dash="dash", line_color='rgba(0,203,233,255)', line_width=2)
     # Calculate the 95% confidence interval
-    upper_bound = agg_flight_res_df[custom_barplot_dropdown].quantile(0.975)
-    lower_bound = agg_flight_res_df[custom_barplot_dropdown].quantile(0.025)
+    upper_bound = agg_df[custom_barplot_dropdown].quantile(0.975)
+    lower_bound = agg_df[custom_barplot_dropdown].quantile(0.025)
     # Add a filled area for the 95% confidence interval
     pilots_cancel_ratio_plot.add_shape(
         type="rect",
         x0=0,
-        x1=len(agg_flight_res_df) - 1,
+        x1=len(agg_df) - 1,
         y0=lower_bound,
         y1=upper_bound,
         fillcolor="rgba(0,203,233,0.2)",
