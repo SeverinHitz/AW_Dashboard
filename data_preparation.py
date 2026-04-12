@@ -132,13 +132,32 @@ def reload_reservation_dataframe_from_dict(dict, start_date, end_date, offset=0)
     return filtered_reservation_df
 
 def reload_member_dataframe_from_dict(dict):
-    # Load Data from Store
     member_df = pd.DataFrame.from_dict(dict)
-
-    # Convert the 'date_column' to timestamps
     member_df['Date of Birth'] = pd.to_datetime(member_df['Date of Birth'])
-
     return member_df
+
+
+def reload_finance_dataframe_from_dict(dict, start_date, end_date, offset=0):
+    finance_df = pd.DataFrame.from_dict(dict)
+    finance_df['Payment Date'] = pd.to_datetime(finance_df['Payment Date'])
+    finance_df['Amount'] = pd.to_numeric(finance_df['Amount'], errors='coerce')
+    start_date = pd.to_datetime(start_date)
+    end_date   = pd.to_datetime(end_date)
+    if offset != 0:
+        start_date -= pd.DateOffset(years=offset)
+        end_date   -= pd.DateOffset(years=offset)
+    return date_select_df(finance_df, start_date, end_date, date_column='Payment Date')
+
+
+def reload_techlog_dataframe_from_dict(dict, start_date, end_date, offset=0):
+    techlog_df = pd.DataFrame.from_dict(dict)
+    techlog_df['Date'] = pd.to_datetime(techlog_df['Date'])
+    start_date = pd.to_datetime(start_date)
+    end_date   = pd.to_datetime(end_date)
+    if offset != 0:
+        start_date -= pd.DateOffset(years=offset)
+        end_date   -= pd.DateOffset(years=offset)
+    return date_select_df(techlog_df, start_date, end_date)
 
 
 #----------------------------------------------- Clean up Data ----------------------------------------------------#
@@ -180,12 +199,12 @@ def xls_format_cleanup(df):
     return df
 
 def data_cleanup_flightlog(df):
-    # Select Columns
-    df = df[['Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort',\
-        'Flugzeit', 'Block Zeit', 'Benzin', 'Öl', 'Landungen',\
-        'Flugart', 'Flugzeug']]
+    # Base columns always expected
+    base_cols = ['Datum', 'Vorname', 'Name', 'Abflugort', 'Ankunftsort',
+                 'Flugzeit', 'Block Zeit', 'Benzin', 'Öl', 'Landungen',
+                 'Flugart', 'Flugzeug']
+    df = df[base_cols]
 
-    # Rename Columns
     column_mapping = {
         'Datum': 'Date',
         'Vorname': 'First Name',
@@ -201,17 +220,15 @@ def data_cleanup_flightlog(df):
         'Flugzeug': 'Aircraft'
     }
     df.rename(columns=column_mapping, inplace=True)
-    # Pilot Full Name as Column
     df['Pilot'] = df['First Name'] + ' ' + df['Last Name']
 
-    df['YYYY'] = df['Date'].dt.strftime('%Y')
-    df['YY-MM'] = df['Date'].dt.strftime('%y-%m')
+    df['YYYY']     = df['Date'].dt.strftime('%Y')
+    df['YY-MM']    = df['Date'].dt.strftime('%y-%m')
     df['YY-MM-DD'] = df['Date'].dt.strftime('%y-%m-%d')
-    df['YY-WW'] = df['Date'].dt.strftime('%y-%W')
+    df['YY-WW']    = df['Date'].dt.strftime('%y-%W')
 
-    # Set Time as Timedelta
     df['Flight Time'] = pd.to_timedelta(df['Flight Time'].astype(str))
-    df['Block Time'] = pd.to_timedelta(df['Block Time'].astype(str))
+    df['Block Time']  = pd.to_timedelta(df['Block Time'].astype(str))
 
     df.sort_values('Date', ascending=False, inplace=True)
     df.reset_index(inplace=True, drop=True)
@@ -354,6 +371,8 @@ def data_cleanup_reservation(df):
 
     # Set Time as Timedelta
     df['Duration'] = pd.to_timedelta(df['Duration'].astype(str))
+    # Hour of day for intraday aggregation
+    df['From Hour'] = df['From'].dt.hour
 
     df.sort_values('From', ascending=False, inplace=True)
     df.reset_index(inplace=True, drop=True)
