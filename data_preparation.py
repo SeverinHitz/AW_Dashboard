@@ -140,6 +140,8 @@ def reload_member_dataframe_from_dict(dict):
 def reload_finance_dataframe_from_dict(dict, start_date, end_date, offset=0):
     finance_df = pd.DataFrame.from_dict(dict)
     finance_df['Payment Date'] = pd.to_datetime(finance_df['Payment Date'])
+    if 'Invoice Date' in finance_df.columns:
+        finance_df['Invoice Date'] = pd.to_datetime(finance_df['Invoice Date'])
     finance_df['Amount'] = pd.to_numeric(finance_df['Amount'], errors='coerce')
     start_date = pd.to_datetime(start_date)
     end_date   = pd.to_datetime(end_date)
@@ -428,24 +430,79 @@ def data_cleanup_techlog(df):
     return df
 
 
+def _classify_finance_artikel(num):
+    """Map Artikelnummer → cost centre label. Called once at import."""
+    if pd.isna(num):
+        return 'Other'
+    try:
+        n = int(num)
+    except (ValueError, TypeError):
+        return 'Other'
+    if 2100 <= n <= 2199: return 'Aircraft HB-CQW'
+    if 2200 <= n <= 2299: return 'Aircraft HB-DHP'
+    if 2300 <= n <= 2399: return 'Aircraft HB-POD'
+    if 2400 <= n <= 2499: return 'Aircraft HB-POX'
+    if 2500 <= n <= 2599: return 'Aircraft HB-SFS'
+    if 2600 <= n <= 2699: return 'Aircraft HB-SFU'
+    if 2700 <= n <= 2799: return 'Aircraft HB-SGZ'
+    if 2900 <= n <= 2929: return 'Intro/Rundflug vouchers'
+    if 3000 <= n <= 3099: return 'Flight Instructor (FI)'
+    if 3500 <= n <= 3699: return 'Deposits & packages'
+    if 4000 <= n <= 4099: return 'Intro/Rundflug flights'
+    if 4100 <= n <= 4119: return 'Landing fees'
+    if 4200 <= n <= 4399: return 'Customs & fuel refunds'
+    if 6000 <= n <= 6199: return 'Membership fees'
+    return 'Other'
+
+
 def data_cleanup_finance(df):
+    # Keep only the columns we need (reduces store size)
+    keep = ['Rechnungsnummer', 'Artikelnummer', 'Artikel', 'Vorname', 'Name',
+            'Rechnung', 'Zahlungsdatum', 'Betrag inkl. MWST', 'MWST %',
+            'Rechnungsjahr', 'Storniert']
+    df = df[[c for c in keep if c in df.columns]].copy()
+
     df.rename(columns={
-        'Vorname': 'First Name',
-        'Name': 'Last Name',
-        'Zahlungsdatum': 'Payment Date',
-        'Rechnungsnummer': 'Invoice No',
-        'Artikel': 'Article',
-        'Artikelnummer': 'Article No',
+        'Rechnungsnummer':   'Invoice No',
+        'Artikelnummer':     'Article No',
+        'Artikel':           'Article',
+        'Vorname':           'First Name',
+        'Name':              'Last Name',
+        'Rechnung':          'Invoice Date',
+        'Zahlungsdatum':     'Payment Date',
         'Betrag inkl. MWST': 'Amount',
-        'MWST %': 'VAT %',
-        'Rechnungsjahr': 'Invoice Year',
+        'MWST %':            'VAT %',
+        'Rechnungsjahr':     'Invoice Year',
+        'Storniert':         'Cancelled',
     }, inplace=True, errors='ignore')
-    if 'Payment Date' in df.columns:
-        df['Payment Date'] = pd.to_datetime(df['Payment Date'], dayfirst=True, errors='coerce')
-    if 'Amount' in df.columns:
-        df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+
+    # Dates & numerics
+    df['Payment Date'] = pd.to_datetime(df['Payment Date'], dayfirst=True, errors='coerce')
+    if 'Invoice Date' in df.columns:
+        df['Invoice Date'] = pd.to_datetime(df['Invoice Date'], dayfirst=True, errors='coerce')
+    df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+
+    # Pilot full name
     if 'First Name' in df.columns and 'Last Name' in df.columns:
         df['Pilot'] = df['First Name'].str.strip() + ' ' + df['Last Name'].str.strip()
+
+    # ── Computed once at import (would be expensive to repeat per callback) ──
+    # Aircraft registration extracted from Article free text
+    df['ac_reg'] = df['Article'].str.extract(r'(HB-[A-Z]{3})', expand=False)
+
+    # Cost centre from Artikelnummer — used by Finance page and overview
+    df['cost_centre'] = df['Article No'].apply(_classify_finance_artikel)
+
+    # Charter vs Training from Article text
+    df['flight_type'] = (df['Article']
+                         .str.extract(r'^(Charter|Training)', expand=False)
+                         .fillna('Other'))
+
+    # Days from invoice to payment (payment behaviour metric)
+    if 'Invoice Date' in df.columns:
+        df['Days to Payment'] = (df['Payment Date'] - df['Invoice Date']).dt.days
+
+    df.reset_index(drop=True, inplace=True)
     return df
 
 

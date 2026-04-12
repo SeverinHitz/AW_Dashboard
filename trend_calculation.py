@@ -55,6 +55,35 @@ def sum_overview_page_instructorlog(df):
 
     return sum_instructor_hours, sum_trainees, sum_instruction_sets
 
+# ─── Reservationlog ───────────────────────────────────────────────────────────
+
+def sum_overview_page_reservationlog(df):
+    total     = len(df)
+    cancelled = int(df['Deleted'].sum()) if 'Deleted' in df.columns else 0
+    return total, cancelled   # rate is derived; not included to avoid division oddities
+
+def select_overview_page_reservationlog(df, df_trend):
+    return sum_overview_page_reservationlog(df), sum_overview_page_reservationlog(df_trend)
+
+# ─── Finance ─────────────────────────────────────────────────────────────────
+
+def sum_overview_page_finance(df):
+    revenue = float(df['Amount'].sum()) if 'Amount' in df.columns else 0.0
+    count   = len(df)
+    return revenue, count
+
+def select_overview_page_finance(df, df_trend):
+    return sum_overview_page_finance(df), sum_overview_page_finance(df_trend)
+
+# ─── Techlog ─────────────────────────────────────────────────────────────────
+
+def sum_overview_page_techlog(df):
+    sg = df['Status Group'].value_counts() if 'Status Group' in df.columns else pd.Series(dtype=int)
+    return len(df), int(sg.get('Open', 0)), int(sg.get('Deferred', 0))
+
+def select_overview_page_techlog(df, df_trend):
+    return sum_overview_page_techlog(df), sum_overview_page_techlog(df_trend)
+
 # -------------------------------- Pilot Page -------------------------------------------
 
 def select_pilot_page_flightlog(df, df_trend, pilot_dropdown):

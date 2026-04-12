@@ -59,6 +59,26 @@ def trend_string_overview_page_instructorlog(selected):
 
     return sum_total, sum_trainees, sum_instruction_sets
 
+# ─── Reservationlog ───────────────────────────────────────────────────────────
+
+def trend_string_overview_page_reservationlog(selected):
+    # selected = (total, cancelled)
+    rate = (selected[1] / selected[0] * 100) if selected[0] > 0 else 0
+    return f'{int(selected[0])} #', f'{int(selected[1])} #', f'{rate:.1f} %'
+
+# ─── Finance ─────────────────────────────────────────────────────────────────
+
+def trend_string_overview_page_finance(selected):
+    # selected = (revenue, count)
+    avg = selected[0] / selected[1] if selected[1] > 0 else 0
+    return f'CHF {selected[0]:,.0f}', f'{int(selected[1])} #', f'CHF {avg:,.0f}'
+
+# ─── Techlog ─────────────────────────────────────────────────────────────────
+
+def trend_string_overview_page_techlog(selected):
+    # selected = (total, open, deferred)
+    return f'{int(selected[0])} #', f'{int(selected[1])} #', f'{int(selected[2])} #'
+
 # ------------------------------- Pilot Page ---------------------------------------
 
 def trend_string_pilot_page_flightlog(selected):
