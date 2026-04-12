@@ -336,7 +336,7 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
         'Aircraft',
         'Total_Flight_Time',
         color='Total_Flight_Time',
-        template=globals.plot_template,
+        template='none',
         color_continuous_scale=globals.color_scale
     )
     # Update the color of the selected pilot in the bar plot
@@ -351,7 +351,8 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
     aircraft_flight_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     aircraft_flight_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
-                                          plot_bgcolor=globals.paper_bgcolor)
+                                          plot_bgcolor=globals.paper_bgcolor,
+                                          template=globals.plot_template)
 
     # Calculate the mean of Total_Flight_Time
     mean_flight_time = agg_aircraft_df['Total_Flight_Time'].mean()

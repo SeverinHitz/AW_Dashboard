@@ -307,7 +307,7 @@ def update_trainee_instruction_time_plot(instructorlog_dict, start_date, end_dat
         'Pilot',
         'Total_Duration',
         color='Total_Duration',
-        template=globals.plot_template,
+        template='none',
         color_continuous_scale=globals.color_scale
     )
     # Update the color of the selected pilot in the bar plot
@@ -323,7 +323,8 @@ def update_trainee_instruction_time_plot(instructorlog_dict, start_date, end_dat
     trainee_instructor_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     trainee_instructor_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
-                                          plot_bgcolor=globals.paper_bgcolor)
+                                          plot_bgcolor=globals.paper_bgcolor,
+                                          template=globals.plot_template)
 
     return [trainee_instructor_time_plot]
 
@@ -349,7 +350,7 @@ def update_instructor_instruction_time_plot(instructorlog_dict, start_date, end_
         'Instructor',
         'Total_Duration',
         color='Total_Duration',
-        template=globals.plot_template,
+        template='none',
         color_continuous_scale=globals.color_scale
     )
     # Update the color of the selected pilot in the bar plot
@@ -365,7 +366,8 @@ def update_instructor_instruction_time_plot(instructorlog_dict, start_date, end_
     trainee_instructor_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     trainee_instructor_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
-                                          plot_bgcolor=globals.paper_bgcolor)
+                                          plot_bgcolor=globals.paper_bgcolor,
+                                          template=globals.plot_template)
 
     return [trainee_instructor_time_plot]
 

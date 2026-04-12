@@ -79,7 +79,8 @@ def _apply_theme(fig):
 def _ts_bar(df, x, y, color):
     """Stacked bar + 7-day rolling mean."""
     fig = px.bar(df, x=x, y=y, color=color,
-                 color_discrete_sequence=globals.discrete_teal)
+                 color_discrete_sequence=globals.discrete_teal,
+                 template='none')
     daily = df.groupby(x)[y].sum()
     ma = daily.rolling(7, center=True, min_periods=1).mean()
     fig.add_trace(go.Scatter(x=daily.index, y=ma, mode='lines', name='7-day avg',
@@ -466,7 +467,7 @@ def rl_left(rl_data, fl_data, start, end):
     combined = combined.melt(id_vars='Week', var_name='Type', value_name='Hours')
 
     fig = px.bar(combined, x='Week', y='Hours', color='Type', barmode='group',
-                 color_discrete_sequence=globals.discrete_teal)
+                 color_discrete_sequence=globals.discrete_teal, template='none')
     return _apply_theme(fig)
 
 
@@ -490,7 +491,8 @@ def rl_right(data, start, end):
 
     fig = px.bar(weekly, x='Week', y='Count', color='Status', barmode='stack',
                  color_discrete_map={'Active': globals.discrete_teal[0],
-                                     'Cancelled': globals.discrete_teal[4]})
+                                     'Cancelled': globals.discrete_teal[4]},
+                 template='none')
     return _apply_theme(fig)
 
 
@@ -551,7 +553,8 @@ def fi_left(data, start, end):
     agg_melt = agg.melt(id_vars='ac_reg', var_name='Type', value_name='CHF')
     fig = px.bar(agg_melt, x='CHF', y='ac_reg', color='Type', barmode='group',
                  orientation='h', color_discrete_sequence=globals.discrete_teal,
-                 labels={'ac_reg': 'Aircraft', 'CHF': 'CHF incl. VAT'})
+                 labels={'ac_reg': 'Aircraft', 'CHF': 'CHF incl. VAT'},
+                 template='none')
     return _apply_theme(fig)
 
 
@@ -573,7 +576,8 @@ def fi_right(data, start, end):
 
     fig = px.histogram(dtp, nbins=60,
                        color_discrete_sequence=[globals.discrete_teal[2]],
-                       labels={'value': 'Days (Invoice → Payment)', 'count': 'Invoices'})
+                       labels={'value': 'Days (Invoice → Payment)', 'count': 'Invoices'},
+                       template='none')
     fig.add_vline(x=0,    line_dash='dash', line_color='grey',  annotation_text='Same day')
     fig.add_vline(x=dtp.median(), line_dash='dot', line_color=TEAL,
                   annotation_text=f'Median {dtp.median():.0f}d')
@@ -627,7 +631,8 @@ def mb_last(mb_data, fl_data):
 
     fig = px.histogram(valid, nbins=40,
                        color_discrete_sequence=[globals.discrete_teal[1]],
-                       labels={'value': 'Days since last flight', 'count': 'Members'})
+                       labels={'value': 'Days since last flight', 'count': 'Members'},
+                       template='none')
     med = valid.median()
     fig.add_vline(x=med, line_dash='dot', line_color=TEAL,
                   annotation_text=f'Median {med:.0f}d')
@@ -700,5 +705,5 @@ def tl_chart(data, start, end):
              .sort_values('Count', ascending=False))
     fig = px.bar(agg, x='Aircraft', y='Count', color='Status Group',
                  color_discrete_sequence=globals.discrete_teal,
-                 barmode='stack')
+                 barmode='stack', template='none')
     return _apply_theme(fig)

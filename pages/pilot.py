@@ -491,7 +491,7 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
         'Pilot',
         'Total_Flight_Time',
         color='Total_Flight_Time',
-        template=globals.plot_template,
+        template='none',
         color_continuous_scale=globals.color_scale
     )
     # Update the color of the bar Plot so the Pilot selected is visable
@@ -506,7 +506,8 @@ def update_pilot_graphs(flightlog_dict, start_date, end_date, pilot_dropdown):
     pilots_flight_time_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     pilots_flight_time_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
-                                          plot_bgcolor=globals.paper_bgcolor)
+                                          plot_bgcolor=globals.paper_bgcolor,
+                                          template=globals.plot_template)
 
     # Calculate the mean of Total_Flight_Time
     mean_flight_time = agg_pilot_df['Total_Flight_Time'].mean()
@@ -608,7 +609,7 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
         'Pilot',
         custom_barplot_dropdown,
         color=custom_barplot_dropdown,
-        template=globals.plot_template,
+        template='none',
         color_continuous_scale=globals.color_scale
     )
     # Update the color of the bar Plot so the Pilot selected is visable
@@ -623,7 +624,8 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
     pilots_cancel_ratio_plot.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
     pilots_cancel_ratio_plot.update_layout(margin=globals.plot_margin,
                                           paper_bgcolor=globals.paper_bgcolor,
-                                          plot_bgcolor=globals.paper_bgcolor)
+                                          plot_bgcolor=globals.paper_bgcolor,
+                                          template=globals.plot_template)
 
     # Calculate the mean
     mean_val = agg_df[custom_barplot_dropdown].mean()
