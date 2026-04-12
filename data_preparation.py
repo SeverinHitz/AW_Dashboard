@@ -360,6 +360,76 @@ def data_cleanup_reservation(df):
 
     return df
 
+def detect_dataset_type(df):
+    """
+    Auto-detect which AirManager dataset a DataFrame belongs to
+    by checking for unique column signatures.
+    Returns one of: 'flightlog' | 'instructorlog' | 'reservationlog' |
+                    'member' | 'finance' | 'techlog' | 'unknown'
+    """
+    cols = set(str(c) for c in df.columns)
+    if {'Datum', 'Flugart', 'Flugzeug', 'Abflugort'}.issubset(cols):
+        return 'flightlog'
+    if {'Datum', 'Fluglehrer Vorname', 'Pilot Vorname', 'Dauer'}.issubset(cols):
+        return 'instructorlog'
+    if {'Von', 'Bis', 'Gelöscht', 'Löschgrund'}.issubset(cols):
+        return 'reservationlog'
+    if {'AirManager ID', 'Mitgliedschaft', 'Geburtsdatum'}.issubset(cols):
+        return 'member'
+    if {'Rechnungsnummer', 'Artikel', 'Rechnungstotal inkl. MWST'}.issubset(cols):
+        return 'finance'
+    if {'ID', 'Flugzeug', 'Description', 'Status', 'Timestamp'}.issubset(cols):
+        return 'techlog'
+    return 'unknown'
+
+
+def data_cleanup_techlog(df):
+    df = df[['ID', 'Datum', 'Vorname', 'Name', 'Flugzeug', 'Description', 'Status', 'Timestamp']]
+    df.rename(columns={
+        'Datum': 'Date',
+        'Vorname': 'First Name',
+        'Name': 'Last Name',
+        'Flugzeug': 'Aircraft',
+    }, inplace=True)
+    df['Date'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce')
+    df['Timestamp'] = pd.to_datetime(df['Timestamp'], errors='coerce')
+    open_map = {
+        'Open - Not Flight Relevant': 'Open',
+        'DD - Not Flight Relevant':   'Deferred',
+        'DD - Restriction':           'Deferred',
+        'Not Airworthy':              'Not Airworthy',
+        'CRS':                        'Closed',
+        'CRS - Check':                'Closed',
+        'Close':                      'Closed',
+        'For information only':       'Info',
+    }
+    df['Status Group'] = df['Status'].map(open_map).fillna('Other')
+    df.sort_values('Date', ascending=False, inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    return df
+
+
+def data_cleanup_finance(df):
+    df.rename(columns={
+        'Vorname': 'First Name',
+        'Name': 'Last Name',
+        'Zahlungsdatum': 'Payment Date',
+        'Rechnungsnummer': 'Invoice No',
+        'Artikel': 'Article',
+        'Artikelnummer': 'Article No',
+        'Betrag inkl. MWST': 'Amount',
+        'MWST %': 'VAT %',
+        'Rechnungsjahr': 'Invoice Year',
+    }, inplace=True, errors='ignore')
+    if 'Payment Date' in df.columns:
+        df['Payment Date'] = pd.to_datetime(df['Payment Date'], dayfirst=True, errors='coerce')
+    if 'Amount' in df.columns:
+        df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+    if 'First Name' in df.columns and 'Last Name' in df.columns:
+        df['Pilot'] = df['First Name'].str.strip() + ' ' + df['Last Name'].str.strip()
+    return df
+
+
 def data_cleanup_gem_df(gdf):
     gdf = gdf[['PLZ', 'geometry']]
 

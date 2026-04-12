@@ -37,11 +37,13 @@ app.layout = html.Div([
         dcc.Store(id='reservationlog-store', storage_type='session'),
         dcc.Store(id='member-store', storage_type='session'),
         dcc.Store(id='finance-store', storage_type='session'),
+        dcc.Store(id='techlog-store', storage_type='session'),
         dcc.Store(id='flightlog-store-date', storage_type='session'),
         dcc.Store(id='instructorlog-store-date', storage_type='session'),
         dcc.Store(id='reservationlog-store-date', storage_type='session'),
         dcc.Store(id='member-store-date', storage_type='session'),
         dcc.Store(id='finance-store-date', storage_type='session'),
+        dcc.Store(id='techlog-store-date', storage_type='session'),
         dcc.Store(id='trend-switch', storage_type='session')
     ]),
     html.Div([
