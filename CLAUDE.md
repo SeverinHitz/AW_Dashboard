@@ -45,6 +45,53 @@ gunicorn app:server
 - **`string_func.py`**: String formatting helpers, including `trend_string()` for formatting trend indicators.
 - **`pages/`**: One file per dashboard page, each calls `dash.register_page(__name__, ...)`. Pages are self-contained with their own layout and callbacks.
 
+### Page Layouts (current state)
+
+**Overview (`pages/overview.py`)**
+- Zone 1: 6 KPIs with YoY trend — Flights, Flight Hours, Landings, Active Pilots, Instruction Time, Revenue
+- Zone 2: GitHub-style activity heatmap (daily flight hours, teal colorscale, NaN = transparent)
+- Zone 3: Flight-type pie (raw `Flight Type` values, hours) | Aircraft flight hours bar (teal cmap by bar length)
+- Zone 4: Navigation cards to sub-pages
+
+**Pilot (`pages/pilot.py`)**
+- KPI Row 1 (width_2 each): Pilot · Flight Time · Block Time · Flt./Blckt. · Flights · Landings
+- KPI Row 2 (width_3 each): Flt/Res · Reservations · Cancelled · Canc. Ratio
+- Plots: Flight Time bar | Cancellation Reason pie | Custom Bar Plot | **Day-of-Week flight hours bar**
+
+**Aircraft (`pages/aircraft.py`)**
+- KPI Row 1 (width_2 each): Aircraft · Flight Time · Flights · ⌀ Flt Time · Landings · Airports
+- KPI Row 2 (width_3 each): Fuel p.h. · Oil p.h. · Inst. Ratio · # Pilots
+- Plot Row 1: Flight Time bar | Flight Type pie | Destinations map
+- Plot Row 2: **Techlog Status stacked bar** (per aircraft, teal status colors) | **Day-of-Week flight hours bar**
+- Destinations map: density glow background + route lines (width ∝ flights) + scatter circles
+
+### Plotly Chart Patterns
+
+**Critical:** Never pass `template=globals.plot_template` directly to `px.bar()` when also using `color=<numeric_column>` (continuous color). This triggers a Plotly internal crash. Instead:
+```python
+fig = px.bar(..., template='none', color='MyCol', color_continuous_scale=globals.color_scale)
+fig.update_layout(..., template=globals.plot_template)  # apply template here
+```
+
+**Hover text:** Always set `hovertemplate` explicitly. Use `<extra></extra>` to suppress the trace-name box. Example: `'<b>%{x}</b><br>%{y:.1f} h<extra></extra>'`. For bars use `%{y:g}` when the column can be either int or float.
+
+**Colorscale:** Use `globals.color_scale` (`'teal'`) for continuous scales and `globals.discrete_teal` (list of 9 teal hex values) for categorical. Both are set in `globals.py`.
+
+### Techlog Status Groups
+
+`data_cleanup_techlog()` in `data_preparation.py` maps raw German status strings to these groups (stored in `Status Group` column):
+
+| Raw Status | Group |
+|---|---|
+| Open - Not Flight Relevant | Open |
+| DD - Not Flight Relevant / DD - Restriction | Deferred |
+| Not Airworthy | Not Airworthy |
+| CRS / CRS - Check / Close | Closed |
+| For information only | Info |
+| (anything else) | Other |
+
+Colors used on aircraft page: Not Airworthy → `discrete_teal[7]`, Open → `[5]`, Deferred → `[3]`, Info → `[1]`, Closed → `[0]`, Other → `#444444`.
+
 ### Responsive Layout
 
 Use the `globals.adaptiv_width_*` dicts (1–12) as `**globals.adaptiv_width_N` kwargs on `dbc.Col` components. These define breakpoint-specific column widths for xs/sm/md/lg/xl screen sizes.
