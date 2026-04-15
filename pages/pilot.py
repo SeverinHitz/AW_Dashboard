@@ -26,112 +26,84 @@ layout = html.Div([
     dbc.Row([
         dcc.Dropdown(value='⌀ All Pilots', id='Pilot-Dropdown')
     ]),
-    # KPI Row Pilot
+    # KPI Row 1 — flight stats
     dcc.Loading(
         id='loading-kpi-pilot',
         type='default',
-        children=html.Div(
+        children=html.Div([
         dbc.Row([
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Pilot"),
-                dbc.CardBody(
-                [
-                    html.H4("Name", id='Pilot-Name'),
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_3),
+                dbc.CardBody([html.H4("Name", id='Pilot-Name')])])
+            ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flight Time"),
-                dbc.CardBody(
-                [
+                dbc.CardBody([
                     html.H4("XXX h", id='Pilot-Flight-Hours'),
                     html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Flight-Hours-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
+                ])])
+            ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Block Time"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Block-Hours'),
-                              html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Block-Hours-Trend')
-                          ]
-                      )
-                      ])
-            ], **globals.adaptiv_width_1),
+                dbc.CardBody([
+                    html.H4("XXX %", id='Pilot-Block-Hours'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Block-Hours-Trend')
+                ])])
+            ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flt./Blckt."),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX %", id='Pilot-Flight-Block-Time'),
-                              html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Flight-Block-Time-Trend')
-                          ]
-                      )
-                      ])
-            ], **globals.adaptiv_width_1),
+                dbc.CardBody([
+                    html.H4("XXX %", id='Pilot-Flight-Block-Time'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Flight-Block-Time-Trend')
+                ])])
+            ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flights"),
-                dbc.CardBody(
-                [
+                dbc.CardBody([
                     html.H4("XXX #", id='Pilot-Number-of-Flights'),
                     html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Number-of-Flights-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
+                ])])
+            ], **globals.adaptiv_width_2),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Landings"),
-                dbc.CardBody(
-                [
+                dbc.CardBody([
                     html.H4("XXX #", id='Pilot-Number-of-Landings'),
                     html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Number-of-Landings-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
+                ])])
+            ], **globals.adaptiv_width_2),
+        ], className="g-1 mt-1"),
+        # KPI Row 2 — reservation stats
+        dbc.Row([
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Flt/Res"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX %", id='Pilot-Res-to-Flight-Time'),
-                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Res-to-Flight-Time-Trend')
-                              ]
-                          )
-                          ])
-            ], **globals.adaptiv_width_1),
+                dbc.CardBody([
+                    html.H4("XXX %", id='Pilot-Res-to-Flight-Time'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Res-to-Flight-Time-Trend')
+                ])])
+            ], **globals.adaptiv_width_3),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Reservations"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX h", id='Pilot-Reservation'),
-                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Reservation-Trend')
-                              ]
-                          )
-                          ])
-            ], **globals.adaptiv_width_1),
+                dbc.CardBody([
+                    html.H4("XXX h", id='Pilot-Reservation'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Reservation-Trend')
+                ])])
+            ], **globals.adaptiv_width_3),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Cancelled"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX h", id='Pilot-Cancelled'),
-                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Trend')
-                              ]
-                          )
-                          ])
-            ], **globals.adaptiv_width_1),
+                dbc.CardBody([
+                    html.H4("XXX h", id='Pilot-Cancelled'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Trend')
+                ])])
+            ], **globals.adaptiv_width_3),
             dbc.Col([
                 dbc.Card([dbc.CardHeader("Canc. Ratio"),
-                          dbc.CardBody(
-                              [
-                                  html.H4("XXX %", id='Pilot-Cancelled-Ratio'),
-                                  html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Ratio-Trend')
-                              ]
-                          )
-                          ])
-            ], **globals.adaptiv_width_1)
-        ], className="g-0"))),
+                dbc.CardBody([
+                    html.H4("XXX %", id='Pilot-Cancelled-Ratio'),
+                    html.H6("→ XX %", style={'color': 'grey'}, id='Pilot-Cancelled-Ratio-Trend')
+                ])])
+            ], **globals.adaptiv_width_3),
+        ], className="g-1 mt-1"),
+    ])),
     # First Row of Plots
     dbc.Row([
         dbc.Col([
@@ -182,7 +154,7 @@ layout = html.Div([
             ])
         ], **globals.adaptiv_width_8),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("TBD", id='tbd-1'),
+            dbc.Card([dbc.CardHeader("Flight Time by Day of Week"),
                       dbc.CardBody(
                           [
                               dcc.Loading(
@@ -604,6 +576,8 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
     agg_df = agg_df.sort_values(by=custom_barplot_dropdown, na_position='last', ascending=False)
 
     # Create Plot
+    _hover = f'<b>%{{x}}</b><br>{custom_barplot_dropdown}: %{{y:g}}<extra></extra>'
+
     pilots_cancel_ratio_plot = px.bar(
         agg_df,
         'Pilot',
@@ -612,12 +586,13 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
         template='none',
         color_continuous_scale=globals.color_scale
     )
+    pilots_cancel_ratio_plot.update_traces(hovertemplate=_hover)
     # Update the color of the bar Plot so the Pilot selected is visable
     if pilot_dropdown != '⌀ All Pilots':
         pilots_cancel_ratio_plot.update_traces(
             marker=dict(color=[globals.discrete_teal[-1] if pilot == pilot_dropdown else globals.discrete_teal[0]\
                                for pilot in agg_df['Pilot']]),
-            hovertext=agg_df[custom_barplot_dropdown],
+            hovertemplate=_hover,
             selector=dict(type='bar')
         )
     pilots_cancel_ratio_plot.update(layout_coloraxis_showscale=False)
@@ -647,14 +622,49 @@ def update_pilot_graphs(flightlog_dict, reservationlog_dict, start_date, end_dat
 
     return [pilots_cancel_ratio_plot]
 
-# Callback that handles the TBD Graph (only no data plot)
+# Callback — flight hours by day of week
 @callback(
-    [Output('graph-tbd-1', 'figure')],  # Flight Time Graph
-    [Input('Pilot-Dropdown', 'value')]  # Value from Pilots Dropdown
+    Output('graph-tbd-1', 'figure'),
+    Input('flightlog-store',   'data'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'),
+    Input('Pilot-Dropdown',    'value'),
 )
-def update_pilot_graphs(pilot_dropdown):
-    not_data_plot = plot.not_data_figure()
-    return [not_data_plot]
+def update_dow_chart(flightlog_dict, start_date, end_date, pilot_dropdown):
+    if flightlog_dict is None:
+        return plot.not_data_figure()
+
+    fl = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    if pilot_dropdown != '⌀ All Pilots':
+        fl = fl[fl['Pilot'] == pilot_dropdown]
+    if fl.empty:
+        return plot.not_data_figure()
+
+    fl['Hours'] = fl['Flight Time'].dt.total_seconds() / 3600
+    fl['DOW']   = fl['Date'].dt.dayofweek  # 0=Mon … 6=Sun
+
+    dow_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    agg = (fl.groupby('DOW')['Hours'].sum()
+             .reindex(range(7), fill_value=0)
+             .reset_index())
+    agg.columns = ['DOW', 'Hours']
+    agg['Day'] = agg['DOW'].map(lambda i: dow_labels[i])
+
+    fig = px.bar(
+        agg, x='Day', y='Hours',
+        template='none',
+        color='Hours',
+        color_continuous_scale=globals.color_scale,
+        labels={'Hours': 'Flight Hours', 'Day': ''},
+    )
+    fig.update_traces(hovertemplate='<b>%{x}</b><br>%{y:.1f} h<extra></extra>')
+    fig.update(layout_coloraxis_showscale=False)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    fig.update_layout(margin=globals.plot_margin,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor,
+                      template=globals.plot_template)
+    return fig
 
 
 # Callback that handles the Datatable for Pilots

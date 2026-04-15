@@ -34,149 +34,82 @@ layout = html.Div([
     dcc.Loading(
         id='loading-kpi-aircraft',
         type='default',
-        children=html.Div(
+        children=html.Div([
+            # KPI Row 1 — flight stats
             dbc.Row([
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Aircraft"),
-                dbc.CardBody(
-                [
-                    html.H4("Name", id='Aircraft-Registration'),
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_3),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Flight Time"),
-                dbc.CardBody(
-                [
-                    html.H4("XXX h", id='Aircraft-Flight-Hours'),
-                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Flight-Hours-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Flights"),
-                  dbc.CardBody(
-                      [
-                          html.H4("XXX #", id='Aircraft-Number-of-Flights'),
-                          html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Flights-Trend')
-                      ]
-                  )
-                  ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("⌀ Flt Time"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
-                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Mean-Flight-Time-Trend')
-                          ]
-                      )
-                      ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Landings"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Aircraft-Number-of-Landings'),
-                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Landings-Trend')
-                          ]
-                      )
-                      ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Airports"),
-                      dbc.CardBody(
-                          [
-                              html.H4("XXX #", id='Aircraft-Number-of-Airports'),
-                              html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Airports-Trend')
-                          ]
-                      )
-                      ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Fuel p. h."),
-                dbc.CardBody(
-                [
-                    html.H4("XXX L", id='Aircraft-Fuel-per-Hour'),
-                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Fuel-per-Hour-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Oil p. h."),
-                dbc.CardBody(
-                [
-                    html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
-                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Oil-per-Hour-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("Inst. Ratio"),
-                  dbc.CardBody(
-                      [
-                          html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
-                          html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Instruction-Ratio-Trend')
-                      ]
-                  )
-                  ])
-            ], **globals.adaptiv_width_1),
-            dbc.Col([
-                dbc.Card([dbc.CardHeader("# Pilots"),
-                dbc.CardBody(
-                [
-                    html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
-                    html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Pilots-Trend')
-                ]
-            )
-            ])
-            ], **globals.adaptiv_width_1),
-        ], className="g-0"))),
+                dbc.Col([dbc.Card([dbc.CardHeader("Aircraft"),
+                    dbc.CardBody([html.H4("Name", id='Aircraft-Registration')])])
+                ], **globals.adaptiv_width_2),
+                dbc.Col([dbc.Card([dbc.CardHeader("Flight Time"),
+                    dbc.CardBody([html.H4("XXX h", id='Aircraft-Flight-Hours'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Flight-Hours-Trend')])])
+                ], **globals.adaptiv_width_2),
+                dbc.Col([dbc.Card([dbc.CardHeader("Flights"),
+                    dbc.CardBody([html.H4("XXX #", id='Aircraft-Number-of-Flights'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Flights-Trend')])])
+                ], **globals.adaptiv_width_2),
+                dbc.Col([dbc.Card([dbc.CardHeader("⌀ Flt Time"),
+                    dbc.CardBody([html.H4("XXX h", id='Aircraft-Mean-Flight-Time'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Mean-Flight-Time-Trend')])])
+                ], **globals.adaptiv_width_2),
+                dbc.Col([dbc.Card([dbc.CardHeader("Landings"),
+                    dbc.CardBody([html.H4("XXX #", id='Aircraft-Number-of-Landings'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Landings-Trend')])])
+                ], **globals.adaptiv_width_2),
+                dbc.Col([dbc.Card([dbc.CardHeader("Airports"),
+                    dbc.CardBody([html.H4("XXX #", id='Aircraft-Number-of-Airports'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Airports-Trend')])])
+                ], **globals.adaptiv_width_2),
+            ], className="g-1 mt-1"),
+            # KPI Row 2 — consumption & ratios
+            dbc.Row([
+                dbc.Col([dbc.Card([dbc.CardHeader("Fuel p. h."),
+                    dbc.CardBody([html.H4("XXX L", id='Aircraft-Fuel-per-Hour'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Fuel-per-Hour-Trend')])])
+                ], **globals.adaptiv_width_3),
+                dbc.Col([dbc.Card([dbc.CardHeader("Oil p. h."),
+                    dbc.CardBody([html.H4("XXX mL", id='Aircraft-Oil-per-Hour'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Oil-per-Hour-Trend')])])
+                ], **globals.adaptiv_width_3),
+                dbc.Col([dbc.Card([dbc.CardHeader("Inst. Ratio"),
+                    dbc.CardBody([html.H4("XXX %", id='Aircraft-Instruction-Ratio'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Instruction-Ratio-Trend')])])
+                ], **globals.adaptiv_width_3),
+                dbc.Col([dbc.Card([dbc.CardHeader("# Pilots"),
+                    dbc.CardBody([html.H4("XXX #", id='Aircraft-Number-of-Pilots'),
+                        html.H6("→ XX %", style={'color': 'grey'}, id='Aircraft-Number-of-Pilots-Trend')])])
+                ], **globals.adaptiv_width_3),
+            ], className="g-1 mt-1"),
+        ])),
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Time"),
-                      dbc.CardBody(
-                          [
-                              dcc.Loading(
-                                  id='loading-Aircraft-Flight-Time-Plot',
-                                  type='cube',
-                                  children=html.Div(
-                                      dcc.Graph(id='Aircraft-Flight-Time-Plot'))),
-                          ]
-                      )
-                      ])
+                      dbc.CardBody([dcc.Loading(id='loading-Aircraft-Flight-Time-Plot', type='cube',
+                          children=html.Div(dcc.Graph(id='Aircraft-Flight-Time-Plot')))])])
         ], **globals.adaptiv_width_4),
         dbc.Col([
             dbc.Card([dbc.CardHeader("Flight Type"),
-                      dbc.CardBody(
-                          [
-                              dcc.Loading(
-                                  id='loading-Aircraft-Flight-Type-Plot',
-                                  type='cube',
-                                  children=html.Div(
-                                      dcc.Graph(id='Aircraft-Flight-Type-Plot'))),
-                          ]
-                      )
-                      ])
+                      dbc.CardBody([dcc.Loading(id='loading-Aircraft-Flight-Type-Plot', type='cube',
+                          children=html.Div(dcc.Graph(id='Aircraft-Flight-Type-Plot')))])])
         ], **globals.adaptiv_width_4),
         dbc.Col([
-            dbc.Card([dbc.CardHeader("Heatmap"),
-                      dbc.CardBody(
-                          [
-                              dcc.Loading(
-                                  id='loading-Aircraft-Heatmap',
-                                  type='cube',
-                                  children=html.Div(
-                                      dcc.Graph(id='Aircraft-Heatmap'))),
-                          ]
-                      )
-                      ])
-        ], **globals.adaptiv_width_4)
-    ], className="g-0"),
+            dbc.Card([dbc.CardHeader("Destinations"),
+                      dbc.CardBody([dcc.Loading(id='loading-Aircraft-Heatmap', type='cube',
+                          children=html.Div(dcc.Graph(id='Aircraft-Heatmap')))])])
+        ], **globals.adaptiv_width_4),
+    ], className="g-1 mt-1"),
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Techlog Status by Aircraft"),
+                      dbc.CardBody([dcc.Loading(id='loading-Aircraft-Techlog', type='cube',
+                          children=html.Div(dcc.Graph(id='Aircraft-Techlog-Plot')))])])
+        ], **globals.adaptiv_width_8),
+        dbc.Col([
+            dbc.Card([dbc.CardHeader("Flight Time by Day of Week"),
+                      dbc.CardBody([dcc.Loading(id='loading-Aircraft-DOW', type='cube',
+                          children=html.Div(dcc.Graph(id='Aircraft-DOW-Plot')))])])
+        ], **globals.adaptiv_width_4),
+    ], className="g-1 mt-1"),
     dbc.Row([
         dbc.Col([
             dbc.Card([dbc.CardHeader("Aircraft Logs", id='Aircraft-Data-Table-Header'),
@@ -331,6 +264,8 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
     # Aggregate Pilots Data
     agg_aircraft_df = dp.aircraft_aggregation(filtered_flight_df)
     # Create Pilot Plot
+    _hover_ft = '<b>%{x}</b><br>%{y:.1f} h<extra></extra>'
+
     aircraft_flight_time_plot = px.bar(
         agg_aircraft_df,
         'Aircraft',
@@ -339,12 +274,12 @@ def update_aircraft_flight_time_plot(flightlog_dict, start_date, end_date, aircr
         template='none',
         color_continuous_scale=globals.color_scale
     )
-    # Update the color of the selected pilot in the bar plot
+    aircraft_flight_time_plot.update_traces(hovertemplate=_hover_ft)
     if aircraft_dropdown != '⌀ All Aircrafts':
         aircraft_flight_time_plot.update_traces(
             marker=dict(color=[globals.discrete_teal[-1] if aircraft == aircraft_dropdown else globals.discrete_teal[0]\
                                for aircraft in agg_aircraft_df['Aircraft']]),
-            hovertext=agg_aircraft_df['Total_Flight_Time'],
+            hovertemplate=_hover_ft,
             selector=dict(type='bar')
         )
     aircraft_flight_time_plot.update(layout_coloraxis_showscale=False)
@@ -420,28 +355,201 @@ def update_aircraft_heat_map(flightlog_dict, start_date, end_date, aircraft_drop
     max_longitude = max_landing_row['longitude_deg']
 
 
-    # Create Reservation Plot
-    aircraft_heatmap = px.density_mapbox(
-        arrival_count,
-        lat='latitude_deg',
-        lon='longitude_deg',
-        z='log_Total_Landings',
-        hover_name='ident',
-        hover_data='Total_Landings',
-        center={"lat": max_latitude, "lon": max_longitude},
-        zoom=6,
-        radius=50,
-        template=globals.plot_template,
-        color_continuous_scale=globals.color_scale,
-        mapbox_style="carto-darkmatter"
-    )
-    aircraft_heatmap.update(layout_coloraxis_showscale=False)
-    aircraft_heatmap.update_layout(margin=globals.plot_margin_map,
-                                            paper_bgcolor=globals.paper_bgcolor,
-                                            plot_bgcolor=globals.paper_bgcolor,
-                                            legend=globals.legend)
+    import plotly.graph_objects as go
 
-    return [aircraft_heatmap]
+    # ── Route lines ────────────────────────────────────────────────────────────
+    routes = (filtered_flight_df
+              .groupby(['Departure Location', 'Arrival Location'])
+              .size().reset_index(name='Flights'))
+    routes = routes[routes['Departure Location'] != routes['Arrival Location']]
+
+    coords = eu_airport_gdf[['ident', 'latitude_deg', 'longitude_deg']]
+    routes = routes.merge(coords.rename(columns={'ident': 'Departure Location',
+                                                  'latitude_deg': 'dep_lat',
+                                                  'longitude_deg': 'dep_lon'}),
+                          on='Departure Location', how='inner')
+    routes = routes.merge(coords.rename(columns={'ident': 'Arrival Location',
+                                                  'latitude_deg': 'arr_lat',
+                                                  'longitude_deg': 'arr_lon'}),
+                          on='Arrival Location', how='inner')
+
+    # Normalise flight count → line width 1–5 px
+    if not routes.empty:
+        max_f = routes['Flights'].max()
+        routes['width'] = ((routes['Flights'] / max_f * 4) + 1).round().astype(int)
+    else:
+        routes['width'] = 1
+
+    # ── Build figure layer by layer ────────────────────────────────────────────
+    fig = go.Figure()
+
+    # 1. Density glow background
+    fig.add_trace(go.Densitymapbox(
+        lat=arrival_count['latitude_deg'],
+        lon=arrival_count['longitude_deg'],
+        z=arrival_count['log_Total_Landings'],
+        radius=80,
+        colorscale=globals.color_scale,
+        opacity=0.6,
+        showscale=False,
+        hoverinfo='skip',
+    ))
+
+    # 2. Route lines — one trace per width bucket so widths vary
+    for w, grp in routes.groupby('width'):
+        lats, lons = [], []
+        for _, row in grp.iterrows():
+            lats += [row['dep_lat'], row['arr_lat'], None]
+            lons += [row['dep_lon'], row['arr_lon'], None]
+        fig.add_trace(go.Scattermapbox(
+            lat=lats, lon=lons,
+            mode='lines',
+            line=dict(width=int(w), color='rgba(0,203,233,0.35)'),
+            hoverinfo='skip',
+            showlegend=False,
+        ))
+
+    # 3. Airport circles on top
+    # Normalise size for marker
+    max_land = arrival_count['Total_Landings'].max()
+    marker_sizes = (arrival_count['Total_Landings'] / max_land * 55 + 5).tolist()
+
+    fig.add_trace(go.Scattermapbox(
+        lat=arrival_count['latitude_deg'],
+        lon=arrival_count['longitude_deg'],
+        mode='markers',
+        marker=dict(
+            size=marker_sizes,
+            color=arrival_count['Total_Landings'],
+            colorscale=globals.color_scale,
+            showscale=False,
+        ),
+        text=arrival_count['ident'],
+        customdata=arrival_count['Total_Landings'],
+        hovertemplate='<b>%{text}</b><br>%{customdata} landings<extra></extra>',
+        showlegend=False,
+    ))
+
+    fig.update_layout(
+        mapbox=dict(
+            style='carto-darkmatter',
+            center=dict(lat=max_latitude, lon=max_longitude),
+            zoom=6,
+        ),
+        margin=globals.plot_margin_map,
+        paper_bgcolor='black',
+        plot_bgcolor='black',
+    )
+    return [fig]
+
+
+# Techlog status by aircraft
+_STATUS_COLORS = {
+    'Not Airworthy': globals.discrete_teal[7],   # #E4FFFF — brightest, most attention
+    'Open':          globals.discrete_teal[5],   # #8fcacd
+    'Deferred':      globals.discrete_teal[3],   # #62a5b4
+    'Info':          globals.discrete_teal[1],   # #3a718d — darker, low priority
+    'Closed':        globals.discrete_teal[0],   # #2c5977 — darkest, resolved
+    'Other':         '#444444',
+}
+_STATUS_ORDER = ['Not Airworthy', 'Open', 'Deferred', 'Info', 'Closed', 'Other']
+
+@callback(
+    Output('Aircraft-Techlog-Plot', 'figure'),
+    Input('techlog-store',       'data'),
+    Input('date-picker-range',   'start_date'),
+    Input('date-picker-range',   'end_date'),
+    Input('Aircraft-Dropdown',   'value'),
+)
+def update_techlog_plot(techlog_dict, start_date, end_date, aircraft_dropdown):
+    if techlog_dict is None:
+        return plot.not_data_figure()
+    try:
+        tl = dp.reload_techlog_dataframe_from_dict(techlog_dict, start_date, end_date)
+        if tl.empty or 'Status Group' not in tl.columns:
+            return plot.not_data_figure()
+
+        if aircraft_dropdown != '⌀ All Aircrafts':
+            tl = tl[tl['Aircraft'] == aircraft_dropdown]
+
+        counts = (tl.groupby(['Aircraft', 'Status Group'])
+                    .size().reset_index(name='Count'))
+
+        # Keep only groups that appear
+        present = [s for s in _STATUS_ORDER if s in counts['Status Group'].unique()]
+        colors  = [_STATUS_COLORS[s] for s in present]
+
+        # Sort aircraft by total open+deferred items (most concerning on top)
+        severity = (counts[counts['Status Group'].isin(['Not Airworthy', 'Open', 'Deferred'])]
+                    .groupby('Aircraft')['Count'].sum()
+                    .sort_values(ascending=True))
+        ac_order = severity.index.tolist()
+        # Add aircraft with no open items at the bottom
+        all_ac = counts['Aircraft'].unique().tolist()
+        ac_order = ac_order + [a for a in all_ac if a not in ac_order]
+
+        fig = px.bar(
+            counts,
+            x='Count', y='Aircraft', color='Status Group',
+            orientation='h', barmode='stack',
+            template=globals.plot_template,
+            color_discrete_map=_STATUS_COLORS,
+            category_orders={'Status Group': present, 'Aircraft': ac_order},
+            labels={'Count': 'Items', 'Aircraft': ''},
+        )
+        fig.update_traces(hovertemplate='<b>%{y}</b><br>%{fullData.name}: %{x}<extra></extra>')
+        fig.update_layout(
+            margin=globals.plot_margin,
+            paper_bgcolor=globals.paper_bgcolor,
+            plot_bgcolor=globals.paper_bgcolor,
+            legend=dict(orientation='h', yanchor='bottom', y=1.02,
+                        xanchor='left', x=0, bgcolor='rgba(0,0,0,0)',
+                        font=dict(size=11)),
+            xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.07)'),
+            yaxis=dict(showgrid=False),
+        )
+        return fig
+    except Exception as e:
+        return plot.not_data_figure()
+
+
+# Day-of-week flight hours
+@callback(
+    Output('Aircraft-DOW-Plot', 'figure'),
+    Input('flightlog-store',   'data'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'),
+    Input('Aircraft-Dropdown', 'value'),
+)
+def update_aircraft_dow(flightlog_dict, start_date, end_date, aircraft_dropdown):
+    if flightlog_dict is None:
+        return plot.not_data_figure()
+    fl = dp.reload_flightlog_dataframe_from_dict(flightlog_dict, start_date, end_date)
+    if aircraft_dropdown != '⌀ All Aircrafts':
+        fl = fl[fl['Aircraft'] == aircraft_dropdown]
+    if fl.empty:
+        return plot.not_data_figure()
+
+    fl['Hours'] = fl['Flight Time'].dt.total_seconds() / 3600
+    fl['DOW']   = fl['Date'].dt.dayofweek
+    dow_labels  = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    agg = (fl.groupby('DOW')['Hours'].sum()
+             .reindex(range(7), fill_value=0).reset_index())
+    agg.columns = ['DOW', 'Hours']
+    agg['Day'] = agg['DOW'].map(lambda i: dow_labels[i])
+
+    fig = px.bar(agg, x='Day', y='Hours', color='Hours',
+                 color_continuous_scale=globals.color_scale,
+                 template='none',
+                 labels={'Hours': 'Flight Hours', 'Day': ''})
+    fig.update_traces(hovertemplate='<b>%{x}</b><br>%{y:.1f} h<extra></extra>')
+    fig.update(layout_coloraxis_showscale=False)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+    fig.update_layout(margin=globals.plot_margin,
+                      paper_bgcolor=globals.paper_bgcolor,
+                      plot_bgcolor=globals.paper_bgcolor,
+                      template=globals.plot_template)
+    return fig
 
 
 @callback(
